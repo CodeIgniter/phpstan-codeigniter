@@ -1,0 +1,18 @@
+includes:
+  - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+parameters:
+  level: 9
+  paths:
+    - src
+    - tests
+  tmpDir: build/phpstan
+  bootstrapFiles:
+    - vendor/codeigniter4/framework/system/Test/bootstrap.php
+  checkTooWideReturnTypesInProtectedAndPublicMethods: true
+  checkUninitializedProperties: true
+  checkImplicitMixed: true
+  checkBenevolentUnionTypes: true
+  checkMissingCallableSignature: true
+  reportAlwaysTrueInLastCondition: true
+  treatPhpDocTypesAsCertain: false
