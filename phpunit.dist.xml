@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         cacheDirectory="build/.phpunit.cache"
+         colors="true"
+         columns="max"
+         executionOrder="random"
+         requireCoverageMetadata="true"
+         failOnDeprecation="true"
+         failOnEmptyTestSuite="true"
+         failOnIncomplete="true"
+         failOnNotice="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         beStrictAboutOutputDuringTests="true">
+    <testsuites>
+        <testsuite name="Extension Tests">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <source>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </source>
+
+    <coverage ignoreDeprecatedCodeUnits="true" pathCoverage="true">
+        <report>
+            <clover outputFile="build/phpunit/clover.xml" />
+            <html outputDirectory="build/phpunit/html"/>
+        </report>
+    </coverage>
+</phpunit>
