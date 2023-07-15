@@ -6,6 +6,9 @@ parameters:
   paths:
     - src
     - tests
+  excludePaths:
+    analyseAndScan:
+      - src/ComposerScripts.php
   tmpDir: build/phpstan
   bootstrapFiles:
     - vendor/codeigniter4/framework/system/Test/bootstrap.php

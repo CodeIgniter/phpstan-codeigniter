@@ -24,6 +24,9 @@
         <include>
             <directory suffix=".php">src</directory>
         </include>
+        <exclude>
+            <file>src/ComposerScripts.php</file>
+        </exclude>
     </source>
 
     <coverage ignoreDeprecatedCodeUnits="true" pathCoverage="true">
