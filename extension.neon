@@ -1,0 +1,7 @@
+parameters:
+  dynamicConstantNames:
+    - APP_NAMESPACE
+    - CI_DEBUG
+    - ENVIRONMENT
+  universalObjectCratesClasses:
+    - CodeIgniter\Entity\Entity

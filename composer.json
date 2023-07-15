@@ -56,6 +56,13 @@
         "preferred-install": "dist",
         "sort-packages": true
     },
+    "extra": {
+        "phpstan": {
+            "includes": [
+                "extension.neon"
+            ]
+        }
+    },
     "scripts": {
         "post-update-cmd": [
             "CodeIgniter\\PHPStan\\ComposerScripts::postUpdate"
