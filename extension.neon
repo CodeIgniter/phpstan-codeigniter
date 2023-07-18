@@ -21,3 +21,8 @@ services:
     arguments:
       additionalConfigNamespaces: %codeigniter.additionalConfigNamespaces%
       additionalModelNamespaces: %codeigniter.additionalModelNamespaces%
+
+  -
+    class: CodeIgniter\PHPStan\Type\FactoriesFunctionReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicFunctionReturnTypeExtension

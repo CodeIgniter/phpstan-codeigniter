@@ -14,6 +14,9 @@ parameters:
   tmpDir: build/phpstan
   bootstrapFiles:
     - vendor/codeigniter4/framework/system/Test/bootstrap.php
+  codeigniter:
+    additionalModelNamespaces:
+      - CodeIgniter\PHPStan\Tests\Fixtures
   checkTooWideReturnTypesInProtectedAndPublicMethods: true
   checkUninitializedProperties: true
   checkImplicitMixed: true

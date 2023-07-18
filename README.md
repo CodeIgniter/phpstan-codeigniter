@@ -10,6 +10,8 @@
 
 This extension provides the following features:
 
+* Provides correct return types for `config()` and `model()` functions.
+
 ## Installation
 
 To use this extension, require it in [Composer](https://getcomposer.org/):
@@ -25,9 +27,26 @@ If you also install [phpstan/extension-installer](https://github.com/phpstan/ext
 
 If you don't want to use `phpstan/extension-installer`, include extension.neon in your project's PHPStan config:
 
-```
+```yml
 includes:
     - vendor/codeigniter/phpstan-codeigniter/extension.neon
 ```
 
 </details>
+
+## Configuration
+
+This extension adds the default namespace for `config()` and `model()` functions as `Config\` and `App\Models\`, respectively,
+when searching for possible classes. If your application uses other namespaces, you can configure this extension
+in your `phpstan.neon` to recognize those namespaces:
+
+```yml
+parameters:
+  codeigniter:
+    additionalConfigNamespaces:
+      - Acme\Blog\Config\
+      - Foo\Bar\Config\
+    additionalModelNamespaces:
+      - Acme\Blog\Models\
+
+```

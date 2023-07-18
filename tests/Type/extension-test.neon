@@ -1,0 +1,6 @@
+parameters:
+  bootstrapFiles:
+    - %rootDir%/../../../tests/bootstrap.php
+  codeigniter:
+    additionalModelNamespaces:
+      - CodeIgniter\PHPStan\Tests\Fixtures
