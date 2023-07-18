@@ -1,5 +1,6 @@
 includes:
   - extension.neon
+  - phpstan-baseline.php
   - vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:

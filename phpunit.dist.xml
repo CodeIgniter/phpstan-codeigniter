@@ -31,7 +31,7 @@
 
     <coverage ignoreDeprecatedCodeUnits="true" pathCoverage="true">
         <report>
-            <clover outputFile="build/phpunit/clover.xml" />
+            <clover outputFile="build/phpunit/logs/clover.xml" />
             <html outputDirectory="build/phpunit/html"/>
         </report>
     </coverage>

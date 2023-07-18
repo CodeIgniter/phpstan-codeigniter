@@ -35,12 +35,16 @@ $overrides = [
         'prefix' => 'provide',
         'suffix' => 'Cases',
     ],
-    'php_unit_data_provider_static' => true,
-    'phpdoc_to_param_type'          => true,
-    'phpdoc_to_property_type'       => true,
-    'phpdoc_to_return_type'         => true,
-    'single_line_empty_body'        => true,
-    'void_return'                   => true,
+    'php_unit_data_provider_static'          => true,
+    'php_unit_test_case_static_method_calls' => [
+        'call_type' => 'self',
+        'methods'   => [],
+    ],
+    'phpdoc_to_param_type'    => true,
+    'phpdoc_to_property_type' => true,
+    'phpdoc_to_return_type'   => true,
+    'single_line_empty_body'  => true,
+    'void_return'             => true,
 ];
 
 $options = [
