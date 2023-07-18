@@ -5,3 +5,19 @@ parameters:
     - ENVIRONMENT
   universalObjectCratesClasses:
     - CodeIgniter\Entity\Entity
+  codeigniter:
+    additionalConfigNamespaces: []
+    additionalModelNamespaces: []
+
+parametersSchema:
+  codeigniter: structure([
+    additionalConfigNamespaces: listOf(string())
+    additionalModelNamespaces: listOf(string())
+  ])
+
+services:
+  factoriesReturnTypeHelper:
+    class: CodeIgniter\PHPStan\Type\FactoriesReturnTypeHelper
+    arguments:
+      additionalConfigNamespaces: %codeigniter.additionalConfigNamespaces%
+      additionalModelNamespaces: %codeigniter.additionalModelNamespaces%
