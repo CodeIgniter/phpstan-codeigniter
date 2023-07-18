@@ -1,5 +1,9 @@
 # CodeIgniter extensions and rules for PHPStan
 
+[![Coverage Status](https://coveralls.io/repos/github/CodeIgniter/phpstan-codeigniter/badge.svg?branch=1.x)](https://coveralls.io/github/CodeIgniter/phpstan-codeigniter?branch=1.x)
+[![Extension Tests](https://github.com/CodeIgniter/phpstan-codeigniter/actions/workflows/test-phpunit.yml/badge.svg)](https://github.com/CodeIgniter/phpstan-codeigniter/actions/workflows/test-phpunit.yml)
+[![Coding Standards Check](https://github.com/CodeIgniter/phpstan-codeigniter/actions/workflows/test-coding-standards.yml/badge.svg)](https://github.com/CodeIgniter/phpstan-codeigniter/actions/workflows/test-coding-standards.yml)
+
 * [PHPStan](https://phpstan.org/)
 * [CodeIgniter](https://codeigniter.com/)
 
