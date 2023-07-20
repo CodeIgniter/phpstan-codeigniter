@@ -1,0 +1,64 @@
+name: Bug report 🐛
+description: Create a report to help us improve
+title: "bug: "
+labels: ['bug']
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+        Before you begin, **please ensure that there are no existing issues,
+        whether still open or closed, related to your report**.
+        If there is, your report will be closed promptly.
+
+        ---
+
+  - type: dropdown
+    id: php-version
+    attributes:
+      label: PHP Version
+      description: Which PHP versions did you run your code?
+      multiple: true
+      options:
+        - '8.1'
+        - '8.2'
+    validations:
+      required: true
+
+  - type: input
+    id: phpstan-codeigniter-version
+    attributes:
+      label: PHPStan CodeIgniter Version
+    validations:
+      required: true
+
+  - type: input
+    id: phpstan-version
+    attributes:
+      label: PHPStan Version
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Minimum Reproduction Script
+      description: Please add a minimum reproduction script in order for us to investigate your report.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Expected Output
+      description: What do you expect to happen instead?
+    validations:
+      required: true
