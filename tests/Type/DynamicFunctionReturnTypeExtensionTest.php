@@ -40,7 +40,7 @@ final class DynamicFunctionReturnTypeExtensionTest extends TypeInferenceTestCase
     {
         return [
             __DIR__ . '/../../extension.neon',
-            __DIR__ . '/extension-test.neon',
+            __DIR__ . '/../extension-test.neon',
         ];
     }
 }
