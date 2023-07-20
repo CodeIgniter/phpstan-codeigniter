@@ -39,6 +39,7 @@ final class DynamicFunctionReturnTypeExtensionTest extends TypeInferenceTestCase
     public static function getAdditionalConfigFiles(): array
     {
         return [
+            ...parent::getAdditionalConfigFiles(),
             __DIR__ . '/../../extension.neon',
             __DIR__ . '/../extension-test.neon',
         ];
