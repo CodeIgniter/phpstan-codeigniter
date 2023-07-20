@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Tests\Rules\Functions;
 
 use CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule;
+use CodeIgniter\PHPStan\Tests\AdditionalConfigFilesTrait;
 use CodeIgniter\PHPStan\Type\FactoriesReturnTypeHelper;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
@@ -27,6 +28,8 @@ use PHPUnit\Framework\Attributes\Group;
 #[Group('Integration')]
 final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
 {
+    use AdditionalConfigFilesTrait;
+
     protected function getRule(): Rule
     {
         return new FactoriesFunctionArgumentTypeRule(
@@ -78,14 +81,5 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
                 22,
             ],
         ]);
-    }
-
-    public static function getAdditionalConfigFiles(): array
-    {
-        return [
-            ...parent::getAdditionalConfigFiles(),
-            __DIR__ . '/../../../extension.neon',
-            __DIR__ . '/../../extension-test.neon',
-        ];
     }
 }
