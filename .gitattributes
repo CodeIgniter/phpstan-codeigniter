@@ -7,5 +7,6 @@ tests/ export-ignore
 .gitignore export-ignore
 .php-cs-fixer.dist.php export-ignore
 src/ComposerScripts.php export-ignore
-phpunit.xml.dist export-ignore
+phpunit.dist.xml export-ignore
 phpstan.neon.dist export-ignore
+phpstan-baseline.php export-ignore
