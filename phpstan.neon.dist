@@ -11,13 +11,13 @@ parameters:
   excludePaths:
     analyseAndScan:
       - src/ComposerScripts.php
+      - tests/Fixtures
   tmpDir: build/phpstan
   bootstrapFiles:
     - vendor/codeigniter4/framework/system/Test/bootstrap.php
   codeigniter:
     additionalModelNamespaces:
       - CodeIgniter\PHPStan\Tests\Fixtures\Type
-    checkArgumentTypeOfFactories: false
   checkTooWideReturnTypesInProtectedAndPublicMethods: true
   checkUninitializedProperties: true
   checkImplicitMixed: true

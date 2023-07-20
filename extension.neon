@@ -35,3 +35,6 @@ services:
 conditionalTags:
   CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule:
     phpstan.rules.rule: %codeigniter.checkArgumentTypeOfFactories%
+
+rules:
+  - CodeIgniter\PHPStan\Rules\Classes\CacheHandlerInstantiationRule
