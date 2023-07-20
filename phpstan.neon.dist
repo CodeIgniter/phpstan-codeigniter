@@ -17,6 +17,7 @@ parameters:
   codeigniter:
     additionalModelNamespaces:
       - CodeIgniter\PHPStan\Tests\Fixtures\Type
+    checkArgumentTypeOfFactories: false
   checkTooWideReturnTypesInProtectedAndPublicMethods: true
   checkUninitializedProperties: true
   checkImplicitMixed: true

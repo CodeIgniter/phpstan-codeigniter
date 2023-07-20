@@ -8,11 +8,13 @@ parameters:
   codeigniter:
     additionalConfigNamespaces: []
     additionalModelNamespaces: []
+    checkArgumentTypeOfFactories: true
 
 parametersSchema:
   codeigniter: structure([
     additionalConfigNamespaces: listOf(string())
     additionalModelNamespaces: listOf(string())
+    checkArgumentTypeOfFactories: bool()
   ])
 
 services:
@@ -26,3 +28,10 @@ services:
     class: CodeIgniter\PHPStan\Type\FactoriesFunctionReturnTypeExtension
     tags:
       - phpstan.broker.dynamicFunctionReturnTypeExtension
+
+  -
+    class: CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule
+
+conditionalTags:
+  CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule:
+    phpstan.rules.rule: %codeigniter.checkArgumentTypeOfFactories%

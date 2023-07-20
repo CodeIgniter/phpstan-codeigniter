@@ -9,7 +9,8 @@
 
 This extension provides the following features:
 
-* Provides correct return types for `config()` and `model()` functions.
+* Provides precise return types for `config()` and `model()` functions.
+* Checks if the string argument passed to `config()` or `model()` function is a valid class string extending `CodeIgniter\Config\BaseConfig` or `CodeIgniter\Model`, respectively. This can be turned off by setting `codeigniter.checkArgumentTypeOfFactories: false` in your `phpstan.neon`.
 
 ## Installation
 
