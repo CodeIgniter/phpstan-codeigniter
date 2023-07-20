@@ -48,26 +48,4 @@ jobs:
         run: composer update --ansi
 
       - name: Run Extension Tests
-        run: vendor/bin/phpunit
-
-      - name: Upload coverage results to Coveralls
-        run: |
-          composer global require --ansi php-coveralls/php-coveralls
-          php-coveralls --verbose --coverage_clover=build/phpunit/logs/clover.xml --json_path=build/phpunit/logs/coverage-upload.json
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-          COVERALLS_PARALLEL: true
-          COVERALLS_FLAG_NAME: PHP ${{ matrix.php-version }}
-
-  coveralls-upload:
-    name: Trigger parallel build webhook on Coveralls
-    runs-on: ubuntu-20.04
-    needs:
-      - extension-tests
-
-    steps:
-      - name: Upload to Coveralls API
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel-finished: true
+        run: vendor/bin/phpunit --no-coverage

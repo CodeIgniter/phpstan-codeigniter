@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
+         bootstrap="tests/bootstrap.php"
          cacheDirectory="build/.phpunit.cache"
          colors="true"
          columns="max"
          executionOrder="random"
-         requireCoverageMetadata="true"
          failOnDeprecation="true"
          failOnEmptyTestSuite="true"
          failOnIncomplete="true"
@@ -28,11 +27,4 @@
             <file>src/ComposerScripts.php</file>
         </exclude>
     </source>
-
-    <coverage ignoreDeprecatedCodeUnits="true" pathCoverage="true">
-        <report>
-            <clover outputFile="build/phpunit/logs/clover.xml" />
-            <html outputDirectory="build/phpunit/html"/>
-        </report>
-    </coverage>
 </phpunit>

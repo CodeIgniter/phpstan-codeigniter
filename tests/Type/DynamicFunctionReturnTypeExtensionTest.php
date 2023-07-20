@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Tests\Type;
 
 use PHPStan\Testing\TypeInferenceTestCase;
-use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -22,7 +21,6 @@ use PHPUnit\Framework\Attributes\Group;
  * @internal
  */
 #[Group('Integration')]
-#[CoversNothing]
 final class DynamicFunctionReturnTypeExtensionTest extends TypeInferenceTestCase
 {
     #[DataProvider('provideFileAssertsCases')]

@@ -24,7 +24,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VerbosityLevel;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -33,7 +32,6 @@ use PHPUnit\Framework\MockObject\MockObject;
  * @internal
  */
 #[Group('Unit')]
-#[CoversClass(FactoriesReturnTypeHelper::class)]
 final class FactoriesReturnTypeHelperTest extends PHPStanTestCase
 {
     public static function provideCheckOfReturnTypeCases(): iterable
