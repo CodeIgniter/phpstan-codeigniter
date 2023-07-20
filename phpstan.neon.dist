@@ -16,7 +16,7 @@ parameters:
     - vendor/codeigniter4/framework/system/Test/bootstrap.php
   codeigniter:
     additionalModelNamespaces:
-      - CodeIgniter\PHPStan\Tests\Fixtures
+      - CodeIgniter\PHPStan\Tests\Fixtures\Type
   checkTooWideReturnTypesInProtectedAndPublicMethods: true
   checkUninitializedProperties: true
   checkImplicitMixed: true

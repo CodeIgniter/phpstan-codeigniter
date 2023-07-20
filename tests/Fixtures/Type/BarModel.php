@@ -11,7 +11,7 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
-namespace CodeIgniter\PHPStan\Tests\Fixtures;
+namespace CodeIgniter\PHPStan\Tests\Fixtures\Type;
 
 use CodeIgniter\Model;
 

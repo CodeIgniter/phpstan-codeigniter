@@ -20,4 +20,4 @@ assertType('stdClass', model(stdClass::class));
 assertType('Closure', model(Closure::class));
 assertType('null', model('App'));
 assertType('stdClass|null', model($class));
-assertType('CodeIgniter\PHPStan\Tests\Fixtures\BarModel', model('BarModel'));
+assertType('CodeIgniter\PHPStan\Tests\Fixtures\Type\BarModel', model('BarModel'));
