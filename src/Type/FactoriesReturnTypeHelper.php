@@ -63,6 +63,10 @@ final class FactoriesReturnTypeHelper
                 return $traverse($type);
             }
 
+            if ($type->isClassStringType()->yes()) {
+                return $type->getClassStringObjectType();
+            }
+
             $constantStrings = $type->getConstantStrings();
 
             if ($constantStrings === []) {

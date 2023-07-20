@@ -11,7 +11,10 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
+namespace CodeIgniter\PHPStan\Tests\Fixtures\Type;
+
 use Config\App;
+use stdClass;
 
 use function PHPStan\Testing\assertType;
 
@@ -22,3 +25,10 @@ assertType('null', config('Foo\Bar'));
 assertType('Config\App', config('App'));
 assertType('Config\App', config(App::class));
 assertType('stdClass|null', config($class));
+
+function bar(string $name): void
+{
+    if (class_exists($name)) {
+        assertType('object', config($name));
+    }
+}

@@ -17,10 +17,12 @@ use CodeIgniter\PHPStan\Type\FactoriesReturnTypeHelper;
 use Config\App;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Testing\PHPStanTestCase;
+use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VerbosityLevel;
@@ -42,7 +44,9 @@ final class FactoriesReturnTypeHelperTest extends PHPStanTestCase
 
         yield 'non class string returns null type' => [new NullType(), new ConstantStringType('Bar')];
 
-        yield 'class string' => [new ObjectType(App::class), new ConstantStringType(App::class, true)];
+        yield 'constant class string' => [new ObjectType(App::class), new ConstantStringType(App::class, true)];
+
+        yield 'class string' => [new ObjectWithoutClassType(), new ClassStringType()];
 
         yield 'union type' => [new UnionType([new NullType(), new ObjectType(App::class)]), new UnionType([new ConstantStringType('Bar'), new ConstantStringType(App::class, true)])];
     }

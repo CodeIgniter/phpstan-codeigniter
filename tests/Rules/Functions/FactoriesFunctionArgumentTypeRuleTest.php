@@ -43,15 +43,19 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
         ], [
             [
                 'Parameter #1 $name of function config expects a valid class string, \'bar\' given.',
-                20,
+                23,
             ],
             [
                 'Parameter #1 $name of function config expects a valid class string, \'Foo\\\\Bar\' given.',
-                21,
+                24,
             ],
             [
                 'Argument #1 $name (\'Foo\'|\'stdClass\') passed to function config does not extend CodeIgniter\\\\Config\\\\BaseConfig.',
-                24,
+                27,
+            ],
+            [
+                'Argument #1 $name (class-string) passed to function config does not extend CodeIgniter\\\\Config\\\\BaseConfig.',
+                32,
             ],
             [
                 'Parameter #1 $name of function model expects a valid class string, \'foo\' given.',
