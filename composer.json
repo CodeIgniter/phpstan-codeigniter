@@ -67,5 +67,8 @@
         "post-update-cmd": [
             "CodeIgniter\\PHPStan\\ComposerScripts::postUpdate"
         ]
+    },
+    "conflict": {
+        "codeigniter/framework": "*"
     }
 }
