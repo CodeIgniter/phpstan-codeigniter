@@ -55,9 +55,14 @@ final class CacheHandlerInstantiationRule implements Rule
             return [];
         }
 
-        return [RuleErrorBuilder::message(sprintf(
-            'Calling new %s() directly is not allowed. Use CacheFactory::getHandler() to get the cache instance.',
-            $reflection->getNativeReflection()->getShortName(),
-        ))->identifier('codeigniter.cacheHandlerInstance')->build()];
+        return [
+            RuleErrorBuilder::message(sprintf(
+                'Calling new %s() directly is incomplete to get the cache instance.',
+                $reflection->getNativeReflection()->getShortName(),
+            ))
+                ->tip('Use CacheFactory::getHandler() or the cache() function to get the cache instance instead.')
+                ->identifier('codeigniter.cacheHandlerInstance')
+                ->build(),
+        ];
     }
 }

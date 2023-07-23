@@ -47,10 +47,12 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
             [
                 'Parameter #1 $name of function config expects a valid class string, \'bar\' given.',
                 23,
+                'If \'bar\' is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additionalConfigNamespaces</> in your <fg=yellow>%configurationFile%</>.',
             ],
             [
                 'Parameter #1 $name of function config expects a valid class string, \'Foo\\\\Bar\' given.',
                 24,
+                'If \'Foo\\\\Bar\' is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additionalConfigNamespaces</> in your <fg=yellow>%configurationFile%</>.',
             ],
             [
                 'Argument #1 $name (\'Foo\'|\'stdClass\') passed to function config does not extend CodeIgniter\\\\Config\\\\BaseConfig.',
@@ -63,6 +65,7 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
             [
                 'Parameter #1 $name of function model expects a valid class string, \'foo\' given.',
                 18,
+                'If \'foo\' is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additionalModelNamespaces</> in your <fg=yellow>%configurationFile%</>.',
             ],
             [
                 'Argument #1 $name (\'stdClass\') passed to function model does not extend CodeIgniter\\\\Model.',
@@ -75,6 +78,7 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
             [
                 'Parameter #1 $name of function model expects a valid class string, \'App\' given.',
                 21,
+                'If \'App\' is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additionalModelNamespaces</> in your <fg=yellow>%configurationFile%</>.',
             ],
             [
                 'Argument #1 $name (\'Foo\'|\'stdClass\') passed to function model does not extend CodeIgniter\\\\Model.',

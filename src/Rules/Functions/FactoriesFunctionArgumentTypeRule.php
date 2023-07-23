@@ -89,6 +89,10 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
                 $firstParameter->getName(),
                 $function,
                 $nameType->describe(VerbosityLevel::precise())
+            ))->tip(sprintf(
+                'If %s is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additional%sNamespaces</> in your <fg=yellow>%%configurationFile%%</>.',
+                $nameType->describe(VerbosityLevel::precise()),
+                ucfirst($function)
             ))->identifier(sprintf('codeigniter.%sArgumentType', $function))->build()];
         }
 
