@@ -4,3 +4,5 @@ parameters:
   codeigniter:
     additionalModelNamespaces:
       - CodeIgniter\PHPStan\Tests\Fixtures\Type
+    additionalServices:
+      - CodeIgniter\PHPStan\Tests\Fixtures\Type\OtherServices

@@ -8,12 +8,14 @@ parameters:
   codeigniter:
     additionalConfigNamespaces: []
     additionalModelNamespaces: []
+    additionalServices: []
     checkArgumentTypeOfFactories: true
 
 parametersSchema:
   codeigniter: structure([
     additionalConfigNamespaces: listOf(string())
     additionalModelNamespaces: listOf(string())
+    additionalServices: listOf(string())
     checkArgumentTypeOfFactories: bool()
   ])
 
@@ -24,8 +26,18 @@ services:
       additionalConfigNamespaces: %codeigniter.additionalConfigNamespaces%
       additionalModelNamespaces: %codeigniter.additionalModelNamespaces%
 
+  servicesReturnTypeHelper:
+    class: CodeIgniter\PHPStan\Type\ServicesReturnTypeHelper
+    arguments:
+      additionalServices: %codeigniter.additionalServices%
+
   -
     class: CodeIgniter\PHPStan\Type\FactoriesFunctionReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicFunctionReturnTypeExtension
+
+  -
+    class: CodeIgniter\PHPStan\Type\ServicesFunctionReturnTypeExtension
     tags:
       - phpstan.broker.dynamicFunctionReturnTypeExtension
 

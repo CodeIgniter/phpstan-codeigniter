@@ -10,6 +10,7 @@
 This extension provides the following features:
 
 * Provides precise return types for `config()` and `model()` functions.
+* Provides precise return types for `service()` and `single_service()` functions.
 * Checks if the string argument passed to `config()` or `model()` function is a valid class string extending `CodeIgniter\Config\BaseConfig` or `CodeIgniter\Model`, respectively. This can be turned off by setting `codeigniter.checkArgumentTypeOfFactories: false` in your `phpstan.neon`.
 * Disallows instantiating cache handlers using `new` and suggests to use the `CacheFactory` class instead.
 
@@ -50,4 +51,13 @@ parameters:
     additionalModelNamespaces:
       - Acme\Blog\Models\
 
+```
+
+For the `service()` and `single_service()` functions, you can declare your own service implementation classes.
+
+```yml
+parameters:
+  codeigniter:
+    additionalServices:
+      - Acme\Blog\Config\ServiceFactory
 ```
