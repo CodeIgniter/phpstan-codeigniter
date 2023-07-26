@@ -61,3 +61,13 @@ parameters:
     additionalServices:
       - Acme\Blog\Config\ServiceFactory
 ```
+
+## Contributing
+
+Any contributions are welcome.
+
+If you want to see a new rule or extension specific to CodeIgniter, please open a
+[feature request](https://github.com/CodeIgniter/phpstan-codeigniter/issues/new?assignees=&labels=feature+request&projects=&template=feature_request.yml). If you can contribute the code yourself, please open a pull request instead.
+
+Before reporting any bugs, please check if the bug occurs only if using this extension with PHPStan. If the bug is
+reproducible in PHPStan alone, please open a bug report there instead. Thank you!
