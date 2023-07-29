@@ -10,6 +10,7 @@ parameters:
     additionalModelNamespaces: []
     additionalServices: []
     checkArgumentTypeOfFactories: true
+    checkArgumentTypeOfServices: true
 
 parametersSchema:
   codeigniter: structure([
@@ -17,6 +18,7 @@ parametersSchema:
     additionalModelNamespaces: listOf(string())
     additionalServices: listOf(string())
     checkArgumentTypeOfFactories: bool()
+    checkArgumentTypeOfServices: bool()
   ])
 
 services:
@@ -44,9 +46,14 @@ services:
   -
     class: CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule
 
+  -
+    class: CodeIgniter\PHPStan\Rules\Functions\ServicesFunctionArgumentTypeRule
+
 conditionalTags:
   CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule:
     phpstan.rules.rule: %codeigniter.checkArgumentTypeOfFactories%
+  CodeIgniter\PHPStan\Rules\Functions\ServicesFunctionArgumentTypeRule:
+    phpstan.rules.rule: %codeigniter.checkArgumentTypeOfServices%
 
 rules:
   - CodeIgniter\PHPStan\Rules\Classes\CacheHandlerInstantiationRule

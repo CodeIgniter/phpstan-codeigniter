@@ -63,3 +63,7 @@ assertType('null', service('injectMock'));
 // this should be overridden by OtherServices
 assertType(stdClass::class, service('migrations'));
 assertType(Closure::class, service('invoker'));
+
+// gibberish
+assertType('null', single_service('bar'));
+assertType('null', single_service('timers'));
