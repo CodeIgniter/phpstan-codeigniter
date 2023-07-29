@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Tests\Type;
 
+use CodeIgniter\PHPStan\Tests\AdditionalConfigFilesTrait;
 use PHPStan\Testing\TypeInferenceTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -23,6 +24,8 @@ use PHPUnit\Framework\Attributes\Group;
 #[Group('Integration')]
 final class DynamicFunctionReturnTypeExtensionTest extends TypeInferenceTestCase
 {
+    use AdditionalConfigFilesTrait;
+
     #[DataProvider('provideFileAssertsCases')]
     public function testFileAsserts(string $assertType, string $file, mixed ...$args): void
     {
@@ -36,14 +39,5 @@ final class DynamicFunctionReturnTypeExtensionTest extends TypeInferenceTestCase
         yield from self::gatherAssertTypes(__DIR__ . '/../Fixtures/Type/model.php');
 
         yield from self::gatherAssertTypes(__DIR__ . '/../Fixtures/Type/services.php');
-    }
-
-    public static function getAdditionalConfigFiles(): array
-    {
-        return [
-            ...parent::getAdditionalConfigFiles(),
-            __DIR__ . '/../../extension.neon',
-            __DIR__ . '/../extension-test.neon',
-        ];
     }
 }
