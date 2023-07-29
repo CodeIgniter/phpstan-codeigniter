@@ -50,3 +50,4 @@ conditionalTags:
 
 rules:
   - CodeIgniter\PHPStan\Rules\Classes\CacheHandlerInstantiationRule
+  - CodeIgniter\PHPStan\Rules\Classes\FrameworkExceptionInstantiationRule
