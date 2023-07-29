@@ -85,10 +85,6 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
 
         if ($returnType->isNull()->yes()) {
             $addTip = static function (RuleErrorBuilder $ruleErrorBuilder) use ($nameType, $function): RuleErrorBuilder {
-                if ($nameType->getConstantStrings() === []) {
-                    return $ruleErrorBuilder;
-                }
-
                 foreach ($nameType->getConstantStrings() as $constantStringType) {
                     $ruleErrorBuilder->addTip(sprintf(
                         'If %s is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additional%sNamespaces</> in your <fg=yellow>%%configurationFile%%</>.',

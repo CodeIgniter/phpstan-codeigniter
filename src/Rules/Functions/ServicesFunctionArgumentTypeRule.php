@@ -80,10 +80,6 @@ final class ServicesFunctionArgumentTypeRule implements Rule
         }
 
         $addTip = static function (RuleErrorBuilder $ruleErrorBuilder) use ($nameType): RuleErrorBuilder {
-            if ($nameType->getConstantStrings() === []) {
-                return $ruleErrorBuilder;
-            }
-
             foreach ($nameType->getConstantStrings() as $constantStringType) {
                 $ruleErrorBuilder->addTip(sprintf(
                     'If %s is a valid service name, you can add its possible service class(es) in <fg=cyan>codeigniter.additionalServices</> in your <fg=yellow>%%configurationFile%%</>.',
