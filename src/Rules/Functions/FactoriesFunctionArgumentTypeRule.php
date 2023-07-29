@@ -84,16 +84,24 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
         )->getParameters()[0];
 
         if ($returnType->isNull()->yes()) {
-            return [RuleErrorBuilder::message(sprintf(
+            $addTip = static function (RuleErrorBuilder $ruleErrorBuilder) use ($nameType, $function): RuleErrorBuilder {
+                if ($nameType->getConstantStrings() === []) {
+                    return $ruleErrorBuilder;
+                }
+
+                return $ruleErrorBuilder->tip(sprintf(
+                    'If %s is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additional%sNamespaces</> in your <fg=yellow>%%configurationFile%%</>.',
+                    $nameType->describe(VerbosityLevel::precise()),
+                    ucfirst($function)
+                ));
+            };
+
+            return [$addTip(RuleErrorBuilder::message(sprintf(
                 'Parameter #1 $%s of function %s expects a valid class string, %s given.',
                 $firstParameter->getName(),
                 $function,
                 $nameType->describe(VerbosityLevel::precise())
-            ))->tip(sprintf(
-                'If %s is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additional%sNamespaces</> in your <fg=yellow>%%configurationFile%%</>.',
-                $nameType->describe(VerbosityLevel::precise()),
-                ucfirst($function)
-            ))->identifier(sprintf('codeigniter.%sArgumentType', $function))->build()];
+            )))->identifier(sprintf('codeigniter.%sArgumentType', $function))->build()];
         }
 
         if (! (new ObjectType($this->instanceofMap[$function]))->isSuperTypeOf($returnType)->yes()) {

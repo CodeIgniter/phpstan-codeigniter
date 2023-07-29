@@ -31,4 +31,6 @@ function bar(string $name): void
     if (class_exists($name)) {
         assertType('object', config($name));
     }
+
+    assertType('null', config($name));
 }

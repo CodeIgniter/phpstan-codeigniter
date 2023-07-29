@@ -63,6 +63,10 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
                 32,
             ],
             [
+                'Parameter #1 $name of function config expects a valid class string, string given.',
+                35,
+            ],
+            [
                 'Parameter #1 $name of function model expects a valid class string, \'foo\' given.',
                 18,
                 'If \'foo\' is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additionalModelNamespaces</> in your <fg=yellow>%configurationFile%</>.',
