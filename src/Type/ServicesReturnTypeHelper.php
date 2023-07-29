@@ -31,16 +31,16 @@ final class ServicesReturnTypeHelper
     /**
      * @var array<int, string>
      */
-    private const IMPOSSIBLE_SERVICE_METHOD_NAMES = [
-        '__callStatic',
-        'buildServicesCache',
-        'createRequest',
-        'discoverServices',
-        'getSharedInstance',
-        'injectMock',
+    public const IMPOSSIBLE_SERVICE_METHOD_NAMES = [
+        '__callstatic',
+        'buildservicescache',
+        'createrequest',
+        'discoverservices',
+        'getsharedinstance',
+        'injectmock',
         'reset',
-        'resetSingle',
-        'serviceExists',
+        'resetsingle',
+        'serviceexists',
     ];
 
     /**
@@ -84,37 +84,35 @@ final class ServicesReturnTypeHelper
                 return $traverse($type);
             }
 
-            $constantStrings = $type->getConstantStrings();
+            foreach ($type->getConstantStrings() as $constantStringType) {
+                $constantString = $constantStringType->getValue();
 
-            if ($constantStrings === []) {
-                return new NullType();
-            }
+                foreach (self::IMPOSSIBLE_SERVICE_METHOD_NAMES as $impossibleServiceMethodName) {
+                    if (strtolower($constantString) === $impossibleServiceMethodName) {
+                        return new NullType();
+                    }
+                }
 
-            $constantString = current($constantStrings)->getValue();
+                $methodReflection = null;
 
-            foreach (self::IMPOSSIBLE_SERVICE_METHOD_NAMES as $impossibleServiceMethodName) {
-                if (strtolower($constantString) === strtolower($impossibleServiceMethodName)) {
+                foreach (self::$servicesReflection as $servicesReflection) {
+                    if ($servicesReflection->hasMethod($constantString)) {
+                        $methodReflection = $servicesReflection->getMethod($constantString, $scope);
+                    }
+                }
+
+                if ($methodReflection === null) {
                     return new NullType();
                 }
-            }
 
-            $methodReflection = null;
-
-            foreach (self::$servicesReflection as $servicesReflection) {
-                if ($servicesReflection->hasMethod($constantString)) {
-                    $methodReflection = $servicesReflection->getMethod($constantString, $scope);
+                if (! $methodReflection->isStatic() || ! $methodReflection->isPublic()) {
+                    return new NullType();
                 }
+
+                return ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())->getReturnType();
             }
 
-            if ($methodReflection === null) {
-                return new NullType();
-            }
-
-            if (! $methodReflection->isStatic() || ! $methodReflection->isPublic()) {
-                return new NullType();
-            }
-
-            return ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())->getReturnType();
+            return new NullType();
         });
     }
 }

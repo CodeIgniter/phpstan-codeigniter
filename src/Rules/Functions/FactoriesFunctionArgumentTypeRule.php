@@ -89,11 +89,15 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
                     return $ruleErrorBuilder;
                 }
 
-                return $ruleErrorBuilder->tip(sprintf(
-                    'If %s is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additional%sNamespaces</> in your <fg=yellow>%%configurationFile%%</>.',
-                    $nameType->describe(VerbosityLevel::precise()),
-                    ucfirst($function)
-                ));
+                foreach ($nameType->getConstantStrings() as $constantStringType) {
+                    $ruleErrorBuilder->addTip(sprintf(
+                        'If %s is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additional%sNamespaces</> in your <fg=yellow>%%configurationFile%%</>.',
+                        $constantStringType->describe(VerbosityLevel::precise()),
+                        ucfirst($function)
+                    ));
+                }
+
+                return $ruleErrorBuilder;
             };
 
             return [$addTip(RuleErrorBuilder::message(sprintf(

@@ -67,31 +67,25 @@ final class FactoriesReturnTypeHelper
                 return $type->getClassStringObjectType();
             }
 
-            $constantStrings = $type->getConstantStrings();
+            foreach ($type->getConstantStrings() as $constantStringType) {
+                if ($constantStringType->isClassStringType()->yes()) {
+                    return $constantStringType->getClassStringObjectType();
+                }
 
-            if ($constantStrings === []) {
-                return new NullType();
-            }
+                $constantString = $constantStringType->getValue();
 
-            $constantStringType = current($constantStrings);
+                $appName = $this->namespaceMap[$function] . $constantString;
 
-            if ($constantStringType->isClassStringType()->yes()) {
-                return $constantStringType->getClassStringObjectType();
-            }
+                if ($this->reflectionProvider->hasClass($appName)) {
+                    return new ObjectType($appName);
+                }
 
-            $constantString = $constantStringType->getValue();
+                foreach ($this->additionalNamespacesMap[$function] as $additionalNamespace) {
+                    $moduleClassName = $additionalNamespace . $constantString;
 
-            $appName = $this->namespaceMap[$function] . $constantString;
-
-            if ($this->reflectionProvider->hasClass($appName)) {
-                return new ObjectType($appName);
-            }
-
-            foreach ($this->additionalNamespacesMap[$function] as $additionalNamespace) {
-                $moduleClassName = $additionalNamespace . $constantString;
-
-                if ($this->reflectionProvider->hasClass($moduleClassName)) {
-                    return new ObjectType($moduleClassName);
+                    if ($this->reflectionProvider->hasClass($moduleClassName)) {
+                        return new ObjectType($moduleClassName);
+                    }
                 }
             }
 
