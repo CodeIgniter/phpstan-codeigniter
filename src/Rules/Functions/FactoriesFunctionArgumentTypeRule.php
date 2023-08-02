@@ -111,7 +111,7 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
                 $nameType->describe(VerbosityLevel::precise()),
                 $function,
                 addcslashes($this->instanceofMap[$function], '\\')
-            ))->identifier('codeigniter.%sArgumentInstanceof')->build()];
+            ))->identifier(sprintf('codeigniter.%sArgumentInstanceof', $function))->build()];
         }
 
         return [];
