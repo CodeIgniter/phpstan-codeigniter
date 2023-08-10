@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Type;
 
+use CodeIgniter\Config\BaseService;
 use CodeIgniter\Config\Services as FrameworkServices;
 use Config\Services as AppServices;
 use PHPStan\Analyser\Scope;
@@ -69,15 +70,7 @@ final class ServicesReturnTypeHelper
 
     public function check(Type $type, Scope $scope): Type
     {
-        if (self::$servicesReflection === []) {
-            self::$servicesReflection = array_map(function (string $service): ClassReflection {
-                if (! $this->reflectionProvider->hasClass($service)) {
-                    throw new ShouldNotHappenException(sprintf('Service class "%s" is not found.', $service));
-                }
-
-                return $this->reflectionProvider->getClass($service);
-            }, $this->services);
-        }
+        $this->buildServicesCache();
 
         return TypeTraverser::map($type, static function (Type $type, callable $traverse) use ($scope): Type {
             if ($type instanceof UnionType || $type instanceof IntersectionType) {
@@ -114,5 +107,34 @@ final class ServicesReturnTypeHelper
 
             return new NullType();
         });
+    }
+
+    /**
+     * @return array<int, ClassReflection>
+     */
+    public function getServicesReflection(): array
+    {
+        $this->buildServicesCache();
+
+        return self::$servicesReflection;
+    }
+
+    private function buildServicesCache(): void
+    {
+        if (self::$servicesReflection === []) {
+            self::$servicesReflection = array_map(function (string $service): ClassReflection {
+                if (! $this->reflectionProvider->hasClass($service)) {
+                    throw new ShouldNotHappenException(sprintf('Services factory class "%s" not found.', $service));
+                }
+
+                $serviceReflection = $this->reflectionProvider->getClass($service);
+
+                if ($serviceReflection->getParentClass()?->getName() !== BaseService::class) {
+                    throw new ShouldNotHappenException(sprintf('Services factory class "%s" does not extend %s.', $service, BaseService::class));
+                }
+
+                return $serviceReflection;
+            }, $this->services);
+        }
     }
 }

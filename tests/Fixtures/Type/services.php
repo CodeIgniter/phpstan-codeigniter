@@ -67,3 +67,9 @@ assertType(Closure::class, service('invoker'));
 // gibberish
 assertType('null', single_service('bar'));
 assertType('null', single_service('timers'));
+
+return [
+    single_service('toBool'),
+    service('noReturn'),
+    service('returnNull'),
+];

@@ -16,9 +16,11 @@ namespace CodeIgniter\PHPStan\Rules\Functions;
 use CodeIgniter\PHPStan\Type\ServicesReturnTypeHelper;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\VerbosityLevel;
 
 /**
@@ -66,23 +68,50 @@ final class ServicesFunctionArgumentTypeRule implements Rule
 
         $returnType = $this->servicesReturnTypeHelper->check($nameType, $scope);
 
-        if ($returnType->isNull()->no()) {
+        if ($returnType->isObject()->yes()) {
             return [];
         }
 
         $name = $nameType->describe(VerbosityLevel::precise());
 
-        if (in_array(strtolower(trim($name, "'")), ServicesReturnTypeHelper::IMPOSSIBLE_SERVICE_METHOD_NAMES, true)) {
+        $trimmedName = trim($name, "'");
+
+        if (in_array(strtolower($trimmedName), ServicesReturnTypeHelper::IMPOSSIBLE_SERVICE_METHOD_NAMES, true)) {
+            return [
+                RuleErrorBuilder::message(sprintf('The method %s is reserved for service location internals and cannot be used as a service method.', $name))
+                    ->identifier('codeigniter.reservedServiceName')
+                    ->build(),
+            ];
+        }
+
+        if ($returnType->isNull()->maybe() && $returnType instanceof MixedType) {
+            return [
+                RuleErrorBuilder::message(sprintf('Service method %s returns mixed.', $name))
+                    ->tip('Perhaps you forgot to add a return type?')
+                    ->identifier('codeigniter.serviceMixedReturn')
+                    ->build(),
+            ];
+        }
+
+        $hasMethod = array_reduce(
+            $this->servicesReturnTypeHelper->getServicesReflection(),
+            static fn (bool $carry, ClassReflection $service): bool => $carry || $service->hasMethod($trimmedName),
+            false
+        );
+
+        if (! $returnType->isNull()->yes() || $hasMethod) {
             return [RuleErrorBuilder::message(sprintf(
-                'The name %s is reserved for service location internals and cannot be used as a service name.',
-                $name
-            ))->identifier('codeigniter.reservedServiceName')->build()];
+                'Service method %s expected to return a service instance, got %s instead.',
+                $name,
+                $returnType->describe(VerbosityLevel::precise())
+            ))->identifier('codeigniter.serviceNonObjectReturn')->build()];
         }
 
         $addTip = static function (RuleErrorBuilder $ruleErrorBuilder) use ($nameType): RuleErrorBuilder {
             foreach ($nameType->getConstantStrings() as $constantStringType) {
                 $ruleErrorBuilder->addTip(sprintf(
-                    'If %s is a valid service name, you can add its possible service class(es) in <fg=cyan>codeigniter.additionalServices</> in your <fg=yellow>%%configurationFile%%</>.',
+                    'If %s is a valid service method, you can add its possible services factory class(es) ' .
+                    'in <fg=cyan>codeigniter.additionalServices</> in your <fg=yellow>%%configurationFile%%</>.',
                     $constantStringType->describe(VerbosityLevel::precise()),
                 ));
             }
@@ -91,8 +120,8 @@ final class ServicesFunctionArgumentTypeRule implements Rule
         };
 
         return [$addTip(RuleErrorBuilder::message(sprintf(
-            'Call to unknown service name %s.',
+            'Call to unknown service method %s.',
             $nameType->describe(VerbosityLevel::precise())
-        )))->identifier('codeigniter.unknownServiceName')->build()];
+        )))->identifier('codeigniter.unknownServiceMethod')->build()];
     }
 }

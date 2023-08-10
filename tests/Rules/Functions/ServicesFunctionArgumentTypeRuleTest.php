@@ -41,38 +41,51 @@ final class ServicesFunctionArgumentTypeRuleTest extends RuleTestCase
     {
         $this->analyse([__DIR__ . '/../../Fixtures/Type/services.php'], [
             [
-                'The name \'createRequest\' is reserved for service location internals and cannot be used as a service name.',
+                'The method \'createRequest\' is reserved for service location internals and cannot be used as a service method.',
                 51,
             ],
             [
-                'The name \'__callStatic\' is reserved for service location internals and cannot be used as a service name.',
+                'The method \'__callStatic\' is reserved for service location internals and cannot be used as a service method.',
                 56,
             ],
             [
-                'The name \'serviceExists\' is reserved for service location internals and cannot be used as a service name.',
+                'The method \'serviceExists\' is reserved for service location internals and cannot be used as a service method.',
                 57,
             ],
             [
-                'The name \'reset\' is reserved for service location internals and cannot be used as a service name.',
+                'The method \'reset\' is reserved for service location internals and cannot be used as a service method.',
                 58,
             ],
             [
-                'The name \'resetSingle\' is reserved for service location internals and cannot be used as a service name.',
+                'The method \'resetSingle\' is reserved for service location internals and cannot be used as a service method.',
                 59,
             ],
             [
-                'The name \'injectMock\' is reserved for service location internals and cannot be used as a service name.',
+                'The method \'injectMock\' is reserved for service location internals and cannot be used as a service method.',
                 60,
             ],
             [
-                'Call to unknown service name \'bar\'.',
+                'Call to unknown service method \'bar\'.',
                 68,
-                'If \'bar\' is a valid service name, you can add its possible service class(es) in <fg=cyan>codeigniter.additionalServices</> in your <fg=yellow>%configurationFile%</>.',
+                'If \'bar\' is a valid service method, you can add its possible services factory class(es) in <fg=cyan>codeigniter.additionalServices</> in your <fg=yellow>%configurationFile%</>.',
             ],
             [
-                'Call to unknown service name \'timers\'.',
+                'Call to unknown service method \'timers\'.',
                 69,
-                'If \'timers\' is a valid service name, you can add its possible service class(es) in <fg=cyan>codeigniter.additionalServices</> in your <fg=yellow>%configurationFile%</>.',
+                'If \'timers\' is a valid service method, you can add its possible services factory class(es) in <fg=cyan>codeigniter.additionalServices</> in your <fg=yellow>%configurationFile%</>.',
+            ],
+            [
+                'Service method \'toBool\' expected to return a service instance, got bool instead.',
+                72,
+            ],
+            [
+                'Service method \'noReturn\' returns mixed.',
+                73,
+                'Perhaps you forgot to add a return type?',
+            ],
+            [
+                'Service method \'returnNull\' expected to return a service instance, got null instead.',
+                74,
             ],
         ]);
     }

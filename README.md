@@ -55,7 +55,8 @@ parameters:
 
 ```
 
-For the `service()` and `single_service()` functions, you can declare your own service implementation classes.
+For the `service()` and `single_service()` functions, you can instruct PHPStan to consider your own
+services factory classes. **Please note that it should be a valid class extending `CodeIgniter\Config\BaseService`!**
 
 ```yml
 parameters:

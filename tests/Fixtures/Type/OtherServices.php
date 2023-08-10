@@ -31,4 +31,22 @@ final class OtherServices extends BaseService
     {
         return Closure::fromCallable($callable);
     }
+
+    public static function toBool(string $string): bool
+    {
+        return (bool) $string;
+    }
+
+    public static function noReturn()
+    {
+        return self::class;
+    }
+
+    /**
+     * @return null
+     */
+    public static function returnNull()
+    {
+        return null;
+    }
 }
