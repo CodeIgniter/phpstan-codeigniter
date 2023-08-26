@@ -65,6 +65,11 @@ parameters:
       - Acme\Blog\Config\ServiceFactory
 ```
 
+## Caveats
+
+1. The behavior of factories functions relative to how they load classes is based on codeigniter4/framework v4.4. If you are
+  relying on the behavior of < v4.4, this may not work out for you.
+
 ## Contributing
 
 Any contributions are welcome.
