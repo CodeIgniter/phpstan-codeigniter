@@ -74,3 +74,7 @@ If you want to see a new rule or extension specific to CodeIgniter, please open 
 
 Before reporting any bugs, please check if the bug occurs only if using this extension with PHPStan. If the bug is
 reproducible in PHPStan alone, please open a bug report there instead. Thank you!
+
+## License
+
+PHPStan CodeIgniter is an open source library licensed under [MIT](LICENSE).
