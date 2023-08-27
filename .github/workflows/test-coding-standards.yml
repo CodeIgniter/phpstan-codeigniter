@@ -4,7 +4,13 @@ on:
   schedule:
     - cron: '0 0 * * *'
   pull_request:
+    paths:
+      - .github/workflows/test-coding-standards.yml
+      - '**.php'
   push:
+    paths:
+      - .github/workflows/test-coding-standards.yml
+      - '**.php'
 
 jobs:
   coding-standards:
