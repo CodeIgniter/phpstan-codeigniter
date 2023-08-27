@@ -15,6 +15,7 @@ namespace CodeIgniter\PHPStan\Rules\Classes;
 
 use CodeIgniter\Cache\CacheFactory;
 use CodeIgniter\Cache\CacheInterface;
+use CodeIgniter\Test\Mock\MockCache;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
@@ -48,6 +49,10 @@ final class CacheHandlerInstantiationRule implements Rule
         }
 
         if (! (new ObjectType(CacheInterface::class))->isSuperTypeOf($objectType)->yes()) {
+            return [];
+        }
+
+        if ($reflection->getName() === MockCache::class) {
             return [];
         }
 

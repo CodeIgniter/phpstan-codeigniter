@@ -13,10 +13,13 @@ declare(strict_types=1);
 
 use CodeIgniter\Cache\Handlers\FileHandler;
 use CodeIgniter\Cache\Handlers\RedisHandler;
+use CodeIgniter\Test\Mock\MockCache;
 use Config\Cache;
 
 $handler1 = new FileHandler(new Cache());
 $handler2 = new RedisHandler(new Cache());
+$handler3 = new MockCache();
 
 $cache1 = $handler1->get('foo');
 $cache2 = $handler2->get('bar');
+$cache3 = $handler3->get('baz');

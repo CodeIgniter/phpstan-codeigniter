@@ -39,12 +39,12 @@ final class CacheHandlerInstantiationRuleTest extends RuleTestCase
         $this->analyse([__DIR__ . '/../../Fixtures/Rules/Classes/cache-handler.php'], [
             [
                 'Calling new FileHandler() directly is incomplete to get the cache instance.',
-                18,
+                19,
                 'Use CacheFactory::getHandler() or the cache() function to get the cache instance instead.',
             ],
             [
                 'Calling new RedisHandler() directly is incomplete to get the cache instance.',
-                19,
+                20,
                 'Use CacheFactory::getHandler() or the cache() function to get the cache instance instead.',
             ],
         ]);
