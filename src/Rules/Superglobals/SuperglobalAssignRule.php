@@ -145,6 +145,10 @@ final class SuperglobalAssignRule implements Rule
             return [];
         }
 
+        if ($scope->isInClass() && $scope->getClassReflection()->getName() === Superglobals::class) {
+            return [];
+        }
+
         $exprType = $scope->getType($node->expr);
 
         if (! $exprType->isArray()->yes()) {
