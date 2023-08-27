@@ -33,6 +33,9 @@ services:
     arguments:
       additionalServices: %codeigniter.additionalServices%
 
+  superglobalRuleHelper:
+    class: CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalRuleHelper
+
   -
     class: CodeIgniter\PHPStan\Type\FactoriesFunctionReturnTypeExtension
     tags:
@@ -58,3 +61,5 @@ conditionalTags:
 rules:
   - CodeIgniter\PHPStan\Rules\Classes\CacheHandlerInstantiationRule
   - CodeIgniter\PHPStan\Rules\Classes\FrameworkExceptionInstantiationRule
+  - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalAccessRule
+  - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalAssignRule

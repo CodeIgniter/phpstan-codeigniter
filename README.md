@@ -20,6 +20,7 @@ This extension provides the following features:
 * Checks if the string argument passed to `service()` or `single_service()` function is a valid service name. This can be turned off by setting `codeigniter.checkArgumentTypeOfServices: false` in your `phpstan.neon`.
 * Disallows instantiating cache handlers using `new` and suggests to use the `CacheFactory` class instead.
 * Disallows instantiating `FrameworkException` classes using `new`.
+* Disallows direct re-assignment or access of `$_SERVER` and `$_GET` and suggests to use the `Superglobals` class instead.
 
 ## Installation
 
