@@ -4,7 +4,15 @@ All notable changes to this library will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v1.0.0](https://github.com/CodeIgniter/phpstan-codeigniter/releases/tag/v1.0.0) - 2021-08-27
+## [v1.0.1](https://github.com/CodeIgniter/phpstan-codeigniter/compare/v1.0.0...v1.0.1) - 2023-08-30
+
+### Fixed
+
+* Add changelog
+* Fix wrong namespace of tests
+* Add missing trailing comma
+
+## [v1.0.0](https://github.com/CodeIgniter/phpstan-codeigniter/releases/tag/v1.0.0) - 2023-08-27
 
 ### Initial release
 
