@@ -57,7 +57,7 @@ final class SuperglobalAccessRuleTest extends RuleTestCase
                 'Accessing offset string directly on $_SERVER is discouraged.',
                 23,
                 'Use \\Config\\Services::superglobals()->server() instead.',
-            ]
+            ],
         ]);
     }
 }
