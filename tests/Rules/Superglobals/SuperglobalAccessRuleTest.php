@@ -11,7 +11,7 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
-namespace CodeIgniter\PHPStan\Tests\Superglobals;
+namespace CodeIgniter\PHPStan\Tests\Rules\Superglobals;
 
 use CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalAccessRule;
 use CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalRuleHelper;
