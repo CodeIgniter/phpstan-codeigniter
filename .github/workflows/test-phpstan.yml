@@ -5,16 +5,16 @@ on:
     - cron: '0 0 * * *'
   pull_request:
     paths:
-      - .github/workflows/test-phpstan.yml
+      - '.github/workflows/test-phpstan.yml'
       - '**.php'
-      - extension.neon
-      - phpstan.neon.dist
+      - 'extension.neon'
+      - 'phpstan.neon.dist'
   push:
     paths:
-      - .github/workflows/test-phpstan.yml
+      - '.github/workflows/test-phpstan.yml'
       - '**.php'
-      - extension.neon
-      - phpstan.neon.dist
+      - 'extension.neon'
+      - 'phpstan.neon.dist'
 
 jobs:
   static-analyses:

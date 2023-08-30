@@ -5,14 +5,14 @@ on:
     - cron: '0 0 * * *'
   pull_request:
     paths:
-      - .github/workflows/test-phpunit.yml
+      - '.github/workflows/test-phpunit.yml'
       - '**.php'
-      - phpunit.dist.xml
+      - 'phpunit.dist.xml'
   push:
     paths:
-      - .github/workflows/test-phpunit.yml
+      - '.github/workflows/test-phpunit.yml'
       - '**.php'
-      - phpunit.dist.xml
+      - 'phpunit.dist.xml'
 
 jobs:
   extension-tests:
