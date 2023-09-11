@@ -15,6 +15,7 @@ use Rector\Config\RectorConfig;
 use Rector\DowngradePhp80\Rector\Catch_\DowngradeNonCapturingCatchesRector;
 use Rector\DowngradePhp80\Rector\Class_\DowngradePropertyPromotionRector;
 use Rector\DowngradePhp80\Rector\ClassMethod\DowngradeTrailingCommasInParamUseRector;
+use Rector\DowngradePhp80\Rector\Expression\DowngradeMatchToSwitchRector;
 use Rector\DowngradePhp80\Rector\FunctionLike\DowngradeMixedTypeDeclarationRector;
 use Rector\DowngradePhp80\Rector\FunctionLike\DowngradeUnionTypeDeclarationRector;
 use Rector\DowngradePhp80\Rector\NullsafeMethodCall\DowngradeNullsafeToTernaryOperatorRector;
@@ -35,6 +36,7 @@ return static function (RectorConfig $config): void {
     }
 
     if ($targetPhpVersionId < 80000) {
+        $config->rule(DowngradeMatchToSwitchRector::class);
         $config->rule(DowngradeMixedTypeDeclarationRector::class);
         $config->rule(DowngradeNonCapturingCatchesRector::class);
         $config->rule(DowngradeNullsafeToTernaryOperatorRector::class);
