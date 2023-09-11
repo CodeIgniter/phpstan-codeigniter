@@ -96,8 +96,9 @@ jobs:
           add_options: '-u'
           create_branch: true
 
-      - name: Delete branch
+      - name: Delete local and remote branches
         run: |
           git switch ${{ env.DEFAULT_BRANCH }}
           git branch -D ${{ steps.branch_name.outputs.BRANCH }}
-          git branch -D origin/${{ steps.branch_name.outputs.BRANCH }}
+          git push origin -d ${{ steps.branch_name.outputs.BRANCH }}
+          git branch -a
