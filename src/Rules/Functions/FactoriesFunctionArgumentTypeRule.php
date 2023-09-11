@@ -31,6 +31,16 @@ use PHPStan\Type\VerbosityLevel;
 final class FactoriesFunctionArgumentTypeRule implements Rule
 {
     /**
+     * @readonly
+     */
+    private ReflectionProvider $reflectionProvider;
+
+    /**
+     * @readonly
+     */
+    private FactoriesReturnTypeHelper $factoriesReturnTypeHelper;
+
+    /**
      * @var array<string, string>
      * @phpstan-var array<string, class-string>
      */
@@ -39,10 +49,11 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
         'model'  => Model::class,
     ];
 
-    public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper
-    ) {}
+    public function __construct(ReflectionProvider $reflectionProvider, FactoriesReturnTypeHelper $factoriesReturnTypeHelper)
+    {
+        $this->reflectionProvider        = $reflectionProvider;
+        $this->factoriesReturnTypeHelper = $factoriesReturnTypeHelper;
+    }
 
     public function getNodeType(): string
     {
