@@ -100,3 +100,4 @@ jobs:
         run: |
           git switch ${{ env.DEFAULT_BRANCH }}
           git branch -D ${{ steps.branch_name.outputs.BRANCH }}
+          git branch -D origin/${{ steps.branch_name.outputs.BRANCH }}
