@@ -45,6 +45,11 @@ final class ServicesReturnTypeHelper
     ];
 
     /**
+     * @readonly
+     */
+    private ReflectionProvider $reflectionProvider;
+
+    /**
      * @var array<int, class-string>
      */
     private array $services;
@@ -58,10 +63,11 @@ final class ServicesReturnTypeHelper
      * @param array<int, class-string> $additionalServices
      */
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
+        ReflectionProvider $reflectionProvider,
         array $additionalServices
     ) {
-        $this->services = [
+        $this->reflectionProvider = $reflectionProvider;
+        $this->services           = [
             FrameworkServices::class,
             AppServices::class,
             ...$additionalServices,
@@ -129,7 +135,7 @@ final class ServicesReturnTypeHelper
 
                 $serviceReflection = $this->reflectionProvider->getClass($service);
 
-                if ($serviceReflection->getParentClass()?->getName() !== BaseService::class) {
+                if ((($nullsafeVariable1 = $serviceReflection->getParentClass()) ? $nullsafeVariable1->getName() : null) !== BaseService::class) {
                     throw new ShouldNotHappenException(sprintf('Services factory class "%s" does not extend %s.', $service, BaseService::class));
                 }
 
