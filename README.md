@@ -44,6 +44,11 @@ includes:
 
 </details>
 
+Development in this repository uses **PHP 8.1+**.
+
+Starting [v1.1.0](https://github.com/CodeIgniter/phpstan-codeigniter/releases/tag/v1.1.0), releases come with a downgraded
+version to suit lower PHP versions. Currently, lowest supported downgraded PHP version is **PHP 7.4**.
+
 ## Configuration
 
 This extension adds the default namespace for `config()` and `model()` functions as `Config\` and `App\Models\`, respectively,
