@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * This file is part of CodeIgniter 4 framework.
+ *
+ * (c) 2023 CodeIgniter Foundation <admin@codeigniter.com>
+ *
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ */
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use CodeIgniter\PHPStan\ComposerJsonRewriter;
+
+$targetPhpVersionId = (int) $argv[1];
+
+putenv("TARGET_PHP_VERSION_ID={$targetPhpVersionId}");
+echo 'TARGET_PHP_VERSION_ID: ' . $targetPhpVersionId . PHP_EOL . PHP_EOL;
+
+(new ComposerJsonRewriter())->rewriteUsingPhp($targetPhpVersionId);
+passthru('php vendor/bin/rector process -c bin/rector-downgrade.php --ansi --no-diffs');
+passthru('php vendor/bin/php-cs-fixer fix -v --ansi');

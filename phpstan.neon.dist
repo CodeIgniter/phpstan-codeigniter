@@ -10,6 +10,7 @@ parameters:
     - tests
   excludePaths:
     analyseAndScan:
+      - src/ComposerJsonRewriter.php
       - src/ComposerScripts.php
       - tests/Fixtures
   tmpDir: build/phpstan
