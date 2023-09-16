@@ -1,4 +1,6 @@
 parameters:
+  featureToggles:
+    listType: true
   bootstrapFiles:
     - %rootDir%/../../../tests/bootstrap.php
   codeigniter:

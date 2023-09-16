@@ -14,6 +14,7 @@ This extension provides the following features:
 * Provides precise return types for `config()` and `model()` functions.
 * Provides precise return types for `service()` and `single_service()` functions.
 * Provides precise return types for `fake()` helper function.
+* Provides precise return types for `CodeIgniter\Model`'s `find()`, `findAll()`, and `first()` methods.
 
 ### Rules
 

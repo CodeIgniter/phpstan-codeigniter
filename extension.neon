@@ -24,6 +24,7 @@ parametersSchema:
   ])
 
 services:
+  # helpers
   factoriesReturnTypeHelper:
     class: CodeIgniter\PHPStan\Type\FactoriesReturnTypeHelper
     arguments:
@@ -43,6 +44,7 @@ services:
   superglobalRuleHelper:
     class: CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalRuleHelper
 
+  # DynamicFunctionReturnTypeExtension
   -
     class: CodeIgniter\PHPStan\Type\FactoriesFunctionReturnTypeExtension
     tags:
@@ -58,6 +60,13 @@ services:
     tags:
       - phpstan.broker.dynamicFunctionReturnTypeExtension
 
+  # DynamicMethodReturnTypeExtension
+  -
+    class: CodeIgniter\PHPStan\Type\ModelFindReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicMethodReturnTypeExtension
+
+  # conditional rules
   -
     class: CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule
 
