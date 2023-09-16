@@ -34,6 +34,16 @@ use stdClass;
 final class FakeFunctionReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
     /**
+     * @readonly
+     */
+    private FactoriesReturnTypeHelper $factoriesReturnTypeHelper;
+
+    /**
+     * @readonly
+     */
+    private ReflectionProvider $reflectionProvider;
+
+    /**
      * @var array<string, class-string<Type>>
      */
     private static array $notStringFormattedFields = [
@@ -58,10 +68,13 @@ final class FakeFunctionReturnTypeExtension implements DynamicFunctionReturnType
      * @param array<string, string> $notStringFormattedFieldsArray
      */
     public function __construct(
-        private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper,
-        private readonly ReflectionProvider $reflectionProvider,
+        FactoriesReturnTypeHelper $factoriesReturnTypeHelper,
+        ReflectionProvider $reflectionProvider,
         array $notStringFormattedFieldsArray
     ) {
+        $this->factoriesReturnTypeHelper = $factoriesReturnTypeHelper;
+        $this->reflectionProvider        = $reflectionProvider;
+
         foreach ($notStringFormattedFieldsArray as $field => $type) {
             if (! isset(self::$typeInterpolations[$type])) {
                 continue;
