@@ -30,6 +30,11 @@ services:
       additionalConfigNamespaces: %codeigniter.additionalConfigNamespaces%
       additionalModelNamespaces: %codeigniter.additionalModelNamespaces%
 
+  modelFetchedReturnTypeHelper:
+    class: CodeIgniter\PHPStan\Type\ModelFetchedReturnTypeHelper
+    arguments:
+      notStringFormattedFieldsArray: %codeigniter.notStringFormattedFields%
+
   servicesReturnTypeHelper:
     class: CodeIgniter\PHPStan\Type\ServicesReturnTypeHelper
     arguments:
@@ -45,8 +50,6 @@ services:
 
   -
     class: CodeIgniter\PHPStan\Type\FakeFunctionReturnTypeExtension
-    arguments:
-      notStringFormattedFieldsArray: %codeigniter.notStringFormattedFields%
     tags:
       - phpstan.broker.dynamicFunctionReturnTypeExtension
 
