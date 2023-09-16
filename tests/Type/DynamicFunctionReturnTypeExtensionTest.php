@@ -36,6 +36,8 @@ final class DynamicFunctionReturnTypeExtensionTest extends TypeInferenceTestCase
     {
         yield from self::gatherAssertTypes(__DIR__ . '/../Fixtures/Type/config.php');
 
+        yield from self::gatherAssertTypes(__DIR__ . '/../Fixtures/Type/fake.php');
+
         yield from self::gatherAssertTypes(__DIR__ . '/../Fixtures/Type/model.php');
 
         yield from self::gatherAssertTypes(__DIR__ . '/../Fixtures/Type/services.php');

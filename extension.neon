@@ -9,6 +9,7 @@ parameters:
     additionalConfigNamespaces: []
     additionalModelNamespaces: []
     additionalServices: []
+    notStringFormattedFields: []
     checkArgumentTypeOfFactories: true
     checkArgumentTypeOfServices: true
 
@@ -17,6 +18,7 @@ parametersSchema:
     additionalConfigNamespaces: listOf(string())
     additionalModelNamespaces: listOf(string())
     additionalServices: listOf(string())
+    notStringFormattedFields: arrayOf(string())
     checkArgumentTypeOfFactories: bool()
     checkArgumentTypeOfServices: bool()
   ])
@@ -38,6 +40,13 @@ services:
 
   -
     class: CodeIgniter\PHPStan\Type\FactoriesFunctionReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicFunctionReturnTypeExtension
+
+  -
+    class: CodeIgniter\PHPStan\Type\FakeFunctionReturnTypeExtension
+    arguments:
+      notStringFormattedFieldsArray: %codeigniter.notStringFormattedFields%
     tags:
       - phpstan.broker.dynamicFunctionReturnTypeExtension
 

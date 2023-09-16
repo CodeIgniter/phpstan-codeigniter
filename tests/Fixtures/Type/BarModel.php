@@ -17,5 +17,6 @@ use CodeIgniter\Model;
 
 class BarModel extends Model
 {
+    protected $returnType       = 'object';
     protected $useAutoIncrement = false;
 }

@@ -13,6 +13,7 @@ This extension provides the following features:
 
 * Provides precise return types for `config()` and `model()` functions.
 * Provides precise return types for `service()` and `single_service()` functions.
+* Provides precise return types for `fake()` helper function.
 
 ### Rules
 
@@ -74,6 +75,18 @@ parameters:
   codeigniter:
     additionalServices:
       - Acme\Blog\Config\ServiceFactory
+```
+
+When the model passed to `fake()` has the property `$returnType` set to `array`, this extension will give a precise
+array shape based on the allowed fields of the model. Most of the time, the formatted fields are strings. If not a string,
+you can indicate the format return type for the particular field.
+
+```yml
+parameters:
+  codeigniter:
+    notStringFormattedFields: # key-value pair of field => format
+      success: bool
+      user_id: int
 ```
 
 ## Caveats
