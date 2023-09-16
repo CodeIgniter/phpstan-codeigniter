@@ -22,8 +22,11 @@ use PHPStan\Type\Accessory\AccessoryArrayListType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\IntegerType;
+use PHPStan\Type\IntersectionType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
+use PHPStan\Type\TypeTraverser;
+use PHPStan\Type\UnionType;
 
 final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
@@ -74,19 +77,26 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
             return $this->getTypeFromFindAll($methodReflection, $methodCall, $scope);
         }
 
-        $idType = $scope->getType($args[0]->value);
+        return TypeTraverser::map(
+            $scope->getType($args[0]->value),
+            function (Type $idType, callable $traverse) use ($methodReflection, $methodCall, $scope): Type {
+                if ($idType instanceof UnionType || $idType instanceof IntersectionType) {
+                    return $traverse($idType);
+                }
 
-        if ($idType->isNull()->yes()) {
-            return $this->getTypeFromFindAll($methodReflection, $methodCall, $scope);
-        }
+                if ($idType->isNull()->yes()) {
+                    return $this->getTypeFromFindAll($methodReflection, $methodCall, $scope);
+                }
 
-        if ($idType->isInteger()->yes() || $idType->isString()->yes()) {
-            $classReflection = $this->getClassReflection($methodCall, $scope);
+                if ($idType->isInteger()->yes() || $idType->isString()->yes()) {
+                    $classReflection = $this->getClassReflection($methodCall, $scope);
 
-            return TypeCombinator::addNull($this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $scope));
-        }
+                    return TypeCombinator::addNull($this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $scope));
+                }
 
-        return $this->getTypeFromFindAll($methodReflection, $methodCall, $scope);
+                return $this->getTypeFromFindAll($methodReflection, $methodCall, $scope);
+            }
+        );
     }
 
     private function getTypeFromFindAll(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): Type

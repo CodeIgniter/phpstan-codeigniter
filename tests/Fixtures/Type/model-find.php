@@ -27,3 +27,13 @@ assertType('array{user_id: int, group: string, created_at: string}|null', $group
 assertType('list<array{user_id: int, group: string, created_at: string}>', $groups->find());
 assertType('list<array{user_id: int, group: string, created_at: string}>', $groups->find(null));
 assertType('list<array{user_id: int, group: string, created_at: string}>', $groups->find([1, 2, 3]));
+
+/**
+ * @param int|string|null $id
+ */
+function bar($id): void
+{
+    $model = model(UserModel::class);
+
+    assertType('list<CodeIgniter\Shield\Entities\User>|CodeIgniter\Shield\Entities\User|null', $model->find($id));
+}
