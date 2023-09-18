@@ -27,11 +27,16 @@ final class SuperglobalRuleHelper
      */
     public function getSuperglobalMethodSetter(string $name): string
     {
-        return match ($name) {
-            '_SERVER' => 'setServer',
-            '_GET'    => 'setGet',
-            default   => throw new InvalidArgumentException(sprintf('Unhandled superglobal: "%s".', $name)),
-        };
+        switch ($name) {
+            case '_SERVER':
+                return 'setServer';
+
+            case '_GET':
+                return 'setGet';
+
+            default:
+                throw new InvalidArgumentException(sprintf('Unhandled superglobal: "%s".', $name));
+        }
     }
 
     /**
@@ -39,10 +44,15 @@ final class SuperglobalRuleHelper
      */
     public function getSuperglobalMethodGetter(string $name): string
     {
-        return match ($name) {
-            '_SERVER' => 'server',
-            '_GET'    => 'get',
-            default   => throw new InvalidArgumentException(sprintf('Unhandled superglobal: "%s".', $name)),
-        };
+        switch ($name) {
+            case '_SERVER':
+                return 'server';
+
+            case '_GET':
+                return 'get';
+
+            default:
+                throw new InvalidArgumentException(sprintf('Unhandled superglobal: "%s".', $name));
+        }
     }
 }
