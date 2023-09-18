@@ -11,6 +11,9 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
+namespace CodeIgniter\PHPStan\Tests\Fixtures\Type;
+
+use CodeIgniter\Shield\Entities\AccessToken;
 use CodeIgniter\Shield\Models\GroupModel;
 use CodeIgniter\Shield\Models\UserModel;
 
@@ -36,4 +39,17 @@ function bar($id): void
     $model = model(UserModel::class);
 
     assertType('list<CodeIgniter\Shield\Entities\User>|CodeIgniter\Shield\Entities\User|null', $model->find($id));
+}
+
+function foo(): void
+{
+    $model = model(UserModel::class);
+
+    assertType('CodeIgniter\Shield\Entities\AccessToken|null', $model->asObject(AccessToken::class)->first());
+    assertType('stdClass|null', $model->asObject()->find(1));
+    assertType('stdClass|null', $model->asObject('object')->find(45));
+    assertType('list<array{username: string, status: string, status_message: string, active: bool, last_active: string, deleted_at: string}>', $model->asArray()->findAll());
+
+    assertType('stdClass|null', $model->asArray()->asObject()->first());
+    assertType('array{username: string, status: string, status_message: string, active: bool, last_active: string, deleted_at: string}|null', $model->asObject()->asArray()->first());
 }

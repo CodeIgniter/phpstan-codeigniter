@@ -58,7 +58,7 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
 
         $classReflection = $this->getClassReflection($methodCall, $scope);
 
-        return TypeCombinator::addNull($this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $scope));
+        return TypeCombinator::addNull($this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $methodCall, $scope));
     }
 
     private function getClassReflection(MethodCall $methodCall, Scope $scope): ClassReflection
@@ -91,7 +91,7 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
                 if ($idType->isInteger()->yes() || $idType->isString()->yes()) {
                     $classReflection = $this->getClassReflection($methodCall, $scope);
 
-                    return TypeCombinator::addNull($this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $scope));
+                    return TypeCombinator::addNull($this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $methodCall, $scope));
                 }
 
                 return $this->getTypeFromFindAll($methodReflection, $methodCall, $scope);
@@ -106,7 +106,7 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
         return AccessoryArrayListType::intersectWith(
             new ArrayType(
                 new IntegerType(),
-                $this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $scope)
+                $this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $methodCall, $scope)
             )
         );
     }

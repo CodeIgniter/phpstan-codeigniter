@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Type;
 
+use CodeIgniter\PHPStan\NodeVisitor\ModelReturnTypeTransformVisitor;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -33,8 +36,11 @@ final class ModelFetchedReturnTypeHelper
      * @var array<string, class-string<Type>>
      */
     private static array $notStringFormattedFields = [
-        'success' => BooleanType::class,
-        'user_id' => IntegerType::class,
+        'active'      => BooleanType::class,
+        'force_reset' => BooleanType::class,
+        'id'          => IntegerType::class,
+        'success'     => BooleanType::class,
+        'user_id'     => IntegerType::class,
     ];
 
     /**
@@ -66,9 +72,15 @@ final class ModelFetchedReturnTypeHelper
         }
     }
 
-    public function getFetchedReturnType(ClassReflection $classReflection, Scope $scope): Type
+    public function getFetchedReturnType(ClassReflection $classReflection, ?MethodCall $methodCall, Scope $scope): Type
     {
-        $returnType = $this->getNativeStringPropertyValue($classReflection, $scope, 'returnType');
+        $returnType = $this->getNativeStringPropertyValue($classReflection, $scope, ModelReturnTypeTransformVisitor::RETURN_TYPE);
+
+        if ($methodCall !== null && $methodCall->hasAttribute(ModelReturnTypeTransformVisitor::RETURN_TYPE)) {
+            /** @var Expr $returnExpr */
+            $returnExpr = $methodCall->getAttribute(ModelReturnTypeTransformVisitor::RETURN_TYPE);
+            $returnType = $this->getStringValueFromExpr($returnExpr, $scope);
+        }
 
         if ($returnType === 'object') {
             return new ObjectType(stdClass::class);
@@ -88,7 +100,9 @@ final class ModelFetchedReturnTypeHelper
     private function getArrayReturnType(ClassReflection $classReflection, Scope $scope): Type
     {
         $this->fillDateFields($classReflection, $scope);
-        $fieldsTypes = $this->getNativePropertyType($classReflection, $scope, 'allowedFields')->getConstantArrays();
+        $fieldsTypes = $scope->getType(
+            $classReflection->getNativeProperty('allowedFields')->getNativeReflection()->getDefaultValueExpression()
+        )->getConstantArrays();
 
         if ($fieldsTypes === []) {
             return new ConstantArrayType([], []);
@@ -131,20 +145,23 @@ final class ModelFetchedReturnTypeHelper
         }
     }
 
-    private function getNativePropertyType(ClassReflection $classReflection, Scope $scope, string $property): Type
+    private function getNativeStringPropertyValue(ClassReflection $classReflection, Scope $scope, string $property): string
     {
         if (! $classReflection->hasNativeProperty($property)) {
             throw new ShouldNotHappenException(sprintf('Native property %s::$%s does not exist.', $classReflection->getDisplayName(), $property));
         }
 
-        return $scope->getType($classReflection->getNativeProperty($property)->getNativeReflection()->getDefaultValueExpression());
+        return $this->getStringValueFromExpr(
+            $classReflection->getNativeProperty($property)->getNativeReflection()->getDefaultValueExpression(),
+            $scope
+        );
     }
 
-    private function getNativeStringPropertyValue(ClassReflection $classReflection, Scope $scope, string $property): string
+    private function getStringValueFromExpr(Expr $expr, Scope $scope): string
     {
-        $propertyType = $this->getNativePropertyType($classReflection, $scope, $property)->getConstantStrings();
-        assert(count($propertyType) === 1);
+        $exprType = $scope->getType($expr)->getConstantStrings();
+        assert(count($exprType) === 1);
 
-        return current($propertyType)->getValue();
+        return current($exprType)->getValue();
     }
 }

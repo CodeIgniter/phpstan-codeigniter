@@ -44,6 +44,12 @@ services:
   superglobalRuleHelper:
     class: CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalRuleHelper
 
+  # Node Visitors
+  -
+    class: CodeIgniter\PHPStan\NodeVisitor\ModelReturnTypeTransformVisitor
+    tags:
+      - phpstan.parser.richParserNodeVisitor
+
   # DynamicFunctionReturnTypeExtension
   -
     class: CodeIgniter\PHPStan\Type\FactoriesFunctionReturnTypeExtension

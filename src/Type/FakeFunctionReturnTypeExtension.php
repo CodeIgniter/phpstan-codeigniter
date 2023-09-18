@@ -54,6 +54,6 @@ final class FakeFunctionReturnTypeExtension implements DynamicFunctionReturnType
 
         $classReflection = current($classReflections);
 
-        return $this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $scope);
+        return $this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, null, $scope);
     }
 }
