@@ -88,5 +88,6 @@ conditionalTags:
 rules:
   - CodeIgniter\PHPStan\Rules\Classes\CacheHandlerInstantiationRule
   - CodeIgniter\PHPStan\Rules\Classes\FrameworkExceptionInstantiationRule
+  - CodeIgniter\PHPStan\Rules\Functions\NoClassConstFetchOnFactoriesFunctions
   - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalAccessRule
   - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalAssignRule
