@@ -83,7 +83,7 @@ jobs:
           git_tag_gpgsign: true
 
       - name: Commit and tag
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
