@@ -19,6 +19,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @implements Rule<Node\Expr\FuncCall>
@@ -69,6 +70,14 @@ final class NoClassConstFetchOnFactoriesFunctions implements Rule
 
         if (! $classConstFetch->name instanceof Node\Identifier || $classConstFetch->name->name !== 'class') {
             return [];
+        }
+
+        if ($scope->isInClass()) {
+            $classRef = $scope->getClassReflection();
+
+            if ($this->reflectionProvider->hasClass(TestCase::class) && $classRef->isSubclassOf(TestCase::class)) {
+                return []; // skip uses in test classes as tests are internal
+            }
         }
 
         $returnType = $this->factoriesReturnTypeHelper->check($scope->getType($classConstFetch), $function);

@@ -42,6 +42,7 @@ final class NoClassConstFetchOnFactoriesFunctionsTest extends RuleTestCase
     {
         $this->analyse([
             __DIR__ . '/../../Fixtures/Type/config.php',
+            __DIR__ . '/../../Fixtures/Type/factories-in-tests.php',
             __DIR__ . '/../../Fixtures/Type/model.php',
         ], [
             [
@@ -49,6 +50,10 @@ final class NoClassConstFetchOnFactoriesFunctionsTest extends RuleTestCase
                 26,
                 'Use config(\'App\') instead to allow overriding.',
             ],
+            [
+                'Call to function config with Config\Cache::class is discouraged.',
+                19,
+                'Use config(\'Cache\') instead to allow overriding.', ],
             [
                 'Call to function model with stdClass::class is discouraged.',
                 19,
