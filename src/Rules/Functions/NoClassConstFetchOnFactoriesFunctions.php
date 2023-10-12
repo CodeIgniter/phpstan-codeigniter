@@ -26,10 +26,21 @@ use PHPUnit\Framework\TestCase;
  */
 final class NoClassConstFetchOnFactoriesFunctions implements Rule
 {
-    public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper
-    ) {}
+    /**
+     * @readonly
+     */
+    private ReflectionProvider $reflectionProvider;
+
+    /**
+     * @readonly
+     */
+    private FactoriesReturnTypeHelper $factoriesReturnTypeHelper;
+
+    public function __construct(ReflectionProvider $reflectionProvider, FactoriesReturnTypeHelper $factoriesReturnTypeHelper)
+    {
+        $this->reflectionProvider        = $reflectionProvider;
+        $this->factoriesReturnTypeHelper = $factoriesReturnTypeHelper;
+    }
 
     public function getNodeType(): string
     {
