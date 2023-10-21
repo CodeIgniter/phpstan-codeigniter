@@ -6,7 +6,8 @@ parameters:
   universalObjectCratesClasses:
     - CodeIgniter\Entity\Entity
   codeigniter:
-    additionalConfigNamespaces: []
+    additionalConfigNamespaces:
+      - CodeIgniter\Config\
     additionalModelNamespaces: []
     additionalServices: []
     notStringFormattedFields: []
