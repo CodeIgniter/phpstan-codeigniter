@@ -21,9 +21,15 @@ use PHPStan\Type\Type;
 
 final class FactoriesFunctionReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
-    public function __construct(
-        private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper
-    ) {}
+    /**
+     * @readonly
+     */
+    private FactoriesReturnTypeHelper $factoriesReturnTypeHelper;
+
+    public function __construct(FactoriesReturnTypeHelper $factoriesReturnTypeHelper)
+    {
+        $this->factoriesReturnTypeHelper = $factoriesReturnTypeHelper;
+    }
 
     public function isFunctionSupported(FunctionReflection $functionReflection): bool
     {
