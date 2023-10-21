@@ -46,14 +46,10 @@ final class NoClassConstFetchOnFactoriesFunctionsTest extends RuleTestCase
             __DIR__ . '/../../Fixtures/Type/model.php',
         ], [
             [
-                'Call to function config with Config\App::class is discouraged.',
-                26,
-                'Use config(\'App\') instead to allow overriding.',
+                'Call to function config with CodeIgniter\Shield\Config\AuthJWT::class is discouraged.',
+                38,
+                'Use config(\'AuthJWT\') instead to allow overriding.',
             ],
-            [
-                'Call to function config with Config\Cache::class is discouraged.',
-                19,
-                'Use config(\'Cache\') instead to allow overriding.', ],
             [
                 'Call to function model with stdClass::class is discouraged.',
                 19,

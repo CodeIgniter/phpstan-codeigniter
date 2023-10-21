@@ -34,3 +34,5 @@ function bar(string $name): void
 
     assertType('null', config($name));
 }
+
+assertType('CodeIgniter\Shield\Config\AuthJWT', config(\CodeIgniter\Shield\Config\AuthJWT::class));

@@ -26,6 +26,14 @@ use PHPUnit\Framework\TestCase;
  */
 final class NoClassConstFetchOnFactoriesFunctions implements Rule
 {
+    /**
+     * @var array<string, string>
+     */
+    private static array $namespaceMap = [
+        'config' => 'Config',
+        'model'  => 'App\\Models',
+    ];
+
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
         private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper
@@ -92,15 +100,21 @@ final class NoClassConstFetchOnFactoriesFunctions implements Rule
             return [];
         }
 
+        $reflection = $reflections[0];
+
+        if ($reflection->getNativeReflection()->getNamespaceName() === self::$namespaceMap[$function]) {
+            return [];
+        }
+
         return [
             RuleErrorBuilder::message(sprintf(
                 'Call to function %s with %s::class is discouraged.',
                 $function,
-                $reflections[0]->getDisplayName()
+                $reflection->getDisplayName()
             ))->tip(sprintf(
                 'Use %s(\'%s\') instead to allow overriding.',
                 $function,
-                $reflections[0]->getNativeReflection()->getShortName()
+                $reflection->getNativeReflection()->getShortName()
             ))->identifier('codeigniter.factoriesClassConstFetch')->build(),
         ];
     }
