@@ -32,6 +32,9 @@ final class DynamicMethodReturnTypeExtensionTest extends TypeInferenceTestCase
         $this->assertFileAsserts($assertType, $file, ...$args);
     }
 
+    /**
+     * @return iterable<string, mixed[]>
+     */
     public static function provideFileAssertsCases(): iterable
     {
         yield from self::gatherAssertTypes(__DIR__ . '/../Fixtures/Type/model-find.php');
