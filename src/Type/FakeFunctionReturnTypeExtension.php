@@ -22,10 +22,21 @@ use PHPStan\Type\Type;
 
 final class FakeFunctionReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
-    public function __construct(
-        private readonly ModelFetchedReturnTypeHelper $modelFetchedReturnTypeHelper,
-        private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper,
-    ) {}
+    /**
+     * @readonly
+     */
+    private ModelFetchedReturnTypeHelper $modelFetchedReturnTypeHelper;
+
+    /**
+     * @readonly
+     */
+    private FactoriesReturnTypeHelper $factoriesReturnTypeHelper;
+
+    public function __construct(ModelFetchedReturnTypeHelper $modelFetchedReturnTypeHelper, FactoriesReturnTypeHelper $factoriesReturnTypeHelper)
+    {
+        $this->modelFetchedReturnTypeHelper = $modelFetchedReturnTypeHelper;
+        $this->factoriesReturnTypeHelper    = $factoriesReturnTypeHelper;
+    }
 
     public function isFunctionSupported(FunctionReflection $functionReflection): bool
     {

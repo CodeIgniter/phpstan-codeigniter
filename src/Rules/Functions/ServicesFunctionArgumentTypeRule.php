@@ -28,10 +28,21 @@ use PHPStan\Type\VerbosityLevel;
  */
 final class ServicesFunctionArgumentTypeRule implements Rule
 {
-    public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly ServicesReturnTypeHelper $servicesReturnTypeHelper
-    ) {}
+    /**
+     * @readonly
+     */
+    private ReflectionProvider $reflectionProvider;
+
+    /**
+     * @readonly
+     */
+    private ServicesReturnTypeHelper $servicesReturnTypeHelper;
+
+    public function __construct(ReflectionProvider $reflectionProvider, ServicesReturnTypeHelper $servicesReturnTypeHelper)
+    {
+        $this->reflectionProvider       = $reflectionProvider;
+        $this->servicesReturnTypeHelper = $servicesReturnTypeHelper;
+    }
 
     public function getNodeType(): string
     {
