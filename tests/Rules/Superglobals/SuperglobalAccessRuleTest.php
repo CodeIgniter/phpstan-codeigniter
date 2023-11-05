@@ -40,22 +40,22 @@ final class SuperglobalAccessRuleTest extends RuleTestCase
         $this->analyse([__DIR__ . '/../../Fixtures/Rules/Superglobals/superglobal-access-cases.php'], [
             [
                 'Accessing offset \'foo\' directly on $_SERVER is discouraged.',
-                16,
+                21,
                 'Use \\Config\\Services::superglobals()->server(\'foo\') instead.',
             ],
             [
                 'Accessing offset \'a\' directly on $_GET is discouraged.',
-                19,
+                24,
                 'Use \\Config\\Services::superglobals()->get(\'a\') instead.',
             ],
             [
                 'Accessing offset \'b\' directly on $_GET is discouraged.',
-                19,
+                24,
                 'Use \\Config\\Services::superglobals()->get(\'b\') instead.',
             ],
             [
                 'Accessing offset string directly on $_SERVER is discouraged.',
-                23,
+                31,
                 'Use \\Config\\Services::superglobals()->server() instead.',
             ],
         ]);

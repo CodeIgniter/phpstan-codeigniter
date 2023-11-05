@@ -86,6 +86,10 @@ final class SuperglobalAssignRule implements Rule
             return [];
         }
 
+        if ($scope->getFunction() === null) {
+            return []; // ignore uses in root level (not inside function or method)
+        }
+
         if ($scope->isInClass() && $scope->getClassReflection()->getName() === Superglobals::class) {
             return [];
         }
@@ -157,6 +161,10 @@ final class SuperglobalAssignRule implements Rule
                     ->identifier('codeigniter.getReassignNonarray')
                     ->build(),
             ];
+        }
+
+        if ($scope->getFunction() === null) {
+            return []; // ignore uses in root level (not inside function or method)
         }
 
         return [

@@ -13,11 +13,14 @@ declare(strict_types=1);
 
 namespace SuperglobalAssign;
 
-$_SERVER['HTTP_HOST'] = 'https://localhost';
+function assigns(): void
+{
+    $_SERVER['HTTP_HOST'] = 'https://localhost';
 
-$_GET['first_name'] = 'John Doe';
+    $_GET['first_name'] = 'John Doe';
 
-$_SERVER[0] = 'hello';
+    $_SERVER[0] = 'hello';
+}
 
 function bar(string $key, string $value): void
 {

@@ -40,36 +40,31 @@ final class SuperglobalAssignRuleTest extends RuleTestCase
         $this->analyse([__DIR__ . '/../../Fixtures/Rules/Superglobals/superglobal-assign-cases.php'], [
             [
                 'Assigning \'https://localhost\' directly on offset \'HTTP_HOST\' of $_SERVER is discouraged.',
-                16,
+                18,
                 'Use \\Config\\Services::superglobals()->setServer(\'HTTP_HOST\', \'https://localhost\') instead.',
             ],
             [
                 'Assigning \'John Doe\' directly on offset \'first_name\' of $_GET is discouraged.',
-                18,
+                20,
                 'Use \\Config\\Services::superglobals()->setGet(\'first_name\', \'John Doe\') instead.',
             ],
             [
                 'Assigning string directly on offset string of $_SERVER is discouraged.',
-                24,
+                27,
                 'Use \\Config\\Services::superglobals()->setServer() instead.',
             ],
             [
                 'Assigning string directly on offset string of $_GET is discouraged.',
-                26,
+                29,
                 'Use \Config\Services::superglobals()->setGet() instead.',
             ],
             [
                 'Cannot re-assign non-arrays to $_GET, got string.',
-                29,
+                32,
             ],
             [
                 'Cannot re-assign non-arrays to $_GET, got int.',
-                30,
-            ],
-            [
-                'Re-assigning arrays to $_GET directly is discouraged.',
-                32,
-                'Use \\Config\\Services::superglobals()->setGetArray() instead.',
+                33,
             ],
         ]);
     }

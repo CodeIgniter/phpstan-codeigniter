@@ -13,10 +13,18 @@ declare(strict_types=1);
 
 namespace SuperglobalAccess;
 
-$foo = $_SERVER['foo'] ?? null;
+/**
+ * @return list<mixed>
+ */
+function access(): array
+{
+    $foo = $_SERVER['foo'] ?? null;
 
-$a = (static fn (): string => mt_rand(0, 1) ? 'a' : 'b')();
-$b = $_GET[$a] ?? null;
+    $a = (static fn (): string => mt_rand(0, 1) ? 'a' : 'b')();
+    $b = $_GET[$a] ?? null;
+
+    return [$foo, $b];
+}
 
 function bar(string $c): ?string
 {
