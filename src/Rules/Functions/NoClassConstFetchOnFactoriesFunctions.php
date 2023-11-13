@@ -106,6 +106,16 @@ final class NoClassConstFetchOnFactoriesFunctions implements Rule
             return [];
         }
 
+        $fileNamespace = $scope->getNamespace();
+
+        if (
+            $fileNamespace !== null
+            && ((defined('APP_NAMESPACE') && str_starts_with($fileNamespace, APP_NAMESPACE))
+                || str_starts_with($fileNamespace, 'App\\'))
+        ) {
+            return [];
+        }
+
         return [
             RuleErrorBuilder::message(sprintf(
                 'Call to function %s with %s::class is discouraged.',
