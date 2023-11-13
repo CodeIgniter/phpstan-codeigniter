@@ -62,4 +62,9 @@ final class NoClassConstFetchOnFactoriesFunctionsTest extends RuleTestCase
             ],
         ]);
     }
+
+    public function testOnAppNamespaceWithNonAppCall(): void
+    {
+        $this->analyse([__DIR__ . '/../../Fixtures/Rules/Functions/bug-9.php'], []);
+    }
 }
