@@ -31,8 +31,7 @@ use PHPStan\Type\VerbosityLevel;
 final class FactoriesFunctionArgumentTypeRule implements Rule
 {
     /**
-     * @var array<string, string>
-     * @phpstan-var array<string, class-string>
+     * @var array<string, class-string>
      */
     private array $instanceofMap = [
         'config' => BaseConfig::class,
