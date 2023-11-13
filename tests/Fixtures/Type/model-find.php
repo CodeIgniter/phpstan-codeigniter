@@ -31,10 +31,7 @@ assertType('list<array{user_id: int, group: string, created_at: string}>', $grou
 assertType('list<array{user_id: int, group: string, created_at: string}>', $groups->find(null));
 assertType('list<array{user_id: int, group: string, created_at: string}>', $groups->find([1, 2, 3]));
 
-/**
- * @param int|string|null $id
- */
-function bar($id): void
+function bar(null|int|string $id): void
 {
     $model = model(UserModel::class);
 
