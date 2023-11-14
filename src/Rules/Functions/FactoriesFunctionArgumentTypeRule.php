@@ -38,10 +38,22 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
         'model'  => Model::class,
     ];
 
+    /**
+     * @var array<string, bool>
+     */
+    private array $argumentTypeCheck = [];
+
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper
-    ) {}
+        private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper,
+        bool $checkArgumentTypeOfConfig,
+        bool $checkArgumentTypeOfModel
+    ) {
+        $this->argumentTypeCheck = [
+            'config' => $checkArgumentTypeOfConfig,
+            'model'  => $checkArgumentTypeOfModel,
+        ];
+    }
 
     public function getNodeType(): string
     {
@@ -104,6 +116,10 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
         }
 
         if (! (new ObjectType($this->instanceofMap[$function]))->isSuperTypeOf($returnType)->yes()) {
+            if (! $this->argumentTypeCheck[$function]) {
+                return [];
+            }
+
             return [RuleErrorBuilder::message(sprintf(
                 'Argument #1 $%s (%s) passed to function %s does not extend %s.',
                 $firstParameter->getName(),

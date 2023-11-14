@@ -12,6 +12,8 @@ parameters:
     additionalServices: []
     notStringFormattedFields: []
     checkArgumentTypeOfFactories: true
+    checkArgumentTypeOfConfig: true
+    checkArgumentTypeOfModel: true
     checkArgumentTypeOfServices: true
 
 parametersSchema:
@@ -21,6 +23,8 @@ parametersSchema:
     additionalServices: listOf(string())
     notStringFormattedFields: arrayOf(string())
     checkArgumentTypeOfFactories: bool()
+    checkArgumentTypeOfConfig: bool()
+    checkArgumentTypeOfModel: bool()
     checkArgumentTypeOfServices: bool()
   ])
 
@@ -76,6 +80,9 @@ services:
   # conditional rules
   -
     class: CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule
+    arguments:
+      checkArgumentTypeOfConfig: %codeigniter.checkArgumentTypeOfConfig%
+      checkArgumentTypeOfModel: %codeigniter.checkArgumentTypeOfModel%
 
   -
     class: CodeIgniter\PHPStan\Rules\Functions\ServicesFunctionArgumentTypeRule

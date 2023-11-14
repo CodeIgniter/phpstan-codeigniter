@@ -30,11 +30,24 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
 {
     use AdditionalConfigFilesTrait;
 
+    private bool $checkArgumentTypeOfConfig;
+    private bool $checkArgumentTypeOfModel;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->checkArgumentTypeOfConfig = true;
+        $this->checkArgumentTypeOfModel  = true;
+    }
+
     protected function getRule(): Rule
     {
         return new FactoriesFunctionArgumentTypeRule(
             self::createReflectionProvider(),
-            self::getContainer()->getByType(FactoriesReturnTypeHelper::class)
+            self::getContainer()->getByType(FactoriesReturnTypeHelper::class),
+            $this->checkArgumentTypeOfConfig,
+            $this->checkArgumentTypeOfModel
         );
     }
 
@@ -89,5 +102,11 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
                 22,
             ],
         ]);
+    }
+
+    public function testAllowNonModelClassesOnModelCall(): void
+    {
+        $this->checkArgumentTypeOfModel = false;
+        $this->analyse([__DIR__ . '/../../Fixtures/Rules/Functions/bug-8.php'], []);
     }
 }
