@@ -37,7 +37,7 @@ final class SuperglobalAssignRuleTest extends RuleTestCase
 
     public function testRule(): void
     {
-        $this->analyse([__DIR__ . '/../../Fixtures/Rules/Superglobals/superglobal-assign-cases.php'], [
+        $this->analyse([__DIR__ . '/data/superglobal-assign-cases.php'], [
             [
                 'Assigning \'https://localhost\' directly on offset \'HTTP_HOST\' of $_SERVER is discouraged.',
                 18,

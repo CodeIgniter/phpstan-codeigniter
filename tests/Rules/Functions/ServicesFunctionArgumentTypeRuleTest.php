@@ -39,7 +39,7 @@ final class ServicesFunctionArgumentTypeRuleTest extends RuleTestCase
 
     public function testRule(): void
     {
-        $this->analyse([__DIR__ . '/../../Fixtures/Type/services.php'], [
+        $this->analyse([__DIR__ . '/../../Type/data/services.php'], [
             [
                 'The method \'createRequest\' is reserved for service location internals and cannot be used as a service method.',
                 51,

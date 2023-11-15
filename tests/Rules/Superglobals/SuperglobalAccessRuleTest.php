@@ -37,7 +37,7 @@ final class SuperglobalAccessRuleTest extends RuleTestCase
 
     public function testRule(): void
     {
-        $this->analyse([__DIR__ . '/../../Fixtures/Rules/Superglobals/superglobal-access-cases.php'], [
+        $this->analyse([__DIR__ . '/data/superglobal-access-cases.php'], [
             [
                 'Accessing offset \'foo\' directly on $_SERVER is discouraged.',
                 21,
