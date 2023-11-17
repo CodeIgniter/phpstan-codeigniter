@@ -60,13 +60,8 @@ jobs:
       - name: Downgrade src
         run: php bin/transform-source ${{ env.TARGET_PHP_VERSION_ID }}
 
-      - name: Setup PHP ${{ env.TARGET_PHP_VERSION }}
-        uses: shivammathur/setup-php@v2
-        with:
-            php-version: ${{ env.TARGET_PHP_VERSION }}
-            coverage: none
-        env:
-            COMPOSER_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      - name: Run lint on src
+        run: vendor/bin/parallel-lint src --colors --show-deprecated
 
       - name: Get tag for downgraded release
         id: tag-downgraded
