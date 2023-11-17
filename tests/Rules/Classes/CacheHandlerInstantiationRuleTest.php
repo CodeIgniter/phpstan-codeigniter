@@ -36,7 +36,7 @@ final class CacheHandlerInstantiationRuleTest extends RuleTestCase
 
     public function testRule(): void
     {
-        $this->analyse([__DIR__ . '/../../Fixtures/Rules/Classes/cache-handler.php'], [
+        $this->analyse([__DIR__ . '/data/cache-handler.php'], [
             [
                 'Calling new FileHandler() directly is incomplete to get the cache instance.',
                 19,

@@ -35,7 +35,7 @@ final class FrameworkExceptionInstantiationRuleTest extends RuleTestCase
 
     public function testRule(): void
     {
-        $this->analyse([__DIR__ . '/../../Fixtures/Rules/Classes/framework-exception.php'], [
+        $this->analyse([__DIR__ . '/data/framework-exception.php'], [
             [
                 'Instantiating FrameworkException using new is not allowed. Use one of its named constructors instead.',
                 17,

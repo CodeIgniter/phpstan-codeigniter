@@ -46,9 +46,9 @@
         }
     },
     "autoload-dev": {
-        "psr-4": {
-            "CodeIgniter\\PHPStan\\Tests\\": "tests/"
-        }
+        "classmap": [
+            "tests/"
+        ]
     },
     "config": {
         "allow-plugins": {

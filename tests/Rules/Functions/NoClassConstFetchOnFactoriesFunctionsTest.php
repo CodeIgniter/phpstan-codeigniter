@@ -41,9 +41,9 @@ final class NoClassConstFetchOnFactoriesFunctionsTest extends RuleTestCase
     public function testRule(): void
     {
         $this->analyse([
-            __DIR__ . '/../../Fixtures/Type/config.php',
-            __DIR__ . '/../../Fixtures/Type/factories-in-tests.php',
-            __DIR__ . '/../../Fixtures/Type/model.php',
+            __DIR__ . '/../../Type/data/config.php',
+            __DIR__ . '/../../Type/data/factories-in-tests.php',
+            __DIR__ . '/../../Type/data/model.php',
         ], [
             [
                 'Call to function config with CodeIgniter\Shield\Config\AuthJWT::class is discouraged.',
@@ -65,6 +65,6 @@ final class NoClassConstFetchOnFactoriesFunctionsTest extends RuleTestCase
 
     public function testOnAppNamespaceWithNonAppCall(): void
     {
-        $this->analyse([__DIR__ . '/../../Fixtures/Rules/Functions/bug-9.php'], []);
+        $this->analyse([__DIR__ . '/data/bug-9.php'], []);
     }
 }

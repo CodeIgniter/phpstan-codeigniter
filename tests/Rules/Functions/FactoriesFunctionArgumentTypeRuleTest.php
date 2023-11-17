@@ -54,8 +54,8 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
     public function testRule(): void
     {
         $this->analyse([
-            __DIR__ . '/../../Fixtures/Type/config.php',
-            __DIR__ . '/../../Fixtures/Type/model.php',
+            __DIR__ . '/../../Type/data/config.php',
+            __DIR__ . '/../../Type/data/model.php',
         ], [
             [
                 'Parameter #1 $name of function config expects a valid class string, \'bar\' given.',
@@ -107,6 +107,6 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
     public function testAllowNonModelClassesOnModelCall(): void
     {
         $this->checkArgumentTypeOfModel = false;
-        $this->analyse([__DIR__ . '/../../Fixtures/Rules/Functions/bug-8.php'], []);
+        $this->analyse([__DIR__ . '/data/bug-8.php'], []);
     }
 }

@@ -37,6 +37,6 @@ final class DynamicMethodReturnTypeExtensionTest extends TypeInferenceTestCase
      */
     public static function provideFileAssertsCases(): iterable
     {
-        yield from self::gatherAssertTypes(__DIR__ . '/../Fixtures/Type/model-find.php');
+        yield from self::gatherAssertTypes(__DIR__ . '/data/model-find.php');
     }
 }
