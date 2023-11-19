@@ -4,12 +4,16 @@ on:
   schedule:
     - cron: '0 0 * * *'
   pull_request:
+    branches:
+      - '*.x'
     paths:
       - '.github/workflows/test-phpstan.yml'
       - '**.php'
       - 'extension.neon'
       - 'phpstan.neon.dist'
   push:
+    branches:
+      - '*.x'
     paths:
       - '.github/workflows/test-phpstan.yml'
       - '**.php'
