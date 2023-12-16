@@ -20,6 +20,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\Accessory\AccessoryArrayListType;
 use PHPStan\Type\ArrayType;
+use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\IntersectionType;
@@ -49,11 +50,11 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
         $methodName = $methodReflection->getName();
 
         if ($methodName === 'find') {
-            return $this->getTypeFromFind($methodReflection, $methodCall, $scope);
+            return $this->getTypeFromFind($methodCall, $scope);
         }
 
         if ($methodName === 'findAll') {
-            return $this->getTypeFromFindAll($methodReflection, $methodCall, $scope);
+            return $this->getTypeFromFindAll($methodCall, $scope);
         }
 
         $classReflection = $this->getClassReflection($methodCall, $scope);
@@ -69,23 +70,23 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
         return current($classTypes);
     }
 
-    private function getTypeFromFind(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): Type
+    private function getTypeFromFind(MethodCall $methodCall, Scope $scope): Type
     {
         $args = $methodCall->getArgs();
 
         if (! isset($args[0])) {
-            return $this->getTypeFromFindAll($methodReflection, $methodCall, $scope);
+            return $this->getTypeFromFindAll($methodCall, $scope);
         }
 
         return TypeTraverser::map(
             $scope->getType($args[0]->value),
-            function (Type $idType, callable $traverse) use ($methodReflection, $methodCall, $scope): Type {
+            function (Type $idType, callable $traverse) use ($methodCall, $scope): Type {
                 if ($idType instanceof UnionType || $idType instanceof IntersectionType) {
                     return $traverse($idType);
                 }
 
-                if ($idType->isNull()->yes()) {
-                    return $this->getTypeFromFindAll($methodReflection, $methodCall, $scope);
+                if ($idType->isArray()->yes() && ! $idType->isIterableAtLeastOnce()->yes()) {
+                    return new ConstantArrayType([], []);
                 }
 
                 if ($idType->isInteger()->yes() || $idType->isString()->yes()) {
@@ -94,12 +95,12 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
                     return TypeCombinator::addNull($this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $methodCall, $scope));
                 }
 
-                return $this->getTypeFromFindAll($methodReflection, $methodCall, $scope);
+                return $this->getTypeFromFindAll($methodCall, $scope);
             }
         );
     }
 
-    private function getTypeFromFindAll(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): Type
+    private function getTypeFromFindAll(MethodCall $methodCall, Scope $scope): Type
     {
         $classReflection = $this->getClassReflection($methodCall, $scope);
 
