@@ -31,9 +31,15 @@ use PHPStan\Type\UnionType;
 
 final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
-    public function __construct(
-        private readonly ModelFetchedReturnTypeHelper $modelFetchedReturnTypeHelper
-    ) {}
+    /**
+     * @readonly
+     */
+    private ModelFetchedReturnTypeHelper $modelFetchedReturnTypeHelper;
+
+    public function __construct(ModelFetchedReturnTypeHelper $modelFetchedReturnTypeHelper)
+    {
+        $this->modelFetchedReturnTypeHelper = $modelFetchedReturnTypeHelper;
+    }
 
     public function getClass(): string
     {

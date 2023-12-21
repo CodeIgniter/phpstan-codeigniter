@@ -33,6 +33,11 @@ use stdClass;
 final class ModelFetchedReturnTypeHelper
 {
     /**
+     * @readonly
+     */
+    private ReflectionProvider $reflectionProvider;
+
+    /**
      * @var array<string, class-string<Type>>
      */
     private static array $notStringFormattedFields = [
@@ -60,9 +65,11 @@ final class ModelFetchedReturnTypeHelper
      * @param array<string, string> $notStringFormattedFieldsArray
      */
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
+        ReflectionProvider $reflectionProvider,
         array $notStringFormattedFieldsArray
     ) {
+        $this->reflectionProvider = $reflectionProvider;
+
         foreach ($notStringFormattedFieldsArray as $field => $type) {
             if (! isset(self::$typeInterpolations[$type])) {
                 continue;
