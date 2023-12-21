@@ -23,11 +23,11 @@
     },
     "require": {
         "php": "^8.1",
+        "codeigniter4/framework": "^4.4",
         "phpstan/phpstan": "^1.10"
     },
     "require-dev": {
         "codeigniter/coding-standard": "^1.7",
-        "codeigniter4/framework": "^4.3",
         "codeigniter4/shield": "^1.0@beta",
         "friendsofphp/php-cs-fixer": "^3.20",
         "nexusphp/cs-config": "^3.12",
@@ -38,6 +38,9 @@
         "phpstan/phpstan-strict-rules": "^1.5",
         "phpunit/phpunit": "^10.2",
         "rector/rector": "^0.18.2"
+    },
+    "conflict": {
+        "codeigniter/framework": "*"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -70,8 +73,5 @@
         "post-update-cmd": [
             "CodeIgniter\\PHPStan\\ComposerScripts::postUpdate"
         ]
-    },
-    "conflict": {
-        "codeigniter/framework": "*"
     }
 }
