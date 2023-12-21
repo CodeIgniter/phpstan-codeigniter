@@ -9,6 +9,7 @@ on:
     paths:
       - '.github/workflows/test-phpunit.yml'
       - '**.php'
+      - 'composer.json'
       - 'phpunit.dist.xml'
   push:
     branches:
@@ -16,6 +17,7 @@ on:
     paths:
       - '.github/workflows/test-phpunit.yml'
       - '**.php'
+      - 'composer.json'
       - 'phpunit.dist.xml'
 
 env:
