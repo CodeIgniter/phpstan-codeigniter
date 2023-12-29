@@ -15,7 +15,7 @@ parameters:
       - tests/*/data/*
   tmpDir: build/phpstan
   bootstrapFiles:
-    - vendor/codeigniter4/framework/system/Test/bootstrap.php
+    - bootstrap.php
   codeigniter:
     additionalModelNamespaces:
       - CodeIgniter\PHPStan\Tests\Fixtures\Type

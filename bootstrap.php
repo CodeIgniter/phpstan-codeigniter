@@ -11,9 +11,9 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/../vendor/codeigniter4/framework/system/Test/bootstrap.php';
+require_once __DIR__ . '/vendor/codeigniter4/framework/system/Test/bootstrap.php';
 
-$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__ . '/../vendor/codeigniter4/framework/system/Helpers'));
+$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__ . '/vendor/codeigniter4/framework/system/Helpers'));
 
 /** @var SplFileInfo $helper */
 foreach ($iterator as $helper) {

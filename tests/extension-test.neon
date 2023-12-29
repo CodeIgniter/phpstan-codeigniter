@@ -2,7 +2,7 @@ parameters:
   featureToggles:
     listType: true
   bootstrapFiles:
-    - %rootDir%/../../../tests/bootstrap.php
+    - ../bootstrap.php
   codeigniter:
     additionalModelNamespaces:
       - CodeIgniter\PHPStan\Tests\Fixtures\Type
