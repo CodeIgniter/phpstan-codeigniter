@@ -28,7 +28,7 @@
     },
     "require-dev": {
         "codeigniter/coding-standard": "^1.7",
-        "codeigniter4/shield": "^1.0@beta",
+        "codeigniter4/shield": "^1.0",
         "friendsofphp/php-cs-fixer": "^3.20",
         "nexusphp/cs-config": "^3.12",
         "php-parallel-lint/php-parallel-lint": "^1.3",

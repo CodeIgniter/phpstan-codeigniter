@@ -45,8 +45,8 @@ function foo(): void
     assertType('CodeIgniter\Shield\Entities\AccessToken|null', $model->asObject(AccessToken::class)->first());
     assertType('stdClass|null', $model->asObject()->find(1));
     assertType('stdClass|null', $model->asObject('object')->find(45));
-    assertType('list<array{username: string, status: string, status_message: string, active: bool, last_active: string, deleted_at: string}>', $model->asArray()->findAll());
+    assertType('list<array{username: string, status: string, status_message: string, active: bool, last_active: string}>', $model->asArray()->findAll());
 
     assertType('stdClass|null', $model->asArray()->asObject()->first());
-    assertType('array{username: string, status: string, status_message: string, active: bool, last_active: string, deleted_at: string}|null', $model->asObject()->asArray()->first());
+    assertType('array{username: string, status: string, status_message: string, active: bool, last_active: string}|null', $model->asObject()->asArray()->first());
 }
