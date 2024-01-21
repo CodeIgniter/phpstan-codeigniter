@@ -20,4 +20,4 @@ assertType('array{}', $users->find([]));
 assertType('list<CodeIgniter\Shield\Entities\User>', $users->find([1]));
 
 // Model::find() does not fail if not `array|int|string|null` but defaults to get all
-assertType('list<CodeIgniter\Shield\Entities\User>', $users->find(new \stdClass()));
+assertType('list<CodeIgniter\Shield\Entities\User>', $users->find(new stdClass()));
