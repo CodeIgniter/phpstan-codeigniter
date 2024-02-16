@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 use CodeIgniter\Autoloader\Autoloader;
-use CodeIgniter\Autoloader\FileLocator;
+use CodeIgniter\Autoloader\FileLocatorInterface;
 use CodeIgniter\Cache\CacheInterface;
 use CodeIgniter\CLI\Commands;
 use CodeIgniter\Debug\Exceptions;
@@ -52,7 +52,7 @@ assertType('null', service('createRequest'));
 
 // from CodeIgniter\Config\BaseService
 assertType(Autoloader::class, single_service('autoloader'));
-assertType(FileLocator::class, service('locator'));
+assertType(FileLocatorInterface::class, service('locator'));
 assertType('null', service('__callStatic'));
 assertType('null', service('serviceExists'));
 assertType('null', service('reset'));

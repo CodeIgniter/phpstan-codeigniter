@@ -11,13 +11,27 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/vendor/codeigniter4/framework/system/Test/bootstrap.php';
+use Composer\InstalledVersions;
 
-$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__ . '/vendor/codeigniter4/framework/system/Helpers'));
+foreach (['codeigniter4/codeigniter4', 'codeigniter4/framework'] as $framework) {
+    if (InstalledVersions::isInstalled($framework)) {
+        require_once __DIR__ . '/vendor/' . $framework . '/system/Test/bootstrap.php';
 
-/** @var SplFileInfo $helper */
-foreach ($iterator as $helper) {
-    if ($helper->isFile()) {
-        require_once $helper->getRealPath();
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(
+                __DIR__ . '/vendor/' . $framework . '/system/Helpers'
+            )
+        );
+
+        /** @var SplFileInfo $helper */
+        foreach ($iterator as $helper) {
+            if ($helper->isFile()) {
+                require_once $helper->getRealPath();
+            }
+        }
+
+        return;
     }
 }
+
+throw new RuntimeException('There is no CodeIgniter4 framework installed.');

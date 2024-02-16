@@ -23,7 +23,8 @@
     },
     "require": {
         "php": "^8.1",
-        "codeigniter4/framework": "^4.4",
+        "composer-runtime-api": "^2.2",
+        "codeigniter4/codeigniter4": "4.5.x-dev",
         "phpstan/phpstan": "^1.10"
     },
     "require-dev": {
@@ -39,6 +40,12 @@
         "phpunit/phpunit": "^10.2",
         "rector/rector": "^1.0.0"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/codeigniter4/codeigniter4"
+        }
+    ],
     "conflict": {
         "codeigniter/framework": "*"
     },
