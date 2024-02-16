@@ -1,15 +1,12 @@
 *.php text eol=lf
 
 .github/ export-ignore
-bin/ export-ignore
 tests/ export-ignore
 .editorconfig export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
 .php-cs-fixer.dist.php export-ignore
-src/ComposerJsonRewriter.php export-ignore
 src/ComposerScripts.php export-ignore
 phpunit.dist.xml export-ignore
 phpstan.neon.dist export-ignore
 phpstan-baseline.php export-ignore
-rector-downgrade.php export-ignore
