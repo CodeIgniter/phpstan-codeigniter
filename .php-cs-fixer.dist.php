@@ -20,14 +20,11 @@ use PhpCsFixer\Finder;
 $finder = Finder::create()
     ->files()
     ->in([
-        __DIR__ . '/bin',
         __DIR__ . '/src',
         __DIR__ . '/tests',
     ])
     ->append([
         __FILE__,
-        __DIR__ . '/bin/parse-php-version',
-        __DIR__ . '/bin/transform-source',
     ]);
 
 $overrides = [
