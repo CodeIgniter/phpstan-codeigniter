@@ -33,7 +33,7 @@ final class DynamicMethodReturnTypeExtensionTest extends TypeInferenceTestCase
     }
 
     /**
-     * @return iterable<string, mixed[]>
+     * @return iterable<string, array<array-key, mixed>>
      */
     public static function provideFileAssertsCases(): iterable
     {

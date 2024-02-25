@@ -54,7 +54,7 @@ final class SuperglobalAssignRule implements Rule
     /**
      * @param Node\Expr\Assign $node
      *
-     * @return RuleError[]
+     * @return list<RuleError>
      */
     private function processArrayDimFetch(Node $node, Scope $scope): array
     {
@@ -129,7 +129,7 @@ final class SuperglobalAssignRule implements Rule
     /**
      * @param Node\Expr\Assign $node
      *
-     * @return RuleError[]
+     * @return list<RuleError>
      */
     private function processVariableExpr(Node $node, Scope $scope): array
     {
