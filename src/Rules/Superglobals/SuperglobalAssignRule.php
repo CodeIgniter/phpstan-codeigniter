@@ -16,8 +16,8 @@ namespace CodeIgniter\PHPStan\Rules\Superglobals;
 use CodeIgniter\Superglobals;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
+use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
-use PHPStan\Rules\RuleError;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\Type\VerbosityLevel;
 
@@ -54,7 +54,7 @@ final class SuperglobalAssignRule implements Rule
     /**
      * @param Node\Expr\Assign $node
      *
-     * @return list<RuleError>
+     * @return list<IdentifierRuleError>
      */
     private function processArrayDimFetch(Node $node, Scope $scope): array
     {
@@ -129,7 +129,7 @@ final class SuperglobalAssignRule implements Rule
     /**
      * @param Node\Expr\Assign $node
      *
-     * @return list<RuleError>
+     * @return list<IdentifierRuleError>
      */
     private function processVariableExpr(Node $node, Scope $scope): array
     {

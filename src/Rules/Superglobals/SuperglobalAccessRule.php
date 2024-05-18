@@ -15,8 +15,8 @@ namespace CodeIgniter\PHPStan\Rules\Superglobals;
 
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
+use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
-use PHPStan\Rules\RuleError;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\Type\VerbosityLevel;
 
@@ -37,7 +37,7 @@ final class SuperglobalAccessRule implements Rule
     /**
      * @param Node\Expr\ArrayDimFetch $node
      *
-     * @return list<RuleError>
+     * @return list<IdentifierRuleError>
      */
     public function processNode(Node $node, Scope $scope): array
     {
