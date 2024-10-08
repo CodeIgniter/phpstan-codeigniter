@@ -90,7 +90,9 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
 
         $returnType = $this->factoriesReturnTypeHelper->check($nameType, $function);
 
-        $firstParameter = ParametersAcceptorSelector::selectSingle(
+        $firstParameter = ParametersAcceptorSelector::selectFromArgs(
+            $scope,
+            $node->getArgs(),
             $this->reflectionProvider->getFunction($nameNode, $scope)->getVariants()
         )->getParameters()[0];
 

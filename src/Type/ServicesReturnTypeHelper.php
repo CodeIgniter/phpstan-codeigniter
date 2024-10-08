@@ -102,7 +102,11 @@ final class ServicesReturnTypeHelper
                     return new NullType();
                 }
 
-                return ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())->getReturnType();
+                return ParametersAcceptorSelector::selectFromArgs(
+                    $scope,
+                    [],
+                    $methodReflection->getVariants()
+                )->getReturnType();
             }
 
             return new NullType();
