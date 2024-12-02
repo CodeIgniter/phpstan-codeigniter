@@ -1,6 +1,4 @@
 parameters:
-  featureToggles:
-    listType: true
   bootstrapFiles:
     - ../bootstrap.php
   codeigniter:

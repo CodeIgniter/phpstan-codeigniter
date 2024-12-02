@@ -104,11 +104,12 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
     {
         $classReflection = $this->getClassReflection($methodCall, $scope);
 
-        return AccessoryArrayListType::intersectWith(
+        return TypeCombinator::intersect(
             new ArrayType(
                 new IntegerType(),
                 $this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $methodCall, $scope)
-            )
+            ),
+            new AccessoryArrayListType()
         );
     }
 }

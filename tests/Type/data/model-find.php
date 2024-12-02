@@ -35,7 +35,7 @@ function bar(null|int|string $id): void
 {
     $model = model(UserModel::class);
 
-    assertType('list<CodeIgniter\Shield\Entities\User>|CodeIgniter\Shield\Entities\User|null', $model->find($id));
+    assertType('CodeIgniter\Shield\Entities\User|list<CodeIgniter\Shield\Entities\User>|null', $model->find($id));
 }
 
 function foo(): void
