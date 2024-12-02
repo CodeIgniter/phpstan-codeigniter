@@ -27,6 +27,16 @@ use PHPUnit\Framework\TestCase;
 final class NoClassConstFetchOnFactoriesFunctions implements Rule
 {
     /**
+     * @readonly
+     */
+    private ReflectionProvider $reflectionProvider;
+
+    /**
+     * @readonly
+     */
+    private FactoriesReturnTypeHelper $factoriesReturnTypeHelper;
+
+    /**
      * @var array<string, string>
      */
     private static array $namespaceMap = [
@@ -34,10 +44,11 @@ final class NoClassConstFetchOnFactoriesFunctions implements Rule
         'model'  => 'App\\Models',
     ];
 
-    public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper
-    ) {}
+    public function __construct(ReflectionProvider $reflectionProvider, FactoriesReturnTypeHelper $factoriesReturnTypeHelper)
+    {
+        $this->reflectionProvider        = $reflectionProvider;
+        $this->factoriesReturnTypeHelper = $factoriesReturnTypeHelper;
+    }
 
     public function getNodeType(): string
     {

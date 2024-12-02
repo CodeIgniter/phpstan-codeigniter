@@ -21,9 +21,15 @@ use PHPStan\Type\Type;
 
 final class ServicesFunctionReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
-    public function __construct(
-        private readonly ServicesReturnTypeHelper $servicesReturnTypeHelper
-    ) {}
+    /**
+     * @readonly
+     */
+    private ServicesReturnTypeHelper $servicesReturnTypeHelper;
+
+    public function __construct(ServicesReturnTypeHelper $servicesReturnTypeHelper)
+    {
+        $this->servicesReturnTypeHelper = $servicesReturnTypeHelper;
+    }
 
     public function isFunctionSupported(FunctionReflection $functionReflection): bool
     {

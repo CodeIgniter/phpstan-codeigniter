@@ -31,6 +31,16 @@ use PHPStan\Type\VerbosityLevel;
 final class FactoriesFunctionArgumentTypeRule implements Rule
 {
     /**
+     * @readonly
+     */
+    private ReflectionProvider $reflectionProvider;
+
+    /**
+     * @readonly
+     */
+    private FactoriesReturnTypeHelper $factoriesReturnTypeHelper;
+
+    /**
      * @var array<string, class-string>
      */
     private array $instanceofMap = [
@@ -44,12 +54,14 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
     private array $argumentTypeCheck = [];
 
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper,
+        ReflectionProvider $reflectionProvider,
+        FactoriesReturnTypeHelper $factoriesReturnTypeHelper,
         bool $checkArgumentTypeOfConfig,
         bool $checkArgumentTypeOfModel
     ) {
-        $this->argumentTypeCheck = [
+        $this->reflectionProvider        = $reflectionProvider;
+        $this->factoriesReturnTypeHelper = $factoriesReturnTypeHelper;
+        $this->argumentTypeCheck         = [
             'config' => $checkArgumentTypeOfConfig,
             'model'  => $checkArgumentTypeOfModel,
         ];

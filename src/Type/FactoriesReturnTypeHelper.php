@@ -24,6 +24,11 @@ use PHPStan\Type\UnionType;
 final class FactoriesReturnTypeHelper
 {
     /**
+     * @readonly
+     */
+    private ReflectionProvider $reflectionProvider;
+
+    /**
      * @var array<string, string>
      */
     private array $namespaceMap = [
@@ -44,11 +49,12 @@ final class FactoriesReturnTypeHelper
      * @param array<int, string> $additionalModelNamespaces
      */
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
+        ReflectionProvider $reflectionProvider,
         array $additionalConfigNamespaces,
         array $additionalModelNamespaces
     ) {
-        $cb = static fn (string $item): string => rtrim($item, '\\') . '\\';
+        $this->reflectionProvider = $reflectionProvider;
+        $cb                       = static fn (string $item): string => rtrim($item, '\\') . '\\';
 
         $this->additionalNamespacesMap = [
             'config' => [...$this->additionalNamespacesMap['config'], ...array_map($cb, $additionalConfigNamespaces)],

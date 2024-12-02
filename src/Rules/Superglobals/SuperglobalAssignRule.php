@@ -26,9 +26,15 @@ use PHPStan\Type\VerbosityLevel;
  */
 final class SuperglobalAssignRule implements Rule
 {
-    public function __construct(
-        private readonly SuperglobalRuleHelper $superglobalRuleHelper
-    ) {}
+    /**
+     * @readonly
+     */
+    private SuperglobalRuleHelper $superglobalRuleHelper;
+
+    public function __construct(SuperglobalRuleHelper $superglobalRuleHelper)
+    {
+        $this->superglobalRuleHelper = $superglobalRuleHelper;
+    }
 
     public function getNodeType(): string
     {
