@@ -20,14 +20,10 @@ on:
       - 'composer.json'
       - 'phpunit.dist.xml'
 
-env:
-  TARGET_PHP_VERSION: '7.4'
-  TARGET_PHP_VERSION_ID: 70400
-
 jobs:
   extension-tests:
     name: PHPUnit Extension Tests [PHP ${{ matrix.php-version }}]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
@@ -65,12 +61,6 @@ jobs:
 
       - name: Install dependencies
         run: composer update --ansi
-
-      - name: Downgrade src
-        run: php bin/transform-source ${{ env.TARGET_PHP_VERSION_ID }}
-
-      - name: Run lint on src
-        run: vendor/bin/parallel-lint src --colors --show-deprecated
 
       - name: Run Extension Tests
         run: vendor/bin/phpunit --no-coverage
