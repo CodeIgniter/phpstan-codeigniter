@@ -32,7 +32,7 @@ use PHPStan\Type\UnionType;
 final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
     public function __construct(
-        private readonly ModelFetchedReturnTypeHelper $modelFetchedReturnTypeHelper
+        private readonly ModelFetchedReturnTypeHelper $modelFetchedReturnTypeHelper,
     ) {}
 
     public function getClass(): string
@@ -96,7 +96,7 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
                 }
 
                 return $this->getTypeFromFindAll($methodCall, $scope);
-            }
+            },
         );
     }
 
@@ -107,9 +107,9 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
         return TypeCombinator::intersect(
             new ArrayType(
                 new IntegerType(),
-                $this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $methodCall, $scope)
+                $this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $methodCall, $scope),
             ),
-            new AccessoryArrayListType()
+            new AccessoryArrayListType(),
         );
     }
 }

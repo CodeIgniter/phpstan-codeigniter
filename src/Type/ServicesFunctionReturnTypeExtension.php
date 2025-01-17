@@ -22,7 +22,7 @@ use PHPStan\Type\Type;
 final class ServicesFunctionReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
     public function __construct(
-        private readonly ServicesReturnTypeHelper $servicesReturnTypeHelper
+        private readonly ServicesReturnTypeHelper $servicesReturnTypeHelper,
     ) {}
 
     public function isFunctionSupported(FunctionReflection $functionReflection): bool

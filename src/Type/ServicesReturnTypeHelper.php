@@ -59,7 +59,7 @@ final class ServicesReturnTypeHelper
      */
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        array $additionalServices
+        array $additionalServices,
     ) {
         $this->services = [
             FrameworkServices::class,
@@ -105,7 +105,7 @@ final class ServicesReturnTypeHelper
                 return ParametersAcceptorSelector::selectFromArgs(
                     $scope,
                     [],
-                    $methodReflection->getVariants()
+                    $methodReflection->getVariants(),
                 )->getReturnType();
             }
 

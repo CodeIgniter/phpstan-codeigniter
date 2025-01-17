@@ -30,7 +30,7 @@ final class ServicesFunctionArgumentTypeRule implements Rule
 {
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly ServicesReturnTypeHelper $servicesReturnTypeHelper
+        private readonly ServicesReturnTypeHelper $servicesReturnTypeHelper,
     ) {}
 
     public function getNodeType(): string
@@ -96,14 +96,14 @@ final class ServicesFunctionArgumentTypeRule implements Rule
         $hasMethod = array_reduce(
             $this->servicesReturnTypeHelper->getServicesReflection(),
             static fn (bool $carry, ClassReflection $service): bool => $carry || $service->hasMethod($trimmedName),
-            false
+            false,
         );
 
         if (! $returnType->isNull()->yes() || $hasMethod) {
             return [RuleErrorBuilder::message(sprintf(
                 'Service method %s expected to return a service instance, got %s instead.',
                 $name,
-                $returnType->describe(VerbosityLevel::precise())
+                $returnType->describe(VerbosityLevel::precise()),
             ))->identifier('codeigniter.serviceNonObjectReturn')->build()];
         }
 
@@ -121,7 +121,7 @@ final class ServicesFunctionArgumentTypeRule implements Rule
 
         return [$addTip(RuleErrorBuilder::message(sprintf(
             'Call to unknown service method %s.',
-            $nameType->describe(VerbosityLevel::precise())
+            $nameType->describe(VerbosityLevel::precise()),
         )))->identifier('codeigniter.unknownServiceMethod')->build()];
     }
 }

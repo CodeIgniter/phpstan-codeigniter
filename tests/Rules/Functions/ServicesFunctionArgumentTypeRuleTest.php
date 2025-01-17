@@ -33,7 +33,7 @@ final class ServicesFunctionArgumentTypeRuleTest extends RuleTestCase
     {
         return new ServicesFunctionArgumentTypeRule(
             self::createReflectionProvider(),
-            self::getContainer()->getByType(ServicesReturnTypeHelper::class)
+            self::getContainer()->getByType(ServicesReturnTypeHelper::class),
         );
     }
 

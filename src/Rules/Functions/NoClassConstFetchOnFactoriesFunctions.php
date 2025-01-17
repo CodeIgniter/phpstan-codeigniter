@@ -36,7 +36,7 @@ final class NoClassConstFetchOnFactoriesFunctions implements Rule
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper
+        private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper,
     ) {}
 
     public function getNodeType(): string
@@ -120,11 +120,11 @@ final class NoClassConstFetchOnFactoriesFunctions implements Rule
             RuleErrorBuilder::message(sprintf(
                 'Call to function %s with %s::class is discouraged.',
                 $function,
-                $reflection->getDisplayName()
+                $reflection->getDisplayName(),
             ))->tip(sprintf(
                 'Use %s(\'%s\') instead to allow overriding.',
                 $function,
-                $reflection->getNativeReflection()->getShortName()
+                $reflection->getNativeReflection()->getShortName(),
             ))->identifier('codeigniter.factoriesClassConstFetch')->build(),
         ];
     }

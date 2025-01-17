@@ -22,7 +22,7 @@ use PHPStan\Type\Type;
 final class FactoriesFunctionReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
     public function __construct(
-        private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper
+        private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper,
     ) {}
 
     public function isFunctionSupported(FunctionReflection $functionReflection): bool
@@ -40,7 +40,7 @@ final class FactoriesFunctionReturnTypeExtension implements DynamicFunctionRetur
 
         return $this->factoriesReturnTypeHelper->check(
             $scope->getType($arguments[0]->value),
-            $functionReflection->getName()
+            $functionReflection->getName(),
         );
     }
 }

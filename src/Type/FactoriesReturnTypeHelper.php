@@ -46,7 +46,7 @@ final class FactoriesReturnTypeHelper
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
         array $additionalConfigNamespaces,
-        array $additionalModelNamespaces
+        array $additionalModelNamespaces,
     ) {
         $cb = static fn (string $item): string => rtrim($item, '\\') . '\\';
 

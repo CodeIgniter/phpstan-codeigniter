@@ -61,7 +61,7 @@ final class ModelFetchedReturnTypeHelper
      */
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        array $notStringFormattedFieldsArray
+        array $notStringFormattedFieldsArray,
     ) {
         foreach ($notStringFormattedFieldsArray as $field => $type) {
             if (! isset(self::$typeInterpolations[$type])) {
@@ -101,7 +101,7 @@ final class ModelFetchedReturnTypeHelper
     {
         $this->fillDateFields($classReflection, $scope);
         $fieldsTypes = $scope->getType(
-            $classReflection->getNativeProperty('allowedFields')->getNativeReflection()->getDefaultValueExpression()
+            $classReflection->getNativeProperty('allowedFields')->getNativeReflection()->getDefaultValueExpression(),
         )->getConstantArrays();
 
         if ($fieldsTypes === []) {
@@ -111,9 +111,9 @@ final class ModelFetchedReturnTypeHelper
         $fields = array_filter(
             array_map(
                 static fn (Type $type) => current($type->getConstantStrings()),
-                current($fieldsTypes)->getValueTypes()
+                current($fieldsTypes)->getValueTypes(),
             ),
-            static fn (ConstantStringType|false $constantStringType): bool => $constantStringType !== false
+            static fn (ConstantStringType|false $constantStringType): bool => $constantStringType !== false,
         );
 
         return new ConstantArrayType(
@@ -135,7 +135,7 @@ final class ModelFetchedReturnTypeHelper
                 }
 
                 return new StringType();
-            }, $fields)
+            }, $fields),
         );
     }
 
@@ -156,7 +156,7 @@ final class ModelFetchedReturnTypeHelper
 
         return $this->getStringValueFromExpr(
             $classReflection->getNativeProperty($property)->getNativeReflection()->getDefaultValueExpression(),
-            $scope
+            $scope,
         );
     }
 

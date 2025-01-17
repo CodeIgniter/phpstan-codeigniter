@@ -47,7 +47,7 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
             self::createReflectionProvider(),
             self::getContainer()->getByType(FactoriesReturnTypeHelper::class),
             $this->checkArgumentTypeOfConfig,
-            $this->checkArgumentTypeOfModel
+            $this->checkArgumentTypeOfModel,
         );
     }
 

@@ -47,7 +47,7 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
         private readonly ReflectionProvider $reflectionProvider,
         private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper,
         bool $checkArgumentTypeOfConfig,
-        bool $checkArgumentTypeOfModel
+        bool $checkArgumentTypeOfModel,
     ) {
         $this->argumentTypeCheck = [
             'config' => $checkArgumentTypeOfConfig,
@@ -93,7 +93,7 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
         $firstParameter = ParametersAcceptorSelector::selectFromArgs(
             $scope,
             $node->getArgs(),
-            $this->reflectionProvider->getFunction($nameNode, $scope)->getVariants()
+            $this->reflectionProvider->getFunction($nameNode, $scope)->getVariants(),
         )->getParameters()[0];
 
         if ($returnType->isNull()->yes()) {
@@ -102,7 +102,7 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
                     $ruleErrorBuilder->addTip(sprintf(
                         'If %s is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additional%sNamespaces</> in your <fg=yellow>%%configurationFile%%</>.',
                         $constantStringType->describe(VerbosityLevel::precise()),
-                        ucfirst($function)
+                        ucfirst($function),
                     ));
                 }
 
@@ -113,7 +113,7 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
                 'Parameter #1 $%s of function %s expects a valid class string, %s given.',
                 $firstParameter->getName(),
                 $function,
-                $nameType->describe(VerbosityLevel::precise())
+                $nameType->describe(VerbosityLevel::precise()),
             )))->identifier(sprintf('codeigniter.%sArgumentType', $function))->build()];
         }
 
@@ -127,7 +127,7 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
                 $firstParameter->getName(),
                 $nameType->describe(VerbosityLevel::precise()),
                 $function,
-                addcslashes($this->instanceofMap[$function], '\\')
+                addcslashes($this->instanceofMap[$function], '\\'),
             ))->identifier(sprintf('codeigniter.%sArgumentInstanceof', $function))->build()];
         }
 

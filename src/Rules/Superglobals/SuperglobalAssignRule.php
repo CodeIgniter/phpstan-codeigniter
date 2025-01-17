@@ -27,7 +27,7 @@ use PHPStan\Type\VerbosityLevel;
 final class SuperglobalAssignRule implements Rule
 {
     public function __construct(
-        private readonly SuperglobalRuleHelper $superglobalRuleHelper
+        private readonly SuperglobalRuleHelper $superglobalRuleHelper,
     ) {}
 
     public function getNodeType(): string
@@ -108,7 +108,7 @@ final class SuperglobalAssignRule implements Rule
                             'Use \\Config\\Services::superglobals()->%s(%s, %s) instead.',
                             $method,
                             $dimString->describe(VerbosityLevel::precise()),
-                            $exprString->describe(VerbosityLevel::precise())
+                            $exprString->describe(VerbosityLevel::precise()),
                         ));
                     }
                 }

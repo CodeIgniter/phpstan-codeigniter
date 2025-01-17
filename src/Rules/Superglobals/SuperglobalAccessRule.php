@@ -26,7 +26,7 @@ use PHPStan\Type\VerbosityLevel;
 final class SuperglobalAccessRule implements Rule
 {
     public function __construct(
-        private readonly SuperglobalRuleHelper $superglobalRuleHelper
+        private readonly SuperglobalRuleHelper $superglobalRuleHelper,
     ) {}
 
     public function getNodeType(): string

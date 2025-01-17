@@ -34,7 +34,7 @@ final class NoClassConstFetchOnFactoriesFunctionsTest extends RuleTestCase
     {
         return new NoClassConstFetchOnFactoriesFunctions(
             self::createReflectionProvider(),
-            self::getContainer()->getByType(FactoriesReturnTypeHelper::class)
+            self::getContainer()->getByType(FactoriesReturnTypeHelper::class),
         );
     }
 
