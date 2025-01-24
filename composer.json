@@ -38,8 +38,7 @@
         "phpunit/phpunit": "^10.5 || ^11.4"
     },
     "conflict": {
-        "codeigniter/framework": "*",
-        "codeigniter4/framework": "<4.5"
+        "codeigniter/framework": "*"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
