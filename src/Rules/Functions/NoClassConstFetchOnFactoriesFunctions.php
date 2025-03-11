@@ -83,7 +83,10 @@ final class NoClassConstFetchOnFactoriesFunctions implements Rule
         if ($scope->isInClass()) {
             $classRef = $scope->getClassReflection();
 
-            if ($this->reflectionProvider->hasClass(TestCase::class) && $classRef->isSubclassOf(TestCase::class)) {
+            if (
+                $this->reflectionProvider->hasClass(TestCase::class)
+                && $classRef->isSubclassOfClass($this->reflectionProvider->getClass(TestCase::class))
+            ) {
                 return []; // skip uses in test classes as tests are internal
             }
         }
