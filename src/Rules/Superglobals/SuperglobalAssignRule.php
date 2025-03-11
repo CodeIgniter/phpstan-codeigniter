@@ -35,9 +35,6 @@ final class SuperglobalAssignRule implements Rule
         return Node\Expr\Assign::class;
     }
 
-    /**
-     * @param Node\Expr\Assign $node
-     */
     public function processNode(Node $node, Scope $scope): array
     {
         if ($node->var instanceof Node\Expr\ArrayDimFetch) {

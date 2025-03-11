@@ -38,9 +38,6 @@ final class ServicesFunctionArgumentTypeRule implements Rule
         return Node\Expr\FuncCall::class;
     }
 
-    /**
-     * @param Node\Expr\FuncCall $node
-     */
     public function processNode(Node $node, Scope $scope): array
     {
         if (! $node->name instanceof Node\Name) {

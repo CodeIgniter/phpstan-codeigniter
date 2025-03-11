@@ -35,8 +35,6 @@ final class SuperglobalAccessRule implements Rule
     }
 
     /**
-     * @param Node\Expr\ArrayDimFetch $node
-     *
      * @return list<IdentifierRuleError>
      */
     public function processNode(Node $node, Scope $scope): array

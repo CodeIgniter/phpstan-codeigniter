@@ -31,9 +31,6 @@ final class FrameworkExceptionInstantiationRule implements Rule
         return Node\Expr\New_::class;
     }
 
-    /**
-     * @param Node\Expr\New_ $node
-     */
     public function processNode(Node $node, Scope $scope): array
     {
         $class = $node->class;
