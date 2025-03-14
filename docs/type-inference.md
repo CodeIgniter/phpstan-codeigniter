@@ -11,7 +11,16 @@ Since PHPStan's dynamic return type extensions work on classes, not traits, this
 in test cases extending `CodeIgniter\Test\CIUnitTestCase`. To make this work, you should be calling the method
 **statically**:
 
-For example, we're accessing the private method `Foo::privateMethod()` which accepts a string parameter and returns bool.
+For example, we're accessing the private method:
+```php
+class Foo
+{
+    private static function privateMethod(string $value): bool
+    {
+        return true;
+    }
+}
+```
 
 **Before**
 ```php
