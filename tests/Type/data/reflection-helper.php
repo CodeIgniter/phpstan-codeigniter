@@ -188,4 +188,16 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
             self::getPrivateMethodInvoker($this, $method),
         );
     }
+
+    public function testOnVariadicArguments(): void
+    {
+        $anon = new class () {
+            public function testing(string $a, int $b, bool $c, string ...$d): void {}
+        };
+
+        assertType(
+            'Closure(string, int, bool, string ...): void',
+            self::getPrivateMethodInvoker($anon, 'testing'),
+        );
+    }
 }
