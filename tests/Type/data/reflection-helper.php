@@ -59,7 +59,7 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
             self::getPrivateMethodInvoker($object, 'run'),
         );
         assertType('Closure(object): string', self::getPrivateMethodInvoker($object, 'getVarDump'));
-        assertType('Closure(object): string', self::getPrivateMethodInvoker($object, 'getKIntD'));
+        assertType('Closure(object): string', self::getPrivateMethodInvoker($object, 'getKintD'));
     }
 
     public function testClassStringAsObjectType(): void
@@ -75,7 +75,7 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
 
         $object = FactoriesFunctionReturnTypeExtension::class;
         assertType(
-            'Closure(CodeIgniter\PHPStan\Type\FactoriesReturnTypeHelper): void',
+            'Closure(CodeIgniter\PHPStan\Type\FactoriesReturnTypeHelper): CodeIgniter\PHPStan\Type\FactoriesFunctionReturnTypeExtension',
             self::getPrivateMethodInvoker($object, '__construct'),
         );
         assertType(
@@ -132,7 +132,7 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
     public function testOnGenericClassString(string $class): void
     {
         assertType(
-            'Closure(Psr\Log\LoggerInterface, CodeIgniter\CLI\Commands): void',
+            'Closure(Psr\Log\LoggerInterface, CodeIgniter\CLI\Commands): CodeIgniter\Commands\Utilities\ConfigCheck',
             self::getPrivateMethodInvoker($class, '__construct'),
         );
     }
@@ -146,12 +146,12 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
     }
 
     /**
-     * @param self $object
+     * @param $this $object
      */
     public function testOnObjectWithClassType(object $object): void
     {
         assertType(
-            'Closure(non-empty-string): void',
+            'Closure(non-empty-string): $this',
             self::getPrivateMethodInvoker($object, '__construct'),
         );
     }
@@ -162,7 +162,11 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
     public function testOnUnionOfObjects(object|string $object): void
     {
         assertType(
-            '(Closure(CodeIgniter\PHPStan\Type\ServicesReturnTypeHelper): void)|(Closure(non-empty-string): void)',
+            sprintf(
+                '%s|%s',
+                '(Closure(CodeIgniter\PHPStan\Type\ServicesReturnTypeHelper): CodeIgniter\PHPStan\Type\ServicesFunctionReturnTypeExtension)',
+                '(Closure(non-empty-string): CodeIgniter\PHPStan\Tests\Fixtures\Type\ReflectionHelperGetPrivateMethodInvokerTest)',
+            ),
             self::getPrivateMethodInvoker($object, '__construct'),
         );
     }
@@ -184,7 +188,7 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
     public function testOnUnionOfMethods(string $method): void
     {
         assertType(
-            '(Closure(): void)|(Closure(non-empty-string): void)',
+            '(Closure(): void)|(Closure(non-empty-string): $this)',
             self::getPrivateMethodInvoker($this, $method),
         );
     }

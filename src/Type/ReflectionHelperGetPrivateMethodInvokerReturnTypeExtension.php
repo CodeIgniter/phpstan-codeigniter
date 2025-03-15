@@ -19,9 +19,12 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\ClosureType;
 use PHPStan\Type\DynamicStaticMethodReturnTypeExtension;
+use PHPStan\Type\IntersectionType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
+use PHPStan\Type\TypeTraverser;
+use PHPStan\Type\UnionType;
 
 final class ReflectionHelperGetPrivateMethodInvokerReturnTypeExtension implements DynamicStaticMethodReturnTypeExtension
 {
@@ -53,44 +56,57 @@ final class ReflectionHelperGetPrivateMethodInvokerReturnTypeExtension implement
         $objectType = $scope->getType($args[0]->value)->getObjectTypeOrClassStringObjectType();
         $methodType = $scope->getType($args[1]->value);
 
-        if ($objectType->getObjectClassReflections() === [] && ! $objectType->isObject()->yes()) {
+        if (! $objectType->isObject()->yes()) {
             return new NeverType(true);
         }
 
-        $closures = [];
+        return TypeTraverser::map($objectType, static function (Type $type, callable $traverse) use ($methodType, $scope, $args, $methodReflection): Type {
+            if ($type instanceof UnionType || $type instanceof IntersectionType) {
+                return $traverse($type);
+            }
 
-        foreach ($objectType->getObjectClassReflections() as $classReflection) {
-            foreach ($methodType->getConstantStrings() as $methodStringType) {
-                $methodName = $methodStringType->getValue();
+            $closures = [];
 
-                if (! $classReflection->hasMethod($methodName)) {
-                    $closures[] = new NeverType(true);
+            foreach ($type->getObjectClassReflections() as $classReflection) {
+                foreach ($methodType->getConstantStrings() as $methodStringType) {
+                    $methodName = $methodStringType->getValue();
 
-                    continue;
+                    if (! $classReflection->hasMethod($methodName)) {
+                        $closures[] = new NeverType(true);
+
+                        continue;
+                    }
+
+                    $invokedMethodReflection = $classReflection->getMethod($methodName, $scope);
+
+                    $parametersAcceptor = ParametersAcceptorSelector::selectFromArgs(
+                        $scope,
+                        [],
+                        $invokedMethodReflection->getVariants(),
+                        $invokedMethodReflection->getNamedArgumentsVariants(),
+                    );
+
+                    $returnType = strtolower($methodName) === '__construct' ? $type : $parametersAcceptor->getReturnType();
+
+                    $closures[] = new ClosureType(
+                        $parametersAcceptor->getParameters(),
+                        $returnType,
+                        $parametersAcceptor->isVariadic(),
+                        $parametersAcceptor->getTemplateTypeMap(),
+                        $parametersAcceptor->getResolvedTemplateTypeMap(),
+                    );
                 }
+            }
 
-                $methodReflection   = $classReflection->getMethod($methodName, $scope);
-                $parametersAcceptor = ParametersAcceptorSelector::selectFromArgs(
+            if ($closures === []) {
+                return ParametersAcceptorSelector::selectFromArgs(
                     $scope,
                     $args,
                     $methodReflection->getVariants(),
-                    $methodReflection->getNamedArgumentsVariants(),
-                );
-
-                $closures[] = new ClosureType(
-                    $parametersAcceptor->getParameters(),
-                    $parametersAcceptor->getReturnType(),
-                    $parametersAcceptor->isVariadic(),
-                    $parametersAcceptor->getTemplateTypeMap(),
-                    $parametersAcceptor->getResolvedTemplateTypeMap(),
-                );
+                )->getReturnType();
             }
-        }
 
-        if ($closures === []) {
-            return null;
-        }
-
-        return TypeCombinator::union(...$closures);
+            return TypeCombinator::union(...$closures);
+        });
     }
 }
