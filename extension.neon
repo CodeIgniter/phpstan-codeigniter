@@ -77,6 +77,14 @@ services:
     tags:
       - phpstan.broker.dynamicMethodReturnTypeExtension
 
+  # DynamicStaticMethodReturnTypeExtension
+  -
+    class: CodeIgniter\PHPStan\Type\ReflectionHelperGetPrivateMethodInvokerReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicStaticMethodReturnTypeExtension
+    arguments:
+      class: CodeIgniter\Test\CIUnitTestCase
+
   # conditional rules
   -
     class: CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule
