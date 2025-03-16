@@ -28,6 +28,9 @@ use PHPStan\Type\UnionType;
 
 final class ReflectionHelperGetPrivateMethodInvokerReturnTypeExtension implements DynamicStaticMethodReturnTypeExtension
 {
+    private const OBJECT_AS_STRING_CONTEXT = 0;
+    private const OBJECT_AS_OBJECT_CONTEXT = 1;
+
     /**
      * @param class-string $class
      */
@@ -53,21 +56,25 @@ final class ReflectionHelperGetPrivateMethodInvokerReturnTypeExtension implement
             return null;
         }
 
-        $objectType = $scope->getType($args[0]->value)->getObjectTypeOrClassStringObjectType();
+        $objectType = $scope->getType($args[0]->value);
         $methodType = $scope->getType($args[1]->value);
-
-        if (! $objectType->isObject()->yes()) {
-            return new NeverType(true);
-        }
 
         return TypeTraverser::map($objectType, static function (Type $type, callable $traverse) use ($methodType, $scope, $args, $methodReflection): Type {
             if ($type instanceof UnionType || $type instanceof IntersectionType) {
                 return $traverse($type);
             }
 
+            $context = self::OBJECT_AS_OBJECT_CONTEXT;
+
+            if ($type->isString()->yes()) {
+                $context = self::OBJECT_AS_STRING_CONTEXT;
+            }
+
             $closures = [];
 
-            foreach ($type->getObjectClassReflections() as $classReflection) {
+            $objectType = $type->getObjectTypeOrClassStringObjectType();
+
+            foreach ($objectType->getObjectClassReflections() as $classReflection) {
                 foreach ($methodType->getConstantStrings() as $methodStringType) {
                     $methodName = $methodStringType->getValue();
 
@@ -86,7 +93,15 @@ final class ReflectionHelperGetPrivateMethodInvokerReturnTypeExtension implement
                         $invokedMethodReflection->getNamedArgumentsVariants(),
                     );
 
-                    $returnType = strtolower($methodName) === '__construct' ? $type : $parametersAcceptor->getReturnType();
+                    if (! $invokedMethodReflection->isStatic() && $context === self::OBJECT_AS_STRING_CONTEXT) {
+                        // ReflectionException: Trying to invoke non static method FQCN::method() without an object
+                        $returnType = new NeverType(true);
+                    } elseif (strtolower($methodName) === '__construct') {
+                        // Do not use void as the return type of __construct
+                        $returnType = $objectType;
+                    } else {
+                        $returnType = $parametersAcceptor->getReturnType();
+                    }
 
                     $closures[] = new ClosureType(
                         $parametersAcceptor->getParameters(),
@@ -99,6 +114,10 @@ final class ReflectionHelperGetPrivateMethodInvokerReturnTypeExtension implement
             }
 
             if ($closures === []) {
+                if (! $objectType->isObject()->yes()) {
+                    return new NeverType(true);
+                }
+
                 return ParametersAcceptorSelector::selectFromArgs(
                     $scope,
                     $args,

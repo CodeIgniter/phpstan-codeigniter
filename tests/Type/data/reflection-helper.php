@@ -64,26 +64,26 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
 
     public function testClassStringAsObjectType(): void
     {
-        assertType('Closure(): void', self::getPrivateMethodInvoker(self::class, 'testOnFirstClassCallable'));
+        assertType('Closure(): never', self::getPrivateMethodInvoker(self::class, 'testOnFirstClassCallable'));
 
         $object = ModelReturnTypeTransformVisitor::class;
-        assertType('Closure(PhpParser\Node): null', self::getPrivateMethodInvoker($object, 'enterNode'));
+        assertType('Closure(PhpParser\Node): never', self::getPrivateMethodInvoker($object, 'enterNode'));
         assertType(
-            'Closure(array<PhpParser\Node>): (array<PhpParser\Node>|null)',
+            'Closure(array<PhpParser\Node>): never',
             self::getPrivateMethodInvoker($object, 'afterTraverse'),
         );
 
         $object = FactoriesFunctionReturnTypeExtension::class;
         assertType(
-            'Closure(CodeIgniter\PHPStan\Type\FactoriesReturnTypeHelper): CodeIgniter\PHPStan\Type\FactoriesFunctionReturnTypeExtension',
+            'Closure(CodeIgniter\PHPStan\Type\FactoriesReturnTypeHelper): never',
             self::getPrivateMethodInvoker($object, '__construct'),
         );
         assertType(
-            'Closure(PHPStan\Reflection\FunctionReflection): bool',
+            'Closure(PHPStan\Reflection\FunctionReflection): never',
             self::getPrivateMethodInvoker($object, 'isFunctionSupported'),
         );
         assertType(
-            'Closure(PHPStan\Reflection\FunctionReflection, PhpParser\Node\Expr\FuncCall, PHPStan\Analyser\Scope): (PHPStan\Type\Type|null)',
+            'Closure(PHPStan\Reflection\FunctionReflection, PhpParser\Node\Expr\FuncCall, PHPStan\Analyser\Scope): never',
             self::getPrivateMethodInvoker($object, 'getTypeFromFunctionCall'),
         );
     }
@@ -132,7 +132,7 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
     public function testOnGenericClassString(string $class): void
     {
         assertType(
-            'Closure(Psr\Log\LoggerInterface, CodeIgniter\CLI\Commands): CodeIgniter\Commands\Utilities\ConfigCheck',
+            'Closure(Psr\Log\LoggerInterface, CodeIgniter\CLI\Commands): never',
             self::getPrivateMethodInvoker($class, '__construct'),
         );
     }
@@ -164,7 +164,7 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
         assertType(
             sprintf(
                 '%s|%s',
-                '(Closure(CodeIgniter\PHPStan\Type\ServicesReturnTypeHelper): CodeIgniter\PHPStan\Type\ServicesFunctionReturnTypeExtension)',
+                '(Closure(CodeIgniter\PHPStan\Type\ServicesReturnTypeHelper): never)',
                 '(Closure(non-empty-string): CodeIgniter\PHPStan\Tests\Fixtures\Type\ReflectionHelperGetPrivateMethodInvokerTest)',
             ),
             self::getPrivateMethodInvoker($object, '__construct'),
@@ -177,7 +177,7 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
     public function testOnUnionOfStringObjectsWithOneNonClass(string $object): void
     {
         assertType(
-            '*NEVER*',
+            'Closure(Psr\Log\LoggerInterface, CodeIgniter\CLI\Commands): never',
             self::getPrivateMethodInvoker($object, '__construct'),
         );
     }
