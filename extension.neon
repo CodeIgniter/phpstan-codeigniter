@@ -85,6 +85,11 @@ services:
     arguments:
       class: CodeIgniter\Test\CIUnitTestCase
 
+  -
+    class: CodeIgniter\PHPStan\Type\ServicesGetSharedInstanceReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicStaticMethodReturnTypeExtension
+
   # conditional rules
   -
     class: CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule

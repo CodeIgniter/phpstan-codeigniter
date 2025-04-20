@@ -2,6 +2,23 @@
 
 All type inference capabilities of this extension are summarised below:
 
+## Dynamic Function Return Type Extensions
+
+### ServicesFunctionReturnTypeExtension
+
+This extension provides precise return types for the `service()` and `single_service()` functions.
+
+**Before:**
+```php
+\PHPStan\dumpType(service('cache')); // object|null
+
+```
+
+**After:**
+```php
+\PHPStan\dumpType(service('cache')); // CodeIgniter\Cache\CacheInterface
+```
+
 ## Dynamic Static Method Return Type Extensions
 
 ### ReflectionHelperGetPrivateMethodInvokerReturnTypeExtension
@@ -20,9 +37,10 @@ class Foo
         return true;
     }
 }
+
 ```
 
-**Before**
+**Before:**
 ```php
 public function testSomePrivateMethod(): void
 {
@@ -32,7 +50,7 @@ public function testSomePrivateMethod(): void
 
 ```
 
-**After**
+**After:**
 ```php
 public function testSomePrivateMethod(): void
 {
@@ -57,3 +75,43 @@ public function testSomePrivateMethod(): void
 >    class: <Fully qualified class name of class using ReflectionHelper>
 >
 > ```
+
+### ServicesGetSharedInstanceReturnTypeExtension
+
+This extension provides precise return type for the protected static method `getSharedInstance()` of `Services`.
+
+**Before:**
+```php
+<?php
+class MyService extends \Config\Services
+{
+    public static function bar(bool $getShared = true): Bar
+    {
+        if ($getShared) {
+            \PHPStan\dumpType(static::getSharedInstance('bar')); // object
+            return static::getSharedInstance('bar');
+        }
+
+        return new Bar();
+    }
+}
+
+```
+
+**After:**
+```php
+<?php
+class MyService extends \Config\Services
+{
+    public static function bar(bool $getShared = true): Bar
+    {
+        if ($getShared) {
+            \PHPStan\dumpType(static::getSharedInstance('bar')); // Bar
+            return static::getSharedInstance('bar');
+        }
+
+        return new Bar();
+    }
+}
+
+```
