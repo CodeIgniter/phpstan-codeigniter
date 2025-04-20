@@ -47,16 +47,6 @@ includes:
 
 </details>
 
-Development in this repository uses **PHP 8.1+**.
-
-Starting [v1.1.0](https://github.com/CodeIgniter/phpstan-codeigniter/releases/tag/v1.1.0), releases come with a downgraded
-version to suit lower PHP versions. Currently, lowest supported downgraded PHP version is **PHP 7.4**.
-
-## Caveats
-
-1. The behavior of factories functions relative to how they load classes is based on codeigniter4/framework v4.4. If you are
-  relying on the behavior of < v4.4, this may not work out for you.
-
 ## Contributing
 
 Any contributions are welcome.
