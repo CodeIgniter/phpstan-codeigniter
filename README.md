@@ -9,13 +9,7 @@
 
 This extension provides the following features:
 
-### Type Inference
-
-* Provides precise return types for `config()` and `model()` functions.
-* Provides precise return types for `service()` and `single_service()` functions.
-* Provides precise return types for `fake()` helper function.
-* Provides precise return types for `CodeIgniter\Model`'s `find()`, `findAll()`, and `first()` methods.
-* Allows dynamic return type transformation of `CodeIgniter\Model` when `asArray()` or `asObject()` is called.
+* [Type inference](docs/type-inference.md)
 
 ### Rules
 
@@ -57,45 +51,6 @@ Development in this repository uses **PHP 8.1+**.
 
 Starting [v1.1.0](https://github.com/CodeIgniter/phpstan-codeigniter/releases/tag/v1.1.0), releases come with a downgraded
 version to suit lower PHP versions. Currently, lowest supported downgraded PHP version is **PHP 7.4**.
-
-## Configuration
-
-This extension adds the default namespace for `config()` and `model()` functions as `Config\` and `App\Models\`, respectively,
-when searching for possible classes. If your application uses other namespaces, you can configure this extension
-in your `phpstan.neon` to recognize those namespaces:
-
-```yml
-parameters:
-  codeigniter:
-    additionalConfigNamespaces:
-      - Acme\Blog\Config\
-      - Foo\Bar\Config\
-    additionalModelNamespaces:
-      - Acme\Blog\Models\
-
-```
-
-For the `service()` and `single_service()` functions, you can instruct PHPStan to consider your own
-services factory classes. **Please note that it should be a valid class extending `CodeIgniter\Config\BaseService`!**
-
-```yml
-parameters:
-  codeigniter:
-    additionalServices:
-      - Acme\Blog\Config\ServiceFactory
-```
-
-When the model passed to `fake()` has the property `$returnType` set to `array`, this extension will give a precise
-array shape based on the allowed fields of the model. Most of the time, the formatted fields are strings. If not a string,
-you can indicate the format return type for the particular field.
-
-```yml
-parameters:
-  codeigniter:
-    notStringFormattedFields: # key-value pair of field => format
-      success: bool
-      user_id: int
-```
 
 ## Caveats
 
