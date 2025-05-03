@@ -59,25 +59,25 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
         ], [
             [
                 'Parameter #1 $name of function config expects a valid class string, \'bar\' given.',
-                23,
+                24,
                 'If \'bar\' is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additionalConfigNamespaces</> in your <fg=yellow>%configurationFile%</>.',
             ],
             [
                 'Parameter #1 $name of function config expects a valid class string, \'Foo\\\\Bar\' given.',
-                24,
+                25,
                 'If \'Foo\\\\Bar\' is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additionalConfigNamespaces</> in your <fg=yellow>%configurationFile%</>.',
             ],
             [
                 'Argument #1 $name (\'Foo\'|\'stdClass\') passed to function config does not extend CodeIgniter\\\\Config\\\\BaseConfig.',
-                27,
+                28,
             ],
             [
                 'Argument #1 $name (class-string) passed to function config does not extend CodeIgniter\\\\Config\\\\BaseConfig.',
-                32,
+                33,
             ],
             [
                 'Parameter #1 $name of function config expects a valid class string, string given.',
-                35,
+                36,
             ],
             [
                 'Parameter #1 $name of function model expects a valid class string, \'foo\' given.',

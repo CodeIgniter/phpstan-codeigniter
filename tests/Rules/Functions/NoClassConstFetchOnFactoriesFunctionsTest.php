@@ -47,7 +47,7 @@ final class NoClassConstFetchOnFactoriesFunctionsTest extends RuleTestCase
         ], [
             [
                 'Call to function config with CodeIgniter\Shield\Config\AuthJWT::class is discouraged.',
-                38,
+                39,
                 'Use config(\'AuthJWT\') instead to allow overriding.',
             ],
             [

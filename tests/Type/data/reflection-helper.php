@@ -48,14 +48,14 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
 
         $object = new Environment(service('logger'), service('commands'));
         assertType(
-            'Closure(array<int|string, string|null>): (int|void)',
+            'Closure(array<int|string, string|null>): int',
             self::getPrivateMethodInvoker($object, 'run'),
         );
         assertType('Closure(string): bool', self::getPrivateMethodInvoker($object, 'writeNewEnvironmentToEnvFile'));
 
         $object = new ConfigCheck(service('logger'), service('commands'));
         assertType(
-            'Closure(array<int|string, string|null>): (int|void)',
+            'Closure(array<int|string, string|null>): int',
             self::getPrivateMethodInvoker($object, 'run'),
         );
         assertType('Closure(object): string', self::getPrivateMethodInvoker($object, 'getVarDump'));

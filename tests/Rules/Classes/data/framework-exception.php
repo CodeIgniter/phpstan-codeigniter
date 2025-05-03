@@ -12,9 +12,10 @@ declare(strict_types=1);
  */
 
 use CodeIgniter\Exceptions\FrameworkException;
+use CodeIgniter\HTTP\Exceptions\HTTPException;
 use CodeIgniter\View\Exceptions\ViewException;
 
 $e1 = new FrameworkException('Hello.');
 $e2 = new ViewException('Hi!');
 $e3 = new RuntimeException('Thanks.');
-$e4 = new CodeIgniter\HTTP\Exceptions\HTTPException('Nice');
+$e4 = new HTTPException('Nice');

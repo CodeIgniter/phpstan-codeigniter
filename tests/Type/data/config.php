@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Tests\Fixtures\Type;
 
+use CodeIgniter\Shield\Config\AuthJWT;
 use Config\App;
 use stdClass;
 
@@ -35,4 +36,4 @@ function bar(string $name): void
     assertType('null', config($name));
 }
 
-assertType('CodeIgniter\Shield\Config\AuthJWT', config(\CodeIgniter\Shield\Config\AuthJWT::class));
+assertType('CodeIgniter\Shield\Config\AuthJWT', config(AuthJWT::class));

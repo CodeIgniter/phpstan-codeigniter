@@ -38,15 +38,15 @@ final class FrameworkExceptionInstantiationRuleTest extends RuleTestCase
         $this->analyse([__DIR__ . '/data/framework-exception.php'], [
             [
                 'Instantiating FrameworkException using new is not allowed. Use one of its named constructors instead.',
-                17,
-            ],
-            [
-                'Instantiating ViewException using new is not allowed. Use one of its named constructors instead.',
                 18,
             ],
             [
+                'Instantiating ViewException using new is not allowed. Use one of its named constructors instead.',
+                19,
+            ],
+            [
                 'Instantiating HTTPException using new is not allowed. Use one of its named constructors instead.',
-                20,
+                21,
             ],
         ]);
     }
