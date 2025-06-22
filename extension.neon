@@ -10,6 +10,7 @@ parameters:
       - CodeIgniter\Config\
     additionalModelNamespaces: []
     additionalServices: []
+    addBackupHandlerAsReturnType: false
     notStringFormattedFields: []
     checkArgumentTypeOfFactories: true
     checkArgumentTypeOfConfig: true
@@ -21,6 +22,7 @@ parametersSchema:
     additionalConfigNamespaces: listOf(string())
     additionalModelNamespaces: listOf(string())
     additionalServices: listOf(string())
+    addBackupHandlerAsReturnType: bool()
     notStringFormattedFields: arrayOf(string())
     checkArgumentTypeOfFactories: bool()
     checkArgumentTypeOfConfig: bool()
@@ -78,6 +80,13 @@ services:
       - phpstan.broker.dynamicMethodReturnTypeExtension
 
   # DynamicStaticMethodReturnTypeExtension
+  -
+    class: CodeIgniter\PHPStan\Type\CacheFactoryGetHandlerReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicStaticMethodReturnTypeExtension
+    arguments:
+      addBackupHandlerAsReturnType: %codeigniter.addBackupHandlerAsReturnType%
+
   -
     class: CodeIgniter\PHPStan\Type\ReflectionHelperGetPrivateMethodInvokerReturnTypeExtension
     tags:
