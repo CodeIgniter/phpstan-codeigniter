@@ -122,6 +122,42 @@ This also allows dynamic return type transformation of `CodeIgniter\Model` when 
 
 ## Dynamic Static Method Return Type Extensions
 
+### CacheFactoryHandlerReturnTypeExtension
+
+This extension provides precise return type to `CacheFactory::getHandler()` static method.
+
+**Before:**
+```php
+\PHPStan\dumpType(CacheFactory::getHandler(new Cache())); // CodeIgniter\Cache\CacheInterface
+\PHPStan\dumpType(CacheFactory::getHandler(new Cache(), 'redis')); // CodeIgniter\Cache\CacheInterface
+```
+
+**After:**
+```php
+\PHPStan\dumpType(CacheFactory::getHandler(new Cache())); // CodeIgniter\Cache\Handlers\FileHandler
+\PHPStan\dumpType(CacheFactory::getHandler(new Cache(), 'redis')); // CodeIgniter\Cache\Handlers\RedisHandler
+```
+
+> [!NOTE]
+> **Configuration:**
+>
+> By default, this extension only considers the primary handler as the return type. If that fails (e.g. the handler
+> is not defined in the Cache config's `$validHandlers` array), then this will return the backup handler as
+> return type. If you want to return both primary and backup handlers as return type, you can set this:
+>
+> ```yml
+> parameters:
+>   codeigniter:
+>     addBackupHandlerAsReturnType: true
+> ```
+>
+> This setting will give the return type as a benevolent union of the primary and backup handler types.
+>
+> ```php
+> \PHPStan\dumpType(CacheFactory::getHandler(new Cache())); // (FileHandler|DummyHandler)
+> \PHPStan\dumpType(CacheFactory::getHandler(new Cache(), 'redis', 'file')); // (FileHandler|RedisHandler)
+> ```
+
 ### ReflectionHelperGetPrivateMethodInvokerReturnTypeExtension
 
 This extension provides precise return type to `ReflectionHelper`'s static `getPrivateMethodInvoker()` method.
