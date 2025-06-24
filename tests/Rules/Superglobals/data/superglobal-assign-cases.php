@@ -46,4 +46,8 @@ function allowed_offset_assigns(): void
 {
     $_SERVER['argv'] = ['arg1', 'arg2'];
     $_SERVER['argc'] = 2;
+
+    $_SERVER['REQUEST_TIME'] = time();
+
+    $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
 }

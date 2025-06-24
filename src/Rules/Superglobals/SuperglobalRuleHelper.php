@@ -21,7 +21,7 @@ final class SuperglobalRuleHelper
      * @var array{_SERVER: list<string>, _GET: list<string>}
      */
     private static array $allowedOffsetAccess = [
-        '_SERVER' => ['argv', 'argc'],
+        '_SERVER' => ['argv', 'argc', 'REQUEST_TIME', 'REQUEST_TIME_FLOAT'],
         '_GET'    => [],
     ];
 

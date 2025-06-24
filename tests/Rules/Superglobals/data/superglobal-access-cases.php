@@ -32,9 +32,14 @@ function bar(string $c): ?string
 }
 
 /**
- * @return array{array<string, mixed>, int}
+ * @return array{list<string>, int, int, float}
  */
 function allowed_offset_access(): array
 {
-    return [$_SERVER['argv'] ?? [], $_SERVER['argc'] ?? 0];
+    return [
+        $_SERVER['argv'] ?? [],
+        $_SERVER['argc'] ?? 0,
+        $_SERVER['REQUEST_TIME'] ?? 0,
+        $_SERVER['REQUEST_TIME_FLOAT'] ?? 0.0,
+    ];
 }
