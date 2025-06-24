@@ -33,3 +33,17 @@ $_GET = 'sss';
 $_GET = 12_500;
 
 $_GET = ['first' => 'John', 'last' => 'Doe'];
+
+/**
+ * @param 'HTTP_HOST'|'SCRIPT_NAME' $key
+ */
+function baz(string $key, mixed $value): void
+{
+    $_SERVER[$key] = $value;
+}
+
+function allowed_offset_assigns(): void
+{
+    $_SERVER['argv'] = ['arg1', 'arg2'];
+    $_SERVER['argc'] = 2;
+}

@@ -93,32 +93,38 @@ final class SuperglobalAssignRule implements Rule
 
         $exprType = $scope->getType($node->expr);
 
-        $expr   = $exprType->describe(VerbosityLevel::precise());
-        $dim    = $dimType->describe(VerbosityLevel::precise());
         $method = $this->superglobalRuleHelper->getSuperglobalMethodSetter($name);
 
-        $addTip = static function (RuleErrorBuilder $ruleErrorBuilder) use ($method, $dimType, $exprType): RuleErrorBuilder {
-            if ($dimType->getConstantStrings() !== [] && $exprType->getConstantStrings() !== []) {
-                foreach ($dimType->getConstantStrings() as $dimString) {
-                    foreach ($exprType->getConstantStrings() as $exprString) {
-                        $ruleErrorBuilder->addTip(sprintf(
-                            'Use \\Config\\Services::superglobals()->%s(%s, %s) instead.',
-                            $method,
-                            $dimString->describe(VerbosityLevel::precise()),
-                            $exprString->describe(VerbosityLevel::precise()),
-                        ));
-                    }
+        if ($dimType->getConstantStrings() !== []) {
+            $errors = [];
+
+            foreach ($dimType->getConstantStrings() as $dimString) {
+                $dim = $dimString->getValue();
+
+                if ($this->superglobalRuleHelper->isAllowedOffsetAccess($name, $dim)) {
+                    continue;
                 }
 
-                return $ruleErrorBuilder;
+                $expr = $exprType->describe(VerbosityLevel::precise());
+
+                $errors[] = RuleErrorBuilder::message(sprintf('Assigning %s directly on offset \'%s\' of $%s is discouraged.', $expr, $dim, $name))
+                    ->identifier('codeigniter.superglobalAccessAssign')
+                    ->tip(sprintf('Use \\Config\\Services::superglobals()->%s(\'%s\', %s) instead.', $method, $dim, $expr))
+                    ->build();
             }
 
-            return $ruleErrorBuilder->tip(sprintf('Use \\Config\\Services::superglobals()->%s() instead.', $method));
-        };
+            return $errors;
+        }
 
         return [
-            $addTip(RuleErrorBuilder::message(sprintf('Assigning %s directly on offset %s of $%s is discouraged.', $expr, $dim, $name)))
+            RuleErrorBuilder::message(sprintf(
+                'Assigning %s directly on offset %s of $%s is discouraged.',
+                $exprType->describe(VerbosityLevel::precise()),
+                $dimType->describe(VerbosityLevel::precise()),
+                $name,
+            ))
                 ->identifier('codeigniter.superglobalAccessAssign')
+                ->tip(sprintf('Use \\Config\\Services::superglobals()->%s(...) instead.', $method))
                 ->build(),
         ];
     }

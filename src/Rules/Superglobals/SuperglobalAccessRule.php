@@ -72,11 +72,16 @@ final class SuperglobalAccessRule implements Rule
         }
 
         $method = $this->superglobalRuleHelper->getSuperglobalMethodGetter($name);
-        $errors = [];
 
         if ($dimType->getConstantStrings() !== []) {
+            $errors = [];
+
             foreach ($dimType->getConstantStrings() as $dimString) {
                 $dim = $dimString->getValue();
+
+                if ($this->superglobalRuleHelper->isAllowedOffsetAccess($name, $dim)) {
+                    continue;
+                }
 
                 $errors[] = RuleErrorBuilder::message(sprintf('Accessing offset \'%s\' directly on $%s is discouraged.', $dim, $name))
                     ->tip(sprintf('Use \\Config\\Services::superglobals()->%s(\'%s\') instead.', $method, $dim))

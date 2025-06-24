@@ -30,3 +30,11 @@ function bar(string $c): ?string
 {
     return $_SERVER[$c] ?? null;
 }
+
+/**
+ * @return array{array<string, mixed>, int}
+ */
+function allowed_offset_access(): array
+{
+    return [$_SERVER['argv'] ?? [], $_SERVER['argc'] ?? 0];
+}

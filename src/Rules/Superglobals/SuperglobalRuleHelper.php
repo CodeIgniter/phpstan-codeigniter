@@ -17,9 +17,26 @@ use InvalidArgumentException;
 
 final class SuperglobalRuleHelper
 {
+    /**
+     * @var array{_SERVER: list<string>, _GET: list<string>}
+     */
+    private static array $allowedOffsetAccess = [
+        '_SERVER' => ['argv', 'argc'],
+        '_GET'    => [],
+    ];
+
     public function isHandledSuperglobal(string $name): bool
     {
         return in_array($name, ['_SERVER', '_GET'], true);
+    }
+
+    public function isAllowedOffsetAccess(string $name, string $offset): bool
+    {
+        if (! $this->isHandledSuperglobal($name)) {
+            return false;
+        }
+
+        return in_array($offset, self::$allowedOffsetAccess[$name], true);
     }
 
     /**

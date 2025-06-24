@@ -51,12 +51,12 @@ final class SuperglobalAssignRuleTest extends RuleTestCase
             [
                 'Assigning string directly on offset string of $_SERVER is discouraged.',
                 27,
-                'Use \\Config\\Services::superglobals()->setServer() instead.',
+                'Use \\Config\\Services::superglobals()->setServer(...) instead.',
             ],
             [
                 'Assigning string directly on offset string of $_GET is discouraged.',
                 29,
-                'Use \Config\Services::superglobals()->setGet() instead.',
+                'Use \Config\Services::superglobals()->setGet(...) instead.',
             ],
             [
                 'Cannot re-assign non-arrays to $_GET, got string.',
@@ -65,6 +65,16 @@ final class SuperglobalAssignRuleTest extends RuleTestCase
             [
                 'Cannot re-assign non-arrays to $_GET, got int.',
                 33,
+            ],
+            [
+                'Assigning mixed directly on offset \'HTTP_HOST\' of $_SERVER is discouraged.',
+                42,
+                'Use \Config\Services::superglobals()->setServer(\'HTTP_HOST\', mixed) instead.',
+            ],
+            [
+                'Assigning mixed directly on offset \'SCRIPT_NAME\' of $_SERVER is discouraged.',
+                42,
+                'Use \Config\Services::superglobals()->setServer(\'SCRIPT_NAME\', mixed) instead.',
             ],
         ]);
     }
