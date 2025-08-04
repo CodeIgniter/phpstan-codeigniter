@@ -11,7 +11,7 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/vendor/codeigniter4/framework/system/Test/bootstrap.php';
+require_once __DIR__ . '/vendor/codeigniter4/framework/system/util_bootstrap.php';
 
 foreach ([
     'vendor/codeigniter4/framework/app/Config',
