@@ -32,7 +32,7 @@ final class FactoriesReturnTypeHelper
     ];
 
     /**
-     * @var array<string, array<int, string>>
+     * @var array<string, list<string>>
      */
     private array $additionalNamespacesMap = [
         'config' => [],
@@ -40,8 +40,8 @@ final class FactoriesReturnTypeHelper
     ];
 
     /**
-     * @param array<int, string> $additionalConfigNamespaces
-     * @param array<int, string> $additionalModelNamespaces
+     * @param list<string> $additionalConfigNamespaces
+     * @param list<string> $additionalModelNamespaces
      */
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,

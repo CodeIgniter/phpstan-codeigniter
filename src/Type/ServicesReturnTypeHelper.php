@@ -30,7 +30,7 @@ use PHPStan\Type\UnionType;
 final class ServicesReturnTypeHelper
 {
     /**
-     * @var array<int, string>
+     * @var list<string>
      */
     public const IMPOSSIBLE_SERVICE_METHOD_NAMES = [
         '__callstatic',
@@ -45,17 +45,17 @@ final class ServicesReturnTypeHelper
     ];
 
     /**
-     * @var array<int, class-string>
+     * @var list<class-string>
      */
     private array $services;
 
     /**
-     * @var array<int, ClassReflection>
+     * @var list<ClassReflection>
      */
     private static array $servicesReflection = [];
 
     /**
-     * @param array<int, class-string> $additionalServices
+     * @param list<class-string> $additionalServices
      */
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
@@ -114,7 +114,7 @@ final class ServicesReturnTypeHelper
     }
 
     /**
-     * @return array<int, ClassReflection>
+     * @return list<ClassReflection>
      */
     public function getServicesReflection(): array
     {
