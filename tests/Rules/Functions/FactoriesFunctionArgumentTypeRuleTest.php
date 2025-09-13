@@ -30,15 +30,13 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
 {
     use AdditionalConfigFilesTrait;
 
-    private bool $checkArgumentTypeOfConfig;
     private bool $checkArgumentTypeOfModel;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->checkArgumentTypeOfConfig = true;
-        $this->checkArgumentTypeOfModel  = true;
+        $this->checkArgumentTypeOfModel = true;
     }
 
     protected function getRule(): Rule
@@ -46,7 +44,7 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
         return new FactoriesFunctionArgumentTypeRule(
             self::createReflectionProvider(),
             self::getContainer()->getByType(FactoriesReturnTypeHelper::class),
-            $this->checkArgumentTypeOfConfig,
+            true,
             $this->checkArgumentTypeOfModel,
         );
     }
