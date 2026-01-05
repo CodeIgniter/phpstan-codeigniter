@@ -68,4 +68,4 @@ jobs:
           composer audit --ansi --abandoned=report
 
       - name: Run Extension Tests
-        run: vendor/bin/phpunit --no-coverage
+        run: composer test:stan

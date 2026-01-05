@@ -5,5 +5,4 @@ vendor/
 composer.lock
 .php-cs-fixer.php
 phpstan.neon
-*.cache
 phpunit.xml

@@ -1,11 +1,7 @@
 *.php text eol=lf
 
-.github/                    export-ignore
+.*                          export-ignore
 tests/                      export-ignore
-.editorconfig               export-ignore
-.gitattributes              export-ignore
-.gitignore                  export-ignore
-.php-cs-fixer.dist.php      export-ignore
 src/ComposerScripts.php     export-ignore
 phpunit.dist.xml            export-ignore
 phpstan.dist.neon           export-ignore

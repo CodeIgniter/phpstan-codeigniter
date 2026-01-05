@@ -1,27 +1,30 @@
 includes:
   - extension.neon
-  - phpstan-baseline.php
   - vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:
+  phpVersion:
+    min: 80200
+    max: 80599
   level: 10
+  tmpDir: build/phpstan
   paths:
     - src
     - tests
   excludePaths:
     analyseAndScan:
       - src/ComposerScripts.php
-      - tests/*/data/*
-  tmpDir: build/phpstan
+      - tests/data/**
   bootstrapFiles:
     - bootstrap.php
-  codeigniter:
-    additionalModelNamespaces:
-      - CodeIgniter\PHPStan\Tests\Fixtures\Type
-  checkTooWideReturnTypesInProtectedAndPublicMethods: true
-  checkUninitializedProperties: true
-  checkImplicitMixed: true
+  exceptions:
+    check:
+      throwTypeCovariance: true
   checkBenevolentUnionTypes: true
   checkMissingCallableSignature: true
+  checkTooWideReturnTypesInProtectedAndPublicMethods: true
+  checkTooWideThrowTypesInProtectedAndPublicMethods: true
+  checkUninitializedProperties: true
   reportAlwaysTrueInLastCondition: true
+  reportAnyTypeWideningInVarTag: true
   treatPhpDocTypesAsCertain: false

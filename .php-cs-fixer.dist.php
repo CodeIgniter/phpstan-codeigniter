@@ -14,6 +14,8 @@ declare(strict_types=1);
 use CodeIgniter\CodingStandard\CodeIgniter4;
 use Nexus\CsConfig\Factory;
 use PhpCsFixer\Finder;
+use PhpCsFixerCustomFixers\Fixer;
+use PhpCsFixerCustomFixers\Fixers;
 
 $finder = Finder::create()
     ->files()
@@ -23,20 +25,19 @@ $finder = Finder::create()
     ])
     ->append([
         __FILE__,
+        __DIR__ . '/bootstrap.php',
     ]);
 
 $overrides = [
     'declare_strict_types'        => true,
-    'final_internal_class'        => true,
-    'ordered_types'               => true,
     'php_unit_data_provider_name' => [
         'prefix' => 'provide',
         'suffix' => 'Cases',
     ],
-    'php_unit_data_provider_static'          => true,
     'php_unit_test_case_static_method_calls' => [
         'call_type' => 'self',
         'methods'   => [],
+        'target'    => '10.0',
     ],
     'phpdoc_to_param_type'    => true,
     'phpdoc_to_property_type' => true,
@@ -46,8 +47,24 @@ $overrides = [
 ];
 
 $options = [
-    'cacheFile' => 'build/.php-cs-fixer.cache',
-    'finder'    => $finder,
+    'cacheFile'    => 'build/.php-cs-fixer.cache',
+    'finder'       => $finder,
+    'customFixers' => new Fixers(),
+    'customRules'  => [
+        Fixer\FunctionParameterSeparationFixer::name()    => true,
+        Fixer\NoCommentedOutCodeFixer::name()             => true,
+        Fixer\NoTrailingCommaInSinglelineFixer::name()    => true,
+        Fixer\NoUselessCommentFixer::name()               => true,
+        Fixer\NoUselessParenthesisFixer::name()           => true,
+        Fixer\NoUselessWriteVisibilityFixer::name()       => true,
+        Fixer\PhpUnitAssertArgumentsOrderFixer::name()    => true,
+        Fixer\PhpUnitNoUselessReturnFixer::name()         => true,
+        Fixer\PhpdocNoIncorrectVarAnnotationFixer::name() => true,
+        Fixer\PhpdocSelfAccessorFixer::name()             => true,
+        Fixer\PhpdocTypesCommaSpacesFixer::name()         => true,
+        Fixer\PhpdocVarAnnotationToAssertFixer::name()    => true,
+        Fixer\PromotedConstructorPropertyFixer::name()    => ['promote_only_existing_properties' => true],
+    ],
 ];
 
 return Factory::create(new CodeIgniter4(), $overrides, $options)->forLibrary(

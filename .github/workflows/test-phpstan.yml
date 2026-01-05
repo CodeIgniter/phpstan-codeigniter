@@ -59,9 +59,6 @@ jobs:
             composer-${{ matrix.php-version }}-
             composer-
 
-      - name: Create PHPStan cache directory
-        run: mkdir --parents build/phpstan
-
       - name: Cache PHPStan cache directory
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
@@ -79,4 +76,4 @@ jobs:
           composer audit --ansi --abandoned=report
 
       - name: Run PHPStan
-        run: vendor/bin/phpstan analyse --ansi --verbose
+        run: composer phpstan:check

@@ -1,29 +1,15 @@
-# CodeIgniter extensions and rules for PHPStan
+# PHPStan CodeIgniter4 extension
 
 [![Extension Tests](https://github.com/CodeIgniter/phpstan-codeigniter/actions/workflows/test-phpunit.yml/badge.svg)](https://github.com/CodeIgniter/phpstan-codeigniter/actions/workflows/test-phpunit.yml)
 [![Coding Standards Check](https://github.com/CodeIgniter/phpstan-codeigniter/actions/workflows/test-coding-standards.yml/badge.svg)](https://github.com/CodeIgniter/phpstan-codeigniter/actions/workflows/test-coding-standards.yml)
 [![PHPStan Static Analysis](https://github.com/CodeIgniter/phpstan-codeigniter/actions/workflows/test-phpstan.yml/badge.svg)](https://github.com/CodeIgniter/phpstan-codeigniter/actions/workflows/test-phpstan.yml)
 
 * [PHPStan](https://phpstan.org/)
-* [CodeIgniter](https://codeigniter.com/)
+* [CodeIgniter4](https://codeigniter.com/)
 
-This extension provides the following features:
+## Description
 
-* [Type inference](docs/type-inference.md)
-
-### Rules
-
-* Checks if the string argument passed to `config()` or `model()` function is a valid class string extending
-`CodeIgniter\Config\BaseConfig` or `CodeIgniter\Model`, respectively. This can be turned off by setting
-`codeigniter.checkArgumentTypeOfFactories: false` in your `phpstan.neon`. For fine-grained control, you can
-individually choose which factory function to disable using `codeigniter.checkArgumentTypeOfConfig` and
-`codeigniter.checkArgumentTypeOfModel`. **NOTE:** Setting `codeigniter.checkArgumentTypeOfFactories: false` will effectively
-bypass the two specific options.
-* Checks if the string argument passed to `service()` or `single_service()` function is a valid service name. This can be turned off by setting `codeigniter.checkArgumentTypeOfServices: false` in your `phpstan.neon`.
-* Disallows instantiating cache handlers using `new` and suggests to use the `CacheFactory` class instead.
-* Disallows instantiating `FrameworkException` classes using `new`.
-* Disallows direct re-assignment or access of `$_SERVER` and `$_GET` and suggests to use the `Superglobals` class instead.
-* Disallows use of `::class` fetch on `config()` and `model()` and suggests to use the short form of the class instead.
+This PHPStan extension provides type inference support and rules for `CodeIgniter4`.
 
 ## Installation
 
@@ -44,7 +30,6 @@ If you don't want to use `phpstan/extension-installer`, include extension.neon i
 includes:
     - vendor/codeigniter/phpstan-codeigniter/extension.neon
 ```
-
 </details>
 
 ## Contributing

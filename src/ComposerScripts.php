@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan;
 
-use FilesystemIterator;
 use JsonException;
 use Phar;
 use PharException;
@@ -40,15 +39,17 @@ final class ComposerScripts
 
     private static function recursiveDelete(string $directory): void
     {
-        if (! is_dir($directory)) {
-            echo sprintf('Cannot recursively delete "%s" as it does not exist.', $directory) . PHP_EOL;
+        $realDirectory = realpath($directory);
+
+        if ($realDirectory === false || ! is_dir($realDirectory)) {
+            echo sprintf("Cannot recursively delete \"%s\" as it does not exist.\n", $directory);
 
             return;
         }
 
         /** @var SplFileInfo $file */
         foreach (new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator(rtrim($directory, '\\/'), FilesystemIterator::SKIP_DOTS),
+            new RecursiveDirectoryIterator(rtrim($directory, '\\/'), RecursiveDirectoryIterator::SKIP_DOTS),
             RecursiveIteratorIterator::CHILD_FIRST,
         ) as $file) {
             $path = $file->getPathname();
@@ -64,7 +65,11 @@ final class ComposerScripts
     private static function extractPhpstanPhar(): void
     {
         try {
-            (new Phar(__DIR__ . '/../vendor/phpstan/phpstan/phpstan.phar'))->extractTo(__DIR__ . '/../vendor/phpstan/phpstan-phar', null, true);
+            (new Phar(__DIR__ . '/../vendor/phpstan/phpstan/phpstan.phar'))->extractTo(
+                directory: __DIR__ . '/../vendor/phpstan/phpstan-phar',
+                overwrite: true,
+            );
+            echo "PHPStan successfully extracted for IDE completion.\n";
         } catch (PharException|UnexpectedValueException $e) {
             echo $e->getMessage();
 
@@ -95,6 +100,8 @@ final class ComposerScripts
             $newContents = json_encode($settingsJson, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
 
             if ($newContents === $contents) {
+                echo "No changes needed for .vscode/settings.json.\n";
+
                 return;
             }
 

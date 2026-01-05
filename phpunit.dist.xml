@@ -6,25 +6,35 @@
          colors="true"
          columns="max"
          executionOrder="random"
+         beStrictAboutOutputDuringTests="true"
+         displayDetailsOnPhpunitDeprecations="true"
          failOnDeprecation="true"
          failOnEmptyTestSuite="true"
          failOnIncomplete="true"
          failOnNotice="true"
+         failOnPhpunitDeprecation="true"
          failOnRisky="true"
-         failOnWarning="true"
-         beStrictAboutOutputDuringTests="true">
+         failOnWarning="true">
     <testsuites>
         <testsuite name="Extension Tests">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
 
-    <source>
+    <source ignoreIndirectDeprecations="true" restrictNotices="true" restrictWarnings="true">
         <include>
-            <directory suffix=".php">src</directory>
+            <directory>src</directory>
         </include>
         <exclude>
             <file>src/ComposerScripts.php</file>
         </exclude>
     </source>
+
+    <coverage ignoreDeprecatedCodeUnits="true" />
+
+    <extensions>
+        <bootstrap class="Nexus\PHPUnit\Tachycardia\TachycardiaExtension">
+            <parameter name="precision" value="2" />
+        </bootstrap>
+    </extensions>
 </phpunit>

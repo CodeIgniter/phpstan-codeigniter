@@ -23,19 +23,21 @@
     },
     "require": {
         "php": "^8.2",
-        "phpstan/phpstan": "^2.0"
+        "phpstan/phpstan": "^2.2"
     },
     "require-dev": {
-        "codeigniter4/framework": "^4.6.2",
-        "codeigniter/coding-standard": "^1.7",
-        "codeigniter4/shield": "^1.0",
-        "friendsofphp/php-cs-fixer": "^3.49",
-        "nexusphp/cs-config": "^3.21",
-        "phpstan/extension-installer": "^1.3",
+        "codeigniter/coding-standard": "^1.8",
+        "codeigniter4/framework": "^4.7",
+        "codeigniter4/shield": "^1.2",
+        "friendsofphp/php-cs-fixer": "^3.92",
+        "kubawerlos/php-cs-fixer-custom-fixers": "^3.35",
+        "nexusphp/cs-config": "^3.27",
+        "nexusphp/tachycardia": "^2.4",
+        "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpstan/phpstan-strict-rules": "^2.0",
-        "phpunit/phpunit": "^10.5 || ^11.4"
+        "phpunit/phpunit": "^11.5 || ^12.5"
     },
     "conflict": {
         "codeigniter/framework": "*"
@@ -48,8 +50,11 @@
         }
     },
     "autoload-dev": {
-        "classmap": [
-            "tests/"
+        "psr-4": {
+            "CodeIgniter\\PHPStan\\Tests\\": "tests/"
+        },
+        "exclude-from-classmap": [
+            "tests/data/**"
         ]
     },
     "config": {
@@ -70,6 +75,24 @@
     "scripts": {
         "post-update-cmd": [
             "CodeIgniter\\PHPStan\\ComposerScripts::postUpdate"
-        ]
+        ],
+        "cs:check": "php-cs-fixer check --verbose --ansi --diff",
+        "cs:fix": "php-cs-fixer fix --verbose --ansi --diff",
+        "phpstan:baseline": "phpstan analyse --verbose --ansi --generate-baseline=phpstan-baseline.php",
+        "phpstan:check": "phpstan analyse --verbose --ansi",
+        "test:all": [
+            "@cs:check",
+            "@phpstan:check",
+            "@test:stan"
+        ],
+        "test:stan": "phpunit --colors=always --group=static-analysis"
+    },
+    "scripts-descriptions": {
+        "cs:check": "Checks for coding style violations",
+        "cs:fix": "Fixes coding style violations",
+        "phpstan:baseline": "Runs PHPStan and dumps resulting errors to baseline",
+        "phpstan:check": "Runs PHPStan with identifiers support",
+        "test:all": "Runs all tests",
+        "test:stan": "Runs the Static Analysis Tests"
     }
 }
