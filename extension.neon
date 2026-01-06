@@ -16,5 +16,6 @@ services:
       - phpstan.broker.dynamicMethodReturnTypeExtension
 
 rules:
+  - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsGlobalAssignRule
   - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAccessRule
   - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAssignRule

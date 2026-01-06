@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Tests\Rules;
 
-function test_superglobals_access(string $name): void
+function test_superglobals_offset_access(string $name): void
 {
     $_SERVER[$name];
     $_GET['key'];

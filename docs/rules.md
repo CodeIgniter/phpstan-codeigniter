@@ -4,6 +4,14 @@ All rules of this extension is summarised below:
 
 ## Superglobals
 
+### SuperglobalsGlobalAssignRule
+
+**Class:** `CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsGlobalAssignRule`
+
+This rule forbids direct global assignment to all superglobals (except `$_ENV` and `$_SESSION`).
+In case of assignment of arrays, it recommends instead using the equivalent method global getter
+in `Superglobals` class.
+
 ### SuperglobalsOffsetAccessRule
 
 **Class:** `CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAccessRule`
