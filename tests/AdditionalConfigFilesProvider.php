@@ -13,17 +13,13 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Tests;
 
-/**
- * @internal
- */
-trait AdditionalConfigFilesTrait
+trait AdditionalConfigFilesProvider
 {
     public static function getAdditionalConfigFiles(): array
     {
         return [
-            ...parent::getAdditionalConfigFiles(),
             __DIR__ . '/../extension.neon',
-            __DIR__ . '/extension-test.neon',
+            ...parent::getAdditionalConfigFiles(),
         ];
     }
 }

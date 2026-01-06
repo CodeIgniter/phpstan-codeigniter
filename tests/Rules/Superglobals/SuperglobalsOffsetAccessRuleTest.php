@@ -15,6 +15,7 @@ namespace CodeIgniter\PHPStan\Tests\Rules\Superglobals;
 
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
 use CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAccessRule;
+use CodeIgniter\PHPStan\Tests\AdditionalConfigFilesProvider;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
 use PHPUnit\Framework\Attributes\Group;
@@ -27,6 +28,8 @@ use PHPUnit\Framework\Attributes\Group;
 #[Group('static-analysis')]
 final class SuperglobalsOffsetAccessRuleTest extends RuleTestCase
 {
+    use AdditionalConfigFilesProvider;
+
     protected function getRule(): Rule
     {
         return new SuperglobalsOffsetAccessRule(new SuperglobalsHelper());
@@ -71,13 +74,5 @@ final class SuperglobalsOffsetAccessRuleTest extends RuleTestCase
                 'Use service(\'superglobals\')->server(\'key2\') instead.',
             ],
         ]);
-    }
-
-    public static function getAdditionalConfigFiles(): array
-    {
-        return [
-            __DIR__ . '/../../../extension.neon',
-            ...parent::getAdditionalConfigFiles(),
-        ];
     }
 }

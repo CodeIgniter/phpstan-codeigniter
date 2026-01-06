@@ -15,6 +15,7 @@ namespace CodeIgniter\PHPStan\Tests\Rules\Superglobals;
 
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
 use CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAssignRule;
+use CodeIgniter\PHPStan\Tests\AdditionalConfigFilesProvider;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
 use PHPUnit\Framework\Attributes\Group;
@@ -27,6 +28,8 @@ use PHPUnit\Framework\Attributes\Group;
 #[Group('static-analysis')]
 final class SuperglobalsOffsetAssignRuleTest extends RuleTestCase
 {
+    use AdditionalConfigFilesProvider;
+
     protected function getRule(): Rule
     {
         return new SuperglobalsOffsetAssignRule(new SuperglobalsHelper());
@@ -71,13 +74,5 @@ final class SuperglobalsOffsetAssignRuleTest extends RuleTestCase
                 'Use service(\'superglobals\')->setServer(\'key2\', \'value\') instead.',
             ],
         ]);
-    }
-
-    public static function getAdditionalConfigFiles(): array
-    {
-        return [
-            __DIR__ . '/../../../extension.neon',
-            ...parent::getAdditionalConfigFiles(),
-        ];
     }
 }
