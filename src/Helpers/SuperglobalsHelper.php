@@ -18,12 +18,12 @@ use InvalidArgumentException;
 final class SuperglobalsHelper
 {
     public const HANDLED_SUPERGLOBALS = [
-        '_SERVER' => 'server',
-        '_GET'    => 'get',
-        '_POST'   => 'post',
-        '_COOKIE' => 'cookie',
-        '_FILES'  => 'files',
-        'REQUEST' => 'request',
+        '_SERVER'  => 'server',
+        '_GET'     => 'get',
+        '_POST'    => 'post',
+        '_COOKIE'  => 'cookie',
+        '_FILES'   => 'files',
+        '_REQUEST' => 'request',
     ];
     public const SERVER_ITEMS_WITH_NON_STRING_TYPE = [
         'argv'               => 'array<array-key, mixed>',
@@ -38,13 +38,13 @@ final class SuperglobalsHelper
     public function getMethodGetter(string $name): ?string
     {
         return match ($name) {
-            '_SERVER' => 'server',
-            '_GET'    => 'get',
-            '_POST'   => 'post',
-            '_COOKIE' => 'cookie',
-            '_FILES'  => null,
-            'REQUEST' => 'request',
-            default   => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
+            '_SERVER'  => 'server',
+            '_GET'     => 'get',
+            '_POST'    => 'post',
+            '_COOKIE'  => 'cookie',
+            '_FILES'   => null,
+            '_REQUEST' => 'request',
+            default    => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
         };
     }
 
@@ -54,13 +54,13 @@ final class SuperglobalsHelper
     public function getMethodGlobalGetter(string $name): string
     {
         return match ($name) {
-            '_SERVER' => 'getServerArray',
-            '_GET'    => 'getGetArray',
-            '_POST'   => 'getPostArray',
-            '_COOKIE' => 'getCookieArray',
-            '_FILES'  => 'getFilesArray',
-            'REQUEST' => 'getRequestArray',
-            default   => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
+            '_SERVER'  => 'getServerArray',
+            '_GET'     => 'getGetArray',
+            '_POST'    => 'getPostArray',
+            '_COOKIE'  => 'getCookieArray',
+            '_FILES'   => 'getFilesArray',
+            '_REQUEST' => 'getRequestArray',
+            default    => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
         };
     }
 
@@ -70,13 +70,13 @@ final class SuperglobalsHelper
     public function getMethodSetter(string $name): ?string
     {
         return match ($name) {
-            '_SERVER' => 'setServer',
-            '_GET'    => 'setGet',
-            '_POST'   => 'setPost',
-            '_COOKIE' => 'setCookie',
-            '_FILES'  => null,
-            'REQUEST' => 'setRequest',
-            default   => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
+            '_SERVER'  => 'setServer',
+            '_GET'     => 'setGet',
+            '_POST'    => 'setPost',
+            '_COOKIE'  => 'setCookie',
+            '_FILES'   => null,
+            '_REQUEST' => 'setRequest',
+            default    => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
         };
     }
 
@@ -86,13 +86,13 @@ final class SuperglobalsHelper
     public function getMethodGlobalSetter(string $name): string
     {
         return match ($name) {
-            '_SERVER' => 'setServerArray',
-            '_GET'    => 'setGetArray',
-            '_POST'   => 'setPostArray',
-            '_COOKIE' => 'setCookieArray',
-            '_FILES'  => 'setFilesArray',
-            'REQUEST' => 'setRequestArray',
-            default   => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
+            '_SERVER'  => 'setServerArray',
+            '_GET'     => 'setGetArray',
+            '_POST'    => 'setPostArray',
+            '_COOKIE'  => 'setCookieArray',
+            '_FILES'   => 'setFilesArray',
+            '_REQUEST' => 'setRequestArray',
+            default    => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
         };
     }
 

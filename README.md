@@ -11,6 +11,7 @@
 
 This PHPStan extension provides type inference support and rules for `CodeIgniter4`.
 
+* [Rules](docs/rules.md)
 * [Type inference](docs/type-inference.md)
 
 ## Installation
