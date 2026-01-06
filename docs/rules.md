@@ -7,6 +7,7 @@ All rules of this extension is summarised below:
 ### SuperglobalsAccessRule
 
 **Class:** `CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsAccessRule`
+
 **Enabled:** Yes
 
 This rule forbids direct offset access on all superglobals (except `$_FILES` and `$_ENV`).
