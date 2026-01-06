@@ -8,8 +8,6 @@ All type inference features of this extension are summarised below:
 
 **Class:** `CodeIgniter\PHPStan\Type\SuperglobalsMethodDynamicReturnTypeExtension`
 
-**Enabled:** Yes
-
 This extension provides precise return types for the following methods of `CodeIgniter\Superglobals`:
 - `server()`
 - `get()`

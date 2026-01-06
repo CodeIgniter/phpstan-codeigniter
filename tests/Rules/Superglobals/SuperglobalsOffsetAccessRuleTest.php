@@ -14,27 +14,27 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Tests\Rules\Superglobals;
 
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
-use CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsAccessRule;
+use CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAccessRule;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
- * @extends RuleTestCase<SuperglobalsAccessRule>
+ * @extends RuleTestCase<SuperglobalsOffsetAccessRule>
  *
  * @internal
  */
 #[Group('static-analysis')]
-final class SuperglobalsAccessRuleTest extends RuleTestCase
+final class SuperglobalsOffsetAccessRuleTest extends RuleTestCase
 {
     protected function getRule(): Rule
     {
-        return new SuperglobalsAccessRule(new SuperglobalsHelper());
+        return new SuperglobalsOffsetAccessRule(new SuperglobalsHelper());
     }
 
     public function testRule(): void
     {
-        $this->analyse([__DIR__ . '/../../data/rules/superglobals-access.php'], [
+        $this->analyse([__DIR__ . '/../../data/rules/superglobals-offset-access.php'], [
             [
                 'Accessing $_SERVER directly with string key is not allowed.',
                 18,

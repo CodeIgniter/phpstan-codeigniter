@@ -4,9 +4,9 @@ All rules of this extension is summarised below:
 
 ## Superglobals
 
-### SuperglobalsAccessRule
+### SuperglobalsOffsetAccessRule
 
-**Class:** `CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsAccessRule`
+**Class:** `CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAccessRule`
 
 **Enabled:** Yes
 

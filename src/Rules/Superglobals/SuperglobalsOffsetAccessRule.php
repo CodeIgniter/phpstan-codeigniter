@@ -23,7 +23,7 @@ use PHPStan\Rules\RuleErrorBuilder;
 /**
  * @implements Rule<Node\Expr\ArrayDimFetch>
  */
-final class SuperglobalsAccessRule implements Rule
+final class SuperglobalsOffsetAccessRule implements Rule
 {
     public function __construct(
         private readonly SuperglobalsHelper $superglobalsHelper,
@@ -59,7 +59,7 @@ final class SuperglobalsAccessRule implements Rule
         }
 
         if ($scope->isInClass() && $scope->getClassReflection()->getName() === Superglobals::class) {
-            return []; // ignore assignments inside `Superglobals`
+            return []; // ignore access inside `Superglobals`
         }
 
         if ($node->dim === null) {
