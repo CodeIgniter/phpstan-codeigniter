@@ -11,6 +11,8 @@
 
 This PHPStan extension provides type inference support and rules for `CodeIgniter4`.
 
+* [Type inference](docs/type-inference.md)
+
 ## Installation
 
 To use this extension, require it in [Composer](https://getcomposer.org/):

@@ -5,3 +5,12 @@ parameters:
     - ENVIRONMENT
   universalObjectCratesClasses:
     - CodeIgniter\Entity\Entity
+
+services:
+  superglobalsHelper:
+    class: CodeIgniter\PHPStan\Helpers\SuperglobalsHelper
+
+  -
+    class: CodeIgniter\PHPStan\Type\SuperglobalsMethodDynamicReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicMethodReturnTypeExtension

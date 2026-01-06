@@ -1,0 +1,114 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * This file is part of CodeIgniter 4 framework.
+ *
+ * (c) 2023 CodeIgniter Foundation <admin@codeigniter.com>
+ *
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ */
+
+namespace CodeIgniter\PHPStan\Helpers;
+
+use InvalidArgumentException;
+
+final class SuperglobalsHelper
+{
+    public const HANDLED_SUPERGLOBALS = [
+        '_SERVER' => 'server',
+        '_GET'    => 'get',
+        '_POST'   => 'post',
+        '_COOKIE' => 'cookie',
+        '_FILES'  => 'files',
+        'REQUEST' => 'request',
+    ];
+    public const SERVER_ITEMS_WITH_NON_STRING_TYPE = [
+        'argv'               => 'array<array-key, mixed>',
+        'argc'               => 'int',
+        'REQUEST_TIME'       => 'int',
+        'REQUEST_TIME_FLOAT' => 'float',
+    ];
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function getMethodGetter(string $name): ?string
+    {
+        return match ($name) {
+            '_SERVER' => 'server',
+            '_GET'    => 'get',
+            '_POST'   => 'post',
+            '_COOKIE' => 'cookie',
+            '_FILES'  => null,
+            'REQUEST' => 'request',
+            default   => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
+        };
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function getMethodGlobalGetter(string $name): string
+    {
+        return match ($name) {
+            '_SERVER' => 'getServerArray',
+            '_GET'    => 'getGetArray',
+            '_POST'   => 'getPostArray',
+            '_COOKIE' => 'getCookieArray',
+            '_FILES'  => 'getFilesArray',
+            'REQUEST' => 'getRequestArray',
+            default   => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
+        };
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function getMethodSetter(string $name): ?string
+    {
+        return match ($name) {
+            '_SERVER' => 'setServer',
+            '_GET'    => 'setGet',
+            '_POST'   => 'setPost',
+            '_COOKIE' => 'setCookie',
+            '_FILES'  => null,
+            'REQUEST' => 'setRequest',
+            default   => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
+        };
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function getMethodGlobalSetter(string $name): string
+    {
+        return match ($name) {
+            '_SERVER' => 'setServerArray',
+            '_GET'    => 'setGetArray',
+            '_POST'   => 'setPostArray',
+            '_COOKIE' => 'setCookieArray',
+            '_FILES'  => 'setFilesArray',
+            'REQUEST' => 'setRequestArray',
+            default   => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
+        };
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function getMethodUnsetter(string $name): ?string
+    {
+        return match ($name) {
+            '_SERVER' => 'unsetServer',
+            '_GET'    => 'unsetGet',
+            '_POST'   => 'unsetPost',
+            '_COOKIE' => 'unsetCookie',
+            '_FILES'  => null,
+            'REQUEST' => 'unsetRequest',
+            default   => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
+        };
+    }
+}
