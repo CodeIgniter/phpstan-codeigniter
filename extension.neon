@@ -17,3 +17,4 @@ services:
 
 rules:
   - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAccessRule
+  - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAssignRule
