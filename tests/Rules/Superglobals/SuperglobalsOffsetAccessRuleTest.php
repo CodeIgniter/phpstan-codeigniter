@@ -39,7 +39,7 @@ final class SuperglobalsOffsetAccessRuleTest extends RuleTestCase
         );
     }
 
-    public function testRule(): void
+    public function testRuleAnalysis(): void
     {
         $this->analyse([__DIR__ . '/../../data/rules/superglobals-offset-access.php'], [
             [
@@ -73,5 +73,13 @@ final class SuperglobalsOffsetAccessRuleTest extends RuleTestCase
                 'Use service(\'superglobals\')->server($key) instead.',
             ],
         ]);
+    }
+
+    public function testRuleWithFix(): void
+    {
+        $this->fix(
+            __DIR__ . '/../../data/rules/superglobals-offset-access.php',
+            __DIR__ . '/../../data/rules/superglobals-offset-access-fixed.php',
+        );
     }
 }

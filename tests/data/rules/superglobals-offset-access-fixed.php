@@ -13,17 +13,15 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Tests\Rules;
 
-function test_superglobals_offset_assign(string $name): void
+function test_superglobals_offset_access(string $name): void
 {
-    $_SERVER[$name]  = 'value';
-    $_GET['key']     = 'value';
-    $_POST['key']    = 'value';
-    $_COOKIE['key']  = 'value';
-    $_REQUEST['key'] = 'value';
-
-    $_FILES['key'] = 'value'; // should not error
+    service('superglobals')->server($name);
+    service('superglobals')->get('key');
+    service('superglobals')->post('key');
+    service('superglobals')->cookie('key');
+    $_FILES['key']; // should not error
+    service('superglobals')->request('key');
 
     $key = (static fn (): string => mt_rand(0, 1) ? 'key1' : 'key2')();
-
-    $_SERVER[$key] = 'value';
+    service('superglobals')->server($key);
 }

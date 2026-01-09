@@ -86,6 +86,17 @@ final class SuperglobalsOffsetAssignRule implements Rule
             RuleErrorBuilder::message(sprintf('Direct assignment of %s to $%s[%s] is not allowed.', $expr, $varName, $value))
                 ->identifier('codeigniter.superglobalsOffsetAssign')
                 ->tip(sprintf('Use service(\'superglobals\')->%s(%s, %s) instead.', $methodSetter, $value, $expr))
+                ->fixNode($node, static fn (Node\Expr\Assign $node) => new Node\Expr\MethodCall(
+                    new Node\Expr\FuncCall(
+                        new Node\Name('service'),
+                        [new Node\Arg(new Node\Scalar\String_('superglobals'))],
+                    ),
+                    new Node\Identifier($methodSetter),
+                    [
+                        new Node\Arg($dimFetch->dim),
+                        new Node\Arg($node->expr),
+                    ],
+                ))
                 ->line($dimFetch->getStartLine())
                 ->build(),
         ];

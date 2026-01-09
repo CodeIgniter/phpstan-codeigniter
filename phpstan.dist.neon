@@ -17,6 +17,10 @@ parameters:
       - tests/data/**
   bootstrapFiles:
     - bootstrap.php
+  ignoreErrors:
+    -
+      message: '#^Call to internal method PHPStan\\Rules\\RuleErrorBuilder::fixNode\(\) from outside its root namespace PHPStan\.$#'
+      identifier: method.internal
   exceptions:
     check:
       throwTypeCovariance: true

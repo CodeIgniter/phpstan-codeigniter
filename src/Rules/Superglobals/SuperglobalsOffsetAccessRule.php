@@ -57,11 +57,13 @@ final class SuperglobalsOffsetAccessRule implements Rule
             return [];
         }
 
-        if ($node->dim === null) {
+        $dim = $node->dim;
+
+        if ($dim === null) {
             return [];
         }
 
-        $dimType = $scope->getType($node->dim);
+        $dimType = $scope->getType($dim);
 
         if ($dimType->isString()->no()) {
             return [];
@@ -80,14 +82,21 @@ final class SuperglobalsOffsetAccessRule implements Rule
         if (count($dimType->getConstantStrings()) === 1) {
             $value = $dimType->describe(VerbosityLevel::precise());
         } else {
-            $value = $this->exprPrinter->printExpr($node->dim);
+            $value = $this->exprPrinter->printExpr($dim);
         }
 
         return [
             RuleErrorBuilder::message(sprintf('Direct access to $%s[%s] is not allowed.', $varName, $value))
                 ->identifier('codeigniter.superglobalsOffsetAccess')
                 ->tip(sprintf('Use service(\'superglobals\')->%s(%s) instead.', $methodGetter, $value))
-                ->line($node->getStartLine())
+                ->fixNode($node, static fn (): Node\Expr\MethodCall => new Node\Expr\MethodCall(
+                    new Node\Expr\FuncCall(
+                        new Node\Name('service'),
+                        [new Node\Arg(new Node\Scalar\String_('superglobals'))],
+                    ),
+                    new Node\Identifier($methodGetter),
+                    [new Node\Arg($dim)],
+                ))
                 ->build(),
         ];
     }

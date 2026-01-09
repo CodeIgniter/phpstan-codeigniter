@@ -15,15 +15,15 @@ namespace CodeIgniter\PHPStan\Tests\Rules;
 
 function test_superglobals_offset_assign(string $name): void
 {
-    $_SERVER[$name]  = 'value';
-    $_GET['key']     = 'value';
-    $_POST['key']    = 'value';
-    $_COOKIE['key']  = 'value';
-    $_REQUEST['key'] = 'value';
+    service('superglobals')->setServer($name, 'value');
+    service('superglobals')->setGet('key', 'value');
+    service('superglobals')->setPost('key', 'value');
+    service('superglobals')->setCookie('key', 'value');
+    service('superglobals')->setRequest('key', 'value');
 
     $_FILES['key'] = 'value'; // should not error
 
     $key = (static fn (): string => mt_rand(0, 1) ? 'key1' : 'key2')();
 
-    $_SERVER[$key] = 'value';
+    service('superglobals')->setServer($key, 'value');
 }

@@ -39,7 +39,7 @@ final class SuperglobalsOffsetAssignRuleTest extends RuleTestCase
         );
     }
 
-    public function testRule(): void
+    public function testRuleAnalysis(): void
     {
         $this->analyse([__DIR__ . '/../../data/rules/superglobals-offset-assign.php'], [
             [
@@ -64,14 +64,22 @@ final class SuperglobalsOffsetAssignRuleTest extends RuleTestCase
             ],
             [
                 'Direct assignment of \'value\' to $_REQUEST[\'key\'] is not allowed.',
-                23,
+                22,
                 'Use service(\'superglobals\')->setRequest(\'key\', \'value\') instead.',
             ],
             [
                 'Direct assignment of \'value\' to $_SERVER[$key] is not allowed.',
-                27,
+                28,
                 'Use service(\'superglobals\')->setServer($key, \'value\') instead.',
             ],
         ]);
+    }
+
+    public function testRuleWithFix(): void
+    {
+        $this->fix(
+            __DIR__ . '/../../data/rules/superglobals-offset-assign.php',
+            __DIR__ . '/../../data/rules/superglobals-offset-assign-fixed.php',
+        );
     }
 }

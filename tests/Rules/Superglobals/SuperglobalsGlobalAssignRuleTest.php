@@ -39,7 +39,7 @@ final class SuperglobalsGlobalAssignRuleTest extends RuleTestCase
         );
     }
 
-    public function testRule(): void
+    public function testRuleAnalysis(): void
     {
         $this->analyse([__DIR__ . '/../../data/rules/superglobals-global-assign.php'], [
             [
@@ -97,5 +97,13 @@ final class SuperglobalsGlobalAssignRuleTest extends RuleTestCase
                 33,
             ],
         ]);
+    }
+
+    public function testRuleWithFix(): void
+    {
+        $this->fix(
+            __DIR__ . '/../../data/rules/superglobals-global-assign.php',
+            __DIR__ . '/../../data/rules/superglobals-global-assign-fixed.php',
+        );
     }
 }

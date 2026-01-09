@@ -56,11 +56,9 @@ final class SuperglobalsGlobalAssignRule implements Rule
 
         if (! $exprType->isArray()->yes()) {
             return [
-                RuleErrorBuilder::message(sprintf(
-                    'Cannot assign %s type to $%s.',
-                    $exprType->describe(VerbosityLevel::typeOnly()),
-                    $varName,
-                ))->identifier('codeigniter.superglobalsGlobalAssignNonArray')->build(),
+                RuleErrorBuilder::message(sprintf('Cannot assign %s type to $%s.', $exprType->describe(VerbosityLevel::typeOnly()), $varName))
+                    ->identifier('codeigniter.superglobalsGlobalAssignNonArray')
+                    ->build(),
             ];
         }
 
@@ -70,6 +68,14 @@ final class SuperglobalsGlobalAssignRule implements Rule
             RuleErrorBuilder::message(sprintf('Direct global assignment to $%s is not allowed.', $varName))
                 ->identifier('codeigniter.superglobalsGlobalAssign')
                 ->tip(sprintf('Use service(\'superglobals\')->%s(%s) instead.', $methodGlobalSetter, $this->exprPrinter->printExpr($node->expr)))
+                ->fixNode($node, static fn (Node\Expr\Assign $node): Node\Expr\MethodCall => new Node\Expr\MethodCall(
+                    new Node\Expr\FuncCall(
+                        new Node\Name('service'),
+                        [new Node\Arg(new Node\Scalar\String_('superglobals'))],
+                    ),
+                    new Node\Identifier($methodGlobalSetter),
+                    [new Node\Arg($node->expr)],
+                ))
                 ->build(),
         ];
     }
