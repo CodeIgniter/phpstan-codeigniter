@@ -16,6 +16,7 @@ namespace CodeIgniter\PHPStan\Tests\Rules\Superglobals;
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
 use CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAssignRule;
 use CodeIgniter\PHPStan\Tests\AdditionalConfigFilesProvider;
+use PHPStan\Node\Printer\ExprPrinter;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
 use PHPUnit\Framework\Attributes\Group;
@@ -32,16 +33,19 @@ final class SuperglobalsOffsetAssignRuleTest extends RuleTestCase
 
     protected function getRule(): Rule
     {
-        return new SuperglobalsOffsetAssignRule(new SuperglobalsHelper());
+        return new SuperglobalsOffsetAssignRule(
+            new SuperglobalsHelper(),
+            self::getContainer()->getByType(ExprPrinter::class),
+        );
     }
 
     public function testRule(): void
     {
         $this->analyse([__DIR__ . '/../../data/rules/superglobals-offset-assign.php'], [
             [
-                'Direct assignment of \'value\' to string offset of $_SERVER is not allowed.',
+                'Direct assignment of \'value\' to $_SERVER[$name] is not allowed.',
                 18,
-                'Use service(\'superglobals\')->setServer(<key>, <value>) instead.',
+                'Use service(\'superglobals\')->setServer($name, \'value\') instead.',
             ],
             [
                 'Direct assignment of \'value\' to $_GET[\'key\'] is not allowed.',
@@ -64,14 +68,9 @@ final class SuperglobalsOffsetAssignRuleTest extends RuleTestCase
                 'Use service(\'superglobals\')->setRequest(\'key\', \'value\') instead.',
             ],
             [
-                'Direct assignment of \'value\' to $_SERVER[\'key1\'] is not allowed.',
+                'Direct assignment of \'value\' to $_SERVER[$key] is not allowed.',
                 27,
-                'Use service(\'superglobals\')->setServer(\'key1\', \'value\') instead.',
-            ],
-            [
-                'Direct assignment of \'value\' to $_SERVER[\'key2\'] is not allowed.',
-                27,
-                'Use service(\'superglobals\')->setServer(\'key2\', \'value\') instead.',
+                'Use service(\'superglobals\')->setServer($key, \'value\') instead.',
             ],
         ]);
     }

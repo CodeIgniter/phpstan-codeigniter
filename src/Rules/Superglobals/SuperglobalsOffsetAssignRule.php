@@ -16,6 +16,7 @@ namespace CodeIgniter\PHPStan\Rules\Superglobals;
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
+use PHPStan\Node\Printer\ExprPrinter;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\Type\VerbosityLevel;
@@ -27,6 +28,7 @@ final class SuperglobalsOffsetAssignRule implements Rule
 {
     public function __construct(
         private readonly SuperglobalsHelper $superglobalsHelper,
+        private readonly ExprPrinter $exprPrinter,
     ) {}
 
     public function getNodeType(): string
@@ -72,39 +74,19 @@ final class SuperglobalsOffsetAssignRule implements Rule
             return [];
         }
 
-        $errors = [];
+        if (count($dimType->getConstantStrings()) === 1) {
+            $value = $dimType->describe(VerbosityLevel::precise());
+        } else {
+            $value = $this->exprPrinter->printExpr($dimFetch->dim);
+        }
 
         $expr = $scope->getType($node->expr)->describe(VerbosityLevel::precise());
 
-        foreach ($dimType->getConstantStrings() as $dimStringType) {
-            $dimString = $dimStringType->getValue();
-
-            $errors[] = RuleErrorBuilder::message(sprintf(
-                'Direct assignment of %s to $%s[\'%s\'] is not allowed.',
-                $expr,
-                $varName,
-                $dimString,
-            ))->identifier('codeigniter.superglobalsOffsetAssign')
-                ->tip(sprintf(
-                    'Use service(\'superglobals\')->%s(\'%s\', %s) instead.',
-                    $methodSetter,
-                    $dimString,
-                    $expr,
-                ))
-                ->build();
-        }
-
-        if ($errors !== []) {
-            return $errors;
-        }
-
         return [
-            RuleErrorBuilder::message(sprintf(
-                'Direct assignment of %s to string offset of $%s is not allowed.',
-                $expr,
-                $varName,
-            ))->identifier('codeigniter.superglobalsOffsetAssign')
-                ->tip(sprintf('Use service(\'superglobals\')->%s(<key>, <value>) instead.', $methodSetter))
+            RuleErrorBuilder::message(sprintf('Direct assignment of %s to $%s[%s] is not allowed.', $expr, $varName, $value))
+                ->identifier('codeigniter.superglobalsOffsetAssign')
+                ->tip(sprintf('Use service(\'superglobals\')->%s(%s, %s) instead.', $methodSetter, $value, $expr))
+                ->line($dimFetch->getStartLine())
                 ->build(),
         ];
     }

@@ -17,8 +17,10 @@ use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
 use CodeIgniter\PHPStan\NodeVisitor\UnsetOnSuperglobalsDimFetchVisitor;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
+use PHPStan\Node\Printer\ExprPrinter;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use PHPStan\Type\VerbosityLevel;
 
 /**
  * @implements Rule<Node\Expr\ArrayDimFetch>
@@ -27,6 +29,7 @@ final class SuperglobalsOffsetAccessRule implements Rule
 {
     public function __construct(
         private readonly SuperglobalsHelper $superglobalsHelper,
+        private readonly ExprPrinter $exprPrinter,
     ) {}
 
     public function getNodeType(): string
@@ -74,28 +77,17 @@ final class SuperglobalsOffsetAccessRule implements Rule
             return [];
         }
 
-        $errors = [];
-
-        foreach ($dimType->getConstantStrings() as $dimStringType) {
-            $dimString = $dimStringType->getValue();
-
-            $errors[] = RuleErrorBuilder::message(sprintf(
-                'Direct access to $%s[\'%s\'] is not allowed.',
-                $varName,
-                $dimString,
-            ))->tip(sprintf('Use service(\'superglobals\')->%s(\'%s\') instead.', $methodGetter, $dimString))
-                ->identifier('codeigniter.superglobalsOffsetAccess')
-                ->build();
-        }
-
-        if ($errors !== []) {
-            return $errors;
+        if (count($dimType->getConstantStrings()) === 1) {
+            $value = $dimType->describe(VerbosityLevel::precise());
+        } else {
+            $value = $this->exprPrinter->printExpr($node->dim);
         }
 
         return [
-            RuleErrorBuilder::message(sprintf('Accessing $%s directly with string key is not allowed.', $varName))
-                ->tip(sprintf('Use service(\'superglobals\')->%s(<key>) instead.', $methodGetter))
+            RuleErrorBuilder::message(sprintf('Direct access to $%s[%s] is not allowed.', $varName, $value))
                 ->identifier('codeigniter.superglobalsOffsetAccess')
+                ->tip(sprintf('Use service(\'superglobals\')->%s(%s) instead.', $methodGetter, $value))
+                ->line($node->getStartLine())
                 ->build(),
         ];
     }

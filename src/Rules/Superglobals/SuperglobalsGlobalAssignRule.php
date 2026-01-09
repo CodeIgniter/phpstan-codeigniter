@@ -16,6 +16,7 @@ namespace CodeIgniter\PHPStan\Rules\Superglobals;
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
+use PHPStan\Node\Printer\ExprPrinter;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\Type\VerbosityLevel;
@@ -27,6 +28,7 @@ final class SuperglobalsGlobalAssignRule implements Rule
 {
     public function __construct(
         private readonly SuperglobalsHelper $superglobalsHelper,
+        private readonly ExprPrinter $exprPrinter,
     ) {}
 
     public function getNodeType(): string
@@ -67,7 +69,7 @@ final class SuperglobalsGlobalAssignRule implements Rule
         return [
             RuleErrorBuilder::message(sprintf('Direct global assignment to $%s is not allowed.', $varName))
                 ->identifier('codeigniter.superglobalsGlobalAssign')
-                ->tip(sprintf('Use service(\'superglobals\')->%s($array) instead.', $methodGlobalSetter))
+                ->tip(sprintf('Use service(\'superglobals\')->%s(%s) instead.', $methodGlobalSetter, $this->exprPrinter->printExpr($node->expr)))
                 ->build(),
         ];
     }

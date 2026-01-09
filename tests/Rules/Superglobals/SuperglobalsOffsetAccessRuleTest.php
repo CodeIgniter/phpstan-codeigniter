@@ -16,6 +16,7 @@ namespace CodeIgniter\PHPStan\Tests\Rules\Superglobals;
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
 use CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAccessRule;
 use CodeIgniter\PHPStan\Tests\AdditionalConfigFilesProvider;
+use PHPStan\Node\Printer\ExprPrinter;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
 use PHPUnit\Framework\Attributes\Group;
@@ -32,16 +33,19 @@ final class SuperglobalsOffsetAccessRuleTest extends RuleTestCase
 
     protected function getRule(): Rule
     {
-        return new SuperglobalsOffsetAccessRule(new SuperglobalsHelper());
+        return new SuperglobalsOffsetAccessRule(
+            new SuperglobalsHelper(),
+            $this->getContainer()->getByType(ExprPrinter::class),
+        );
     }
 
     public function testRule(): void
     {
         $this->analyse([__DIR__ . '/../../data/rules/superglobals-offset-access.php'], [
             [
-                'Accessing $_SERVER directly with string key is not allowed.',
+                'Direct access to $_SERVER[$name] is not allowed.',
                 18,
-                'Use service(\'superglobals\')->server(<key>) instead.',
+                'Use service(\'superglobals\')->server($name) instead.',
             ],
             [
                 'Direct access to $_GET[\'key\'] is not allowed.',
@@ -64,14 +68,9 @@ final class SuperglobalsOffsetAccessRuleTest extends RuleTestCase
                 'Use service(\'superglobals\')->request(\'key\') instead.',
             ],
             [
-                'Direct access to $_SERVER[\'key1\'] is not allowed.',
+                'Direct access to $_SERVER[$key] is not allowed.',
                 26,
-                'Use service(\'superglobals\')->server(\'key1\') instead.',
-            ],
-            [
-                'Direct access to $_SERVER[\'key2\'] is not allowed.',
-                26,
-                'Use service(\'superglobals\')->server(\'key2\') instead.',
+                'Use service(\'superglobals\')->server($key) instead.',
             ],
         ]);
     }

@@ -16,6 +16,7 @@ namespace CodeIgniter\PHPStan\Tests\Rules\Superglobals;
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
 use CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsGlobalAssignRule;
 use CodeIgniter\PHPStan\Tests\AdditionalConfigFilesProvider;
+use PHPStan\Node\Printer\ExprPrinter;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
 use PHPUnit\Framework\Attributes\Group;
@@ -32,7 +33,10 @@ final class SuperglobalsGlobalAssignRuleTest extends RuleTestCase
 
     protected function getRule(): Rule
     {
-        return new SuperglobalsGlobalAssignRule(new SuperglobalsHelper());
+        return new SuperglobalsGlobalAssignRule(
+            new SuperglobalsHelper(),
+            self::getContainer()->getByType(ExprPrinter::class),
+        );
     }
 
     public function testRule(): void
@@ -41,32 +45,32 @@ final class SuperglobalsGlobalAssignRuleTest extends RuleTestCase
             [
                 'Direct global assignment to $_SERVER is not allowed.',
                 18,
-                'Use service(\'superglobals\')->setServerArray($array) instead.',
+                'Use service(\'superglobals\')->setServerArray([]) instead.',
             ],
             [
                 'Direct global assignment to $_GET is not allowed.',
                 19,
-                'Use service(\'superglobals\')->setGetArray($array) instead.',
+                'Use service(\'superglobals\')->setGetArray([]) instead.',
             ],
             [
                 'Direct global assignment to $_POST is not allowed.',
                 20,
-                'Use service(\'superglobals\')->setPostArray($array) instead.',
+                'Use service(\'superglobals\')->setPostArray([]) instead.',
             ],
             [
                 'Direct global assignment to $_COOKIE is not allowed.',
                 21,
-                'Use service(\'superglobals\')->setCookieArray($array) instead.',
+                'Use service(\'superglobals\')->setCookieArray([]) instead.',
             ],
             [
                 'Direct global assignment to $_FILES is not allowed.',
                 22,
-                'Use service(\'superglobals\')->setFilesArray($array) instead.',
+                'Use service(\'superglobals\')->setFilesArray([]) instead.',
             ],
             [
                 'Direct global assignment to $_REQUEST is not allowed.',
                 23,
-                'Use service(\'superglobals\')->setRequestArray($array) instead.',
+                'Use service(\'superglobals\')->setRequestArray([]) instead.',
             ],
             [
                 'Cannot assign int type to $_SERVER.',
