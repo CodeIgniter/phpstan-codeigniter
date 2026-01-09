@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Helpers;
 
+use CodeIgniter\Config\DotEnv;
 use CodeIgniter\Superglobals;
 use InvalidArgumentException;
 use PHPStan\Analyser\Scope;
@@ -44,8 +45,10 @@ final class SuperglobalsHelper
             return false; // ignore uses in root level (not inside function or method)
         }
 
-        // ignore assignments/access inside `Superglobals`
-        return ! $scope->isInClass() || $scope->getClassReflection()->getName() !== Superglobals::class;
+        return ! $scope->isInClass() || ! in_array($scope->getClassReflection()->getName(), [
+            DotEnv::class, // `service()` is not yet loaded here
+            Superglobals::class,
+        ], true);
     }
 
     /**
