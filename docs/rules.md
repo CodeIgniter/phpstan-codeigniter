@@ -7,7 +7,7 @@ All rules of this extension is summarised below:
 ### SuperglobalsGlobalAssignRule
 
 **Class:** `CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsGlobalAssignRule`
-Fixable: Partially yes
+Fixable: Partial (only those single array assignments are fixable)
 
 This rule forbids direct global assignment to all superglobals (except `$_ENV` and `$_SESSION`).
 In case of assignment of arrays, it recommends instead using the equivalent method global getter

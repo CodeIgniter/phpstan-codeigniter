@@ -96,6 +96,21 @@ final class SuperglobalsGlobalAssignRuleTest extends RuleTestCase
                 'Cannot assign object{}&stdClass type to $_REQUEST.',
                 33,
             ],
+            [
+                'Direct global assignment to $_GET is not allowed.',
+                38,
+                'Use service(\'superglobals\')->setGetArray([]) instead.',
+            ],
+            [
+                'Direct global assignment to $_POST is not allowed.',
+                38,
+                'Use service(\'superglobals\')->setPostArray([]) instead.',
+            ],
+            [
+                'Direct global assignment to $_REQUEST is not allowed.',
+                38,
+                'Use service(\'superglobals\')->setRequestArray([]) instead.',
+            ],
         ]);
     }
 

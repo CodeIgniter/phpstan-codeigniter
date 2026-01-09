@@ -11,6 +11,11 @@ services:
     class: CodeIgniter\PHPStan\Helpers\SuperglobalsHelper
 
   -
+    class: CodeIgniter\PHPStan\NodeVisitor\ConsecutiveAssignsVisitor
+    tags:
+      - phpstan.parser.richParserNodeVisitor
+
+  -
     class: CodeIgniter\PHPStan\NodeVisitor\UnsetOnSuperglobalsDimFetchVisitor
     tags:
       - phpstan.parser.richParserNodeVisitor

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Rules\Superglobals;
 
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
+use CodeIgniter\PHPStan\NodeVisitor\ConsecutiveAssignsVisitor;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use PHPStan\Node\Printer\ExprPrinter;
@@ -64,19 +65,27 @@ final class SuperglobalsGlobalAssignRule implements Rule
 
         $methodGlobalSetter = $this->superglobalsHelper->getMethodGlobalSetter($varName);
 
-        return [
-            RuleErrorBuilder::message(sprintf('Direct global assignment to $%s is not allowed.', $varName))
-                ->identifier('codeigniter.superglobalsGlobalAssign')
-                ->tip(sprintf('Use service(\'superglobals\')->%s(%s) instead.', $methodGlobalSetter, $this->exprPrinter->printExpr($node->expr)))
-                ->fixNode($node, static fn (Node\Expr\Assign $node): Node\Expr\MethodCall => new Node\Expr\MethodCall(
-                    new Node\Expr\FuncCall(
-                        new Node\Name('service'),
-                        [new Node\Arg(new Node\Scalar\String_('superglobals'))],
-                    ),
-                    new Node\Identifier($methodGlobalSetter),
-                    [new Node\Arg($node->expr)],
-                ))
-                ->build(),
-        ];
+        $expr = $node->expr;
+
+        while ($expr instanceof Node\Expr\Assign) {
+            $expr = $expr->expr;
+        }
+
+        $builder = RuleErrorBuilder::message(sprintf('Direct global assignment to $%s is not allowed.', $varName))
+            ->identifier('codeigniter.superglobalsGlobalAssign')
+            ->tip(sprintf('Use service(\'superglobals\')->%s(%s) instead.', $methodGlobalSetter, $this->exprPrinter->printExpr($expr)));
+
+        if ($node->getAttribute(ConsecutiveAssignsVisitor::VISITOR_KEY) !== true) {
+            $builder = $builder->fixNode($node, static fn (): Node\Expr\MethodCall => new Node\Expr\MethodCall(
+                new Node\Expr\FuncCall(
+                    new Node\Name('service'),
+                    [new Node\Arg(new Node\Scalar\String_('superglobals'))],
+                ),
+                new Node\Identifier($methodGlobalSetter),
+                [new Node\Arg($expr)],
+            ));
+        }
+
+        return [$builder->build()];
     }
 }

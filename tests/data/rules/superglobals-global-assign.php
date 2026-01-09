@@ -32,3 +32,8 @@ function test_superglobals_global_assign_non_array(): void
     $_FILES   = true;
     $_REQUEST = (object) [];
 }
+
+function test_superglobals_global_assign_multiple_not_fixable(): void
+{
+    $_GET = $_POST = $_REQUEST = [];
+}
