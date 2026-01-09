@@ -11,6 +11,11 @@ services:
     class: CodeIgniter\PHPStan\Helpers\SuperglobalsHelper
 
   -
+    class: CodeIgniter\PHPStan\NodeVisitor\UnsetOnSuperglobalsDimFetchVisitor
+    tags:
+      - phpstan.parser.richParserNodeVisitor
+
+  -
     class: CodeIgniter\PHPStan\Type\SuperglobalsMethodDynamicReturnTypeExtension
     tags:
       - phpstan.broker.dynamicMethodReturnTypeExtension
@@ -19,3 +24,4 @@ rules:
   - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsGlobalAssignRule
   - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAccessRule
   - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAssignRule
+  - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetUnsetRule

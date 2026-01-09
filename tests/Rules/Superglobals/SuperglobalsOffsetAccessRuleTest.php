@@ -44,32 +44,32 @@ final class SuperglobalsOffsetAccessRuleTest extends RuleTestCase
                 'Use service(\'superglobals\')->server(<key>) instead.',
             ],
             [
-                'Accessing $_GET directly with key \'key\' is not allowed.',
+                'Direct access to $_GET[\'key\'] is not allowed.',
                 19,
                 'Use service(\'superglobals\')->get(\'key\') instead.',
             ],
             [
-                'Accessing $_POST directly with key \'key\' is not allowed.',
+                'Direct access to $_POST[\'key\'] is not allowed.',
                 20,
                 'Use service(\'superglobals\')->post(\'key\') instead.',
             ],
             [
-                'Accessing $_COOKIE directly with key \'key\' is not allowed.',
+                'Direct access to $_COOKIE[\'key\'] is not allowed.',
                 21,
                 'Use service(\'superglobals\')->cookie(\'key\') instead.',
             ],
             [
-                'Accessing $_REQUEST directly with key \'key\' is not allowed.',
+                'Direct access to $_REQUEST[\'key\'] is not allowed.',
                 23,
                 'Use service(\'superglobals\')->request(\'key\') instead.',
             ],
             [
-                'Accessing $_SERVER directly with key \'key1\' is not allowed.',
+                'Direct access to $_SERVER[\'key1\'] is not allowed.',
                 26,
                 'Use service(\'superglobals\')->server(\'key1\') instead.',
             ],
             [
-                'Accessing $_SERVER directly with key \'key2\' is not allowed.',
+                'Direct access to $_SERVER[\'key2\'] is not allowed.',
                 26,
                 'Use service(\'superglobals\')->server(\'key2\') instead.',
             ],

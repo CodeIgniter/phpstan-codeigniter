@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Rules\Superglobals;
 
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
-use CodeIgniter\Superglobals;
+use CodeIgniter\PHPStan\NodeVisitor\UnsetOnSuperglobalsDimFetchVisitor;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
@@ -50,16 +50,8 @@ final class SuperglobalsOffsetAccessRule implements Rule
             return [];
         }
 
-        if (! array_key_exists($varName, SuperglobalsHelper::HANDLED_SUPERGLOBALS)) {
+        if (! $this->superglobalsHelper->isHandledSuperglobal($varName, $scope)) {
             return [];
-        }
-
-        if ($scope->getFunction() === null) {
-            return []; // ignore uses in root level (not inside function or method)
-        }
-
-        if ($scope->isInClass() && $scope->getClassReflection()->getName() === Superglobals::class) {
-            return []; // ignore access inside `Superglobals`
         }
 
         if ($node->dim === null) {
@@ -69,6 +61,10 @@ final class SuperglobalsOffsetAccessRule implements Rule
         $dimType = $scope->getType($node->dim);
 
         if ($dimType->isString()->no()) {
+            return [];
+        }
+
+        if ($node->getAttribute(UnsetOnSuperglobalsDimFetchVisitor::VISITOR_KEY) === true) {
             return [];
         }
 
@@ -84,11 +80,11 @@ final class SuperglobalsOffsetAccessRule implements Rule
             $dimString = $dimStringType->getValue();
 
             $errors[] = RuleErrorBuilder::message(sprintf(
-                'Accessing $%s directly with key \'%s\' is not allowed.',
+                'Direct access to $%s[\'%s\'] is not allowed.',
                 $varName,
                 $dimString,
             ))->tip(sprintf('Use service(\'superglobals\')->%s(\'%s\') instead.', $methodGetter, $dimString))
-                ->identifier('codeigniter.superglobalsAccess')
+                ->identifier('codeigniter.superglobalsOffsetAccess')
                 ->build();
         }
 
@@ -99,7 +95,7 @@ final class SuperglobalsOffsetAccessRule implements Rule
         return [
             RuleErrorBuilder::message(sprintf('Accessing $%s directly with string key is not allowed.', $varName))
                 ->tip(sprintf('Use service(\'superglobals\')->%s(<key>) instead.', $methodGetter))
-                ->identifier('codeigniter.superglobalsAccess')
+                ->identifier('codeigniter.superglobalsOffsetAccess')
                 ->build(),
         ];
     }

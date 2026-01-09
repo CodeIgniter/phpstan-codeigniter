@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Rules\Superglobals;
 
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
-use CodeIgniter\Superglobals;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
@@ -47,16 +46,8 @@ final class SuperglobalsGlobalAssignRule implements Rule
             return [];
         }
 
-        if (! array_key_exists($varName, SuperglobalsHelper::HANDLED_SUPERGLOBALS)) {
+        if (! $this->superglobalsHelper->isHandledSuperglobal($varName, $scope)) {
             return [];
-        }
-
-        if ($scope->getFunction() === null) {
-            return []; // ignore uses in root level (not inside function or method)
-        }
-
-        if ($scope->isInClass() && $scope->getClassReflection()->getName() === Superglobals::class) {
-            return []; // ignore assignments inside `Superglobals`
         }
 
         $exprType = $scope->getType($node->expr);

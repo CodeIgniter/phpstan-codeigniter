@@ -25,3 +25,10 @@ Instead, it recommends using the equivalent method getter in the `Superglobals` 
 
 This rule forbids direct offset assignment to all superglobals (except `$_FILES`, `$_ENV`, and `$_SESSION`).
 Instead, it recommends using the equivalent method setter in the `Superglobals` class.
+
+### SuperglobalsOffsetUnsetRule
+
+**Class:** `CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetUnsetRule`
+
+This rule forbids direct offset unset to all superglobals (except `$_FILES`, `$_ENV`, and `$_SESSION`).
+Instead, it recommends using the equivalent method unsetter in the `Superglobals` class.

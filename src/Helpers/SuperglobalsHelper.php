@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Helpers;
 
+use CodeIgniter\Superglobals;
 use InvalidArgumentException;
+use PHPStan\Analyser\Scope;
 
 final class SuperglobalsHelper
 {
@@ -31,6 +33,20 @@ final class SuperglobalsHelper
         'REQUEST_TIME'       => 'int',
         'REQUEST_TIME_FLOAT' => 'float',
     ];
+
+    public function isHandledSuperglobal(string $name, Scope $scope): bool
+    {
+        if (! array_key_exists($name, self::HANDLED_SUPERGLOBALS)) {
+            return false;
+        }
+
+        if ($scope->getFunction() === null) {
+            return false; // ignore uses in root level (not inside function or method)
+        }
+
+        // ignore assignments/access inside `Superglobals`
+        return ! $scope->isInClass() || $scope->getClassReflection()->getName() !== Superglobals::class;
+    }
 
     /**
      * @throws InvalidArgumentException
@@ -102,13 +118,13 @@ final class SuperglobalsHelper
     public function getMethodUnsetter(string $name): ?string
     {
         return match ($name) {
-            '_SERVER' => 'unsetServer',
-            '_GET'    => 'unsetGet',
-            '_POST'   => 'unsetPost',
-            '_COOKIE' => 'unsetCookie',
-            '_FILES'  => null,
-            'REQUEST' => 'unsetRequest',
-            default   => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
+            '_SERVER'  => 'unsetServer',
+            '_GET'     => 'unsetGet',
+            '_POST'    => 'unsetPost',
+            '_COOKIE'  => 'unsetCookie',
+            '_FILES'   => null,
+            '_REQUEST' => 'unsetRequest',
+            default    => throw new InvalidArgumentException(sprintf('Superglobal $%s is not handled.', $name)),
         };
     }
 }
