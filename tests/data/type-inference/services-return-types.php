@@ -11,6 +11,9 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
+namespace CodeIgniter\PHPStan\Tests\Type;
+
+use Closure;
 use CodeIgniter\Autoloader\Autoloader;
 use CodeIgniter\Autoloader\FileLocatorInterface;
 use CodeIgniter\Cache\CacheInterface;
@@ -28,6 +31,7 @@ use CodeIgniter\Validation\ValidationInterface;
 use CodeIgniter\View\Cell;
 use CodeIgniter\View\Parser;
 use CodeIgniter\View\View;
+use stdClass;
 
 use function PHPStan\Testing\assertType;
 
@@ -67,9 +71,3 @@ assertType(Closure::class, service('invoker'));
 // gibberish
 assertType('null', single_service('bar'));
 assertType('null', single_service('timers'));
-
-return [
-    single_service('toBool'),
-    service('noReturn'),
-    service('returnNull'),
-];

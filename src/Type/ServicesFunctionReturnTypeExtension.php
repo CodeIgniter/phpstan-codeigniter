@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Type;
 
+use CodeIgniter\PHPStan\Helpers\ServicesReturnTypeHelper;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
@@ -38,6 +39,6 @@ final class ServicesFunctionReturnTypeExtension implements DynamicFunctionReturn
             return null;
         }
 
-        return $this->servicesReturnTypeHelper->check($scope->getType($arguments[0]->value), $scope);
+        return $this->servicesReturnTypeHelper->checkReturnType($scope->getType($arguments[0]->value), $scope);
     }
 }

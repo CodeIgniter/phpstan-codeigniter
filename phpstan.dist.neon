@@ -15,6 +15,7 @@ parameters:
     analyseAndScan:
       - src/ComposerScripts.php
       - tests/data/**
+      - tests/Fixtures/**
   bootstrapFiles:
     - bootstrap.php
   ignoreErrors:

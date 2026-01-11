@@ -5,8 +5,20 @@ parameters:
     - ENVIRONMENT
   universalObjectCratesClasses:
     - CodeIgniter\Entity\Entity
+  codeigniter:
+    additionalServices: []
+
+parametersSchema:
+  codeigniter: structure([
+    additionalServices: listOf(string())
+  ])
 
 services:
+  servicesReturnTypeHelper:
+    class: CodeIgniter\PHPStan\Helpers\ServicesReturnTypeHelper
+    arguments:
+      additionalServices: %codeigniter.additionalServices%
+
   superglobalsHelper:
     class: CodeIgniter\PHPStan\Helpers\SuperglobalsHelper
 
@@ -21,9 +33,19 @@ services:
       - phpstan.parser.richParserNodeVisitor
 
   -
+    class: CodeIgniter\PHPStan\Type\ServicesFunctionReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicFunctionReturnTypeExtension
+
+  -
     class: CodeIgniter\PHPStan\Type\SuperglobalsMethodDynamicReturnTypeExtension
     tags:
       - phpstan.broker.dynamicMethodReturnTypeExtension
+
+  -
+    class: CodeIgniter\PHPStan\Type\ServicesGetSharedInstanceReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicStaticMethodReturnTypeExtension
 
 rules:
   - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsGlobalAssignRule

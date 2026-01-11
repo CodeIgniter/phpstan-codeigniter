@@ -19,6 +19,7 @@ trait AdditionalConfigFilesProvider
     {
         return [
             __DIR__ . '/../extension.neon',
+            __DIR__ . '/extension-test.neon',
             ...parent::getAdditionalConfigFiles(),
         ];
     }

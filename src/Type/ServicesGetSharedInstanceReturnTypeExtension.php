@@ -14,13 +14,14 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Type;
 
 use CodeIgniter\Config\BaseService;
+use CodeIgniter\PHPStan\Helpers\ServicesReturnTypeHelper;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicStaticMethodReturnTypeExtension;
 use PHPStan\Type\Type;
 
-class ServicesGetSharedInstanceReturnTypeExtension implements DynamicStaticMethodReturnTypeExtension
+final class ServicesGetSharedInstanceReturnTypeExtension implements DynamicStaticMethodReturnTypeExtension
 {
     public function __construct(
         private readonly ServicesReturnTypeHelper $servicesReturnTypeHelper,
@@ -44,6 +45,6 @@ class ServicesGetSharedInstanceReturnTypeExtension implements DynamicStaticMetho
             return null;
         }
 
-        return $this->servicesReturnTypeHelper->check($scope->getType($arguments[0]->value), $scope);
+        return $this->servicesReturnTypeHelper->checkReturnType($scope->getType($arguments[0]->value), $scope);
     }
 }

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
-namespace CodeIgniter\PHPStan\Tests\Fixtures\Type;
+namespace CodeIgniter\PHPStan\Tests\Fixtures;
 
 use Closure;
 use CodeIgniter\Config\BaseService;
@@ -30,23 +30,5 @@ final class OtherServices extends BaseService
     public static function invoker(string $callable): Closure
     {
         return Closure::fromCallable($callable);
-    }
-
-    public static function toBool(string $string): bool
-    {
-        return (bool) $string;
-    }
-
-    public static function noReturn()
-    {
-        return self::class;
-    }
-
-    /**
-     * @return null
-     */
-    public static function returnNull()
-    {
-        return null;
     }
 }

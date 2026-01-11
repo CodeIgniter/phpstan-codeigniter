@@ -2,7 +2,5 @@ parameters:
   bootstrapFiles:
     - ../bootstrap.php
   codeigniter:
-    additionalModelNamespaces:
-      - CodeIgniter\PHPStan\Tests\Fixtures\Type
     additionalServices:
-      - CodeIgniter\PHPStan\Tests\Fixtures\Type\OtherServices
+      - CodeIgniter\PHPStan\Tests\Fixtures\OtherServices

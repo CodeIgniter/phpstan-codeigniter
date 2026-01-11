@@ -53,6 +53,9 @@
         "psr-4": {
             "CodeIgniter\\PHPStan\\Tests\\": "tests/"
         },
+        "classmap": [
+            "tests/data/type-inference/SharedServices.php"
+        ],
         "exclude-from-classmap": [
             "tests/data/**"
         ]
