@@ -10,6 +10,19 @@ All type inference features of this extension are summarised below:
 
 This extension provides precise return types for the `service()` and `single_service()` functions.
 
+> [!NOTE]
+> **Configuration:**
+>
+> You can instruct PHPStan to consider your own services factory classes.
+> **Please note that it should be a valid class extending `CodeIgniter\Config\BaseService`!**
+>
+> ```yml
+> parameters:
+>   codeigniter:
+>     additionalServices:
+>       - Acme\Blog\Config\Services
+> ```
+
 ## Dynamic Method Return Type Extensions
 
 ### ReflectionHelperMethodInvokerStaticReturnTypeExtension
@@ -81,3 +94,16 @@ This is enabled by default for tests extending `CodeIgniter\Test\CIUnitTestCase`
 **Class:** `CodeIgniter\PHPStan\Type\ServicesGetSharedInstanceReturnTypeExtension`
 
 This extension provides precise return type for the static `getSharedInstance()` method of services class.
+
+> [!NOTE]
+> **Configuration:**
+>
+> You can instruct PHPStan to consider your own services factory classes.
+> **Please note that it should be a valid class extending `CodeIgniter\Config\BaseService`!**
+>
+> ```yml
+> parameters:
+>   codeigniter:
+>     additionalServices:
+>       - Acme\Blog\Config\Services
+> ```
