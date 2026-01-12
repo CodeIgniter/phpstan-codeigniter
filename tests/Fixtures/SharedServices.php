@@ -11,7 +11,7 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
-namespace CodeIgniter\PHPStan\Tests\Type;
+namespace CodeIgniter\PHPStan\Tests\Fixtures;
 
 use CodeIgniter\Cache\CacheInterface;
 use CodeIgniter\CLI\Commands;
