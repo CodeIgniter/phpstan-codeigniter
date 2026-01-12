@@ -3,4 +3,5 @@ parameters:
     - ../bootstrap.php
   codeigniter:
     additionalServices:
+      - CodeIgniter\PHPStan\Tests\Fixtures\InvalidServices
       - CodeIgniter\PHPStan\Tests\Fixtures\OtherServices

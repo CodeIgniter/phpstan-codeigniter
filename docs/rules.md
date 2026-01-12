@@ -2,6 +2,16 @@
 
 All rules of this extension is summarised below:
 
+## Functions
+
+### ServicesFunctionArgumentTypeRule
+
+**Class:** `CodeIgniter\PHPStan\Rules\Functions\ServicesFunctionArgumentTypeRule`<br/>
+Fixable: No
+
+This rule validates the service method name passed to either `service()` or `single_service()` function
+if coming from a valid Services class. It also validates the return if a valid object instance.
+
 ## Superglobals
 
 ### SuperglobalsGlobalAssignRule
