@@ -40,6 +40,10 @@ final class ExtensionTypeInferenceTest extends TypeInferenceTestCase
         // @phpstan-ignore argument.type, argument.type
         yield from self::gatherAssertTypesFromDirectory(__DIR__ . '/../data/type-inference');
 
+        yield from self::gatherAssertTypes(__DIR__ . '/../Fixtures/ReflectionHelperMethodInvokerTest.php');
+
+        yield from self::gatherAssertTypes(__DIR__ . '/../Fixtures/ReflectionHelperStaticMethodInvokerTest.php');
+
         yield from self::gatherAssertTypes(__DIR__ . '/../Fixtures/SharedServices.php');
     }
 }

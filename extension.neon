@@ -14,6 +14,9 @@ parametersSchema:
   ])
 
 services:
+  reflectionHelperPrivateInvokerHelper:
+    class: CodeIgniter\PHPStan\Helpers\ReflectionHelperPrivateInvokerHelper
+
   servicesReturnTypeHelper:
     class: CodeIgniter\PHPStan\Helpers\ServicesReturnTypeHelper
     arguments:
@@ -31,6 +34,20 @@ services:
     class: CodeIgniter\PHPStan\NodeVisitor\UnsetOnSuperglobalsDimFetchVisitor
     tags:
       - phpstan.parser.richParserNodeVisitor
+
+  -
+    class: CodeIgniter\PHPStan\Type\ReflectionHelperMethodInvokerReturnTypeExtension
+    arguments:
+      className: CodeIgniter\Test\CIUnitTestCase
+    tags:
+      - phpstan.broker.dynamicMethodReturnTypeExtension
+
+  -
+    class: CodeIgniter\PHPStan\Type\ReflectionHelperMethodInvokerStaticReturnTypeExtension
+    arguments:
+      className: CodeIgniter\Test\CIUnitTestCase
+    tags:
+      - phpstan.broker.dynamicStaticMethodReturnTypeExtension
 
   -
     class: CodeIgniter\PHPStan\Type\ServicesFunctionReturnTypeExtension

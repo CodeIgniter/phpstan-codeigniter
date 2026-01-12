@@ -11,12 +11,12 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
-namespace CodeIgniter\PHPStan\Tests\Fixtures\Type;
+namespace CodeIgniter\PHPStan\Tests\Fixtures;
 
 use CodeIgniter\Commands\Utilities\ConfigCheck;
 use CodeIgniter\Commands\Utilities\Environment;
-use CodeIgniter\PHPStan\NodeVisitor\ModelReturnTypeTransformVisitor;
-use CodeIgniter\PHPStan\Type\FactoriesFunctionReturnTypeExtension;
+use CodeIgniter\PHPStan\NodeVisitor\ConsecutiveAssignsVisitor;
+use CodeIgniter\PHPStan\Type\ReflectionHelperMethodInvokerStaticReturnTypeExtension;
 use CodeIgniter\PHPStan\Type\ServicesFunctionReturnTypeExtension;
 use CodeIgniter\Test\CIUnitTestCase;
 
@@ -25,13 +25,13 @@ use function PHPStan\Testing\assertType;
 /**
  * @internal
  */
-final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
+final class ReflectionHelperMethodInvokerTest extends CIUnitTestCase
 {
     public function testOnFirstClassCallable(): void
     {
         assertType(
             'Closure(object|string, string): (Closure(mixed ...$args=): mixed)',
-            self::getPrivateMethodInvoker(...),
+            $this->getPrivateMethodInvoker(...),
         );
     }
 
@@ -39,79 +39,79 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
     {
         assertType('Closure(): void', self::getPrivateMethodInvoker($this, 'testOnFirstClassCallable'));
 
-        $object = new ModelReturnTypeTransformVisitor();
+        $object = new ConsecutiveAssignsVisitor();
         assertType('Closure(PhpParser\Node): null', self::getPrivateMethodInvoker($object, 'enterNode'));
         assertType(
             'Closure(array<PhpParser\Node>): (array<PhpParser\Node>|null)',
-            self::getPrivateMethodInvoker($object, 'afterTraverse'),
+            $this->getPrivateMethodInvoker($object, 'afterTraverse'),
         );
 
         $object = new Environment(service('logger'), service('commands'));
         assertType(
             'Closure(array<int|string, string|null>): int',
-            self::getPrivateMethodInvoker($object, 'run'),
+            $this->getPrivateMethodInvoker($object, 'run'),
         );
-        assertType('Closure(string): bool', self::getPrivateMethodInvoker($object, 'writeNewEnvironmentToEnvFile'));
+        assertType('Closure(string): bool', $this->getPrivateMethodInvoker($object, 'writeNewEnvironmentToEnvFile'));
 
         $object = new ConfigCheck(service('logger'), service('commands'));
         assertType(
             'Closure(array<int|string, string|null>): int',
-            self::getPrivateMethodInvoker($object, 'run'),
+            $this->getPrivateMethodInvoker($object, 'run'),
         );
-        assertType('Closure(object): string', self::getPrivateMethodInvoker($object, 'getVarDump'));
-        assertType('Closure(object): string', self::getPrivateMethodInvoker($object, 'getKintD'));
+        assertType('Closure(object): string', $this->getPrivateMethodInvoker($object, 'getVarDump'));
+        assertType('Closure(object): string', $this->getPrivateMethodInvoker($object, 'getKintD'));
     }
 
     public function testClassStringAsObjectType(): void
     {
-        assertType('Closure(): never', self::getPrivateMethodInvoker(self::class, 'testOnFirstClassCallable'));
+        assertType('Closure(): never', $this->getPrivateMethodInvoker(self::class, 'testOnFirstClassCallable'));
 
-        $object = ModelReturnTypeTransformVisitor::class;
-        assertType('Closure(PhpParser\Node): never', self::getPrivateMethodInvoker($object, 'enterNode'));
+        $object = ConsecutiveAssignsVisitor::class;
+        assertType('Closure(PhpParser\Node): never', $this->getPrivateMethodInvoker($object, 'enterNode'));
         assertType(
             'Closure(array<PhpParser\Node>): never',
-            self::getPrivateMethodInvoker($object, 'afterTraverse'),
+            $this->getPrivateMethodInvoker($object, 'afterTraverse'),
         );
 
-        $object = FactoriesFunctionReturnTypeExtension::class;
+        $object = ReflectionHelperMethodInvokerStaticReturnTypeExtension::class;
         assertType(
-            'Closure(CodeIgniter\PHPStan\Type\FactoriesReturnTypeHelper): never',
-            self::getPrivateMethodInvoker($object, '__construct'),
+            'Closure(CodeIgniter\PHPStan\Helpers\ReflectionHelperPrivateInvokerHelper, class-string): never',
+            $this->getPrivateMethodInvoker($object, '__construct'),
         );
         assertType(
-            'Closure(PHPStan\Reflection\FunctionReflection): never',
-            self::getPrivateMethodInvoker($object, 'isFunctionSupported'),
+            'Closure(PHPStan\Reflection\MethodReflection): never',
+            $this->getPrivateMethodInvoker($object, 'isStaticMethodSupported'),
         );
         assertType(
-            'Closure(PHPStan\Reflection\FunctionReflection, PhpParser\Node\Expr\FuncCall, PHPStan\Analyser\Scope): never',
-            self::getPrivateMethodInvoker($object, 'getTypeFromFunctionCall'),
+            'Closure(PHPStan\Reflection\MethodReflection, PhpParser\Node\Expr\StaticCall, PHPStan\Analyser\Scope): never',
+            $this->getPrivateMethodInvoker($object, 'getTypeFromStaticMethodCall'),
         );
     }
 
     public function testOnNamedArgumentCall(): void
     {
-        $object = new ModelReturnTypeTransformVisitor();
+        $object = new ConsecutiveAssignsVisitor();
         assertType(
             'Closure(PhpParser\Node): null',
-            self::getPrivateMethodInvoker(method: 'enterNode', obj: $object),
+            $this->getPrivateMethodInvoker(method: 'enterNode', obj: $object),
         );
         assertType(
             'Closure(array<PhpParser\Node>): (array<PhpParser\Node>|null)',
-            self::getPrivateMethodInvoker(obj: $object, method: 'afterTraverse'),
+            $this->getPrivateMethodInvoker(obj: $object, method: 'afterTraverse'),
         );
     }
 
     public function testReturnIsNever(): void
     {
-        assertType('*NEVER*', self::getPrivateMethodInvoker('NotClass', 'foo'));
-        assertType('*NEVER*', self::getPrivateMethodInvoker($this, 'inexistentMethod'));
+        assertType('*NEVER*', $this->getPrivateMethodInvoker('NotClass', 'foo'));
+        assertType('*NEVER*', $this->getPrivateMethodInvoker($this, 'inexistentMethod'));
     }
 
     public function testOnString(string $object): void
     {
         assertType(
             'Closure(mixed ...): mixed',
-            self::getPrivateMethodInvoker($object, '__construct'),
+            $this->getPrivateMethodInvoker($object, '__construct'),
         );
     }
 
@@ -122,7 +122,7 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
     {
         assertType(
             'Closure(mixed ...): mixed',
-            self::getPrivateMethodInvoker($object, '__construct'),
+            $this->getPrivateMethodInvoker($object, '__construct'),
         );
     }
 
@@ -133,7 +133,7 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
     {
         assertType(
             'Closure(Psr\Log\LoggerInterface, CodeIgniter\CLI\Commands): never',
-            self::getPrivateMethodInvoker($class, '__construct'),
+            $this->getPrivateMethodInvoker($class, '__construct'),
         );
     }
 
@@ -141,7 +141,7 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
     {
         assertType(
             'Closure(mixed ...): mixed',
-            self::getPrivateMethodInvoker($object, '__construct'),
+            $this->getPrivateMethodInvoker($object, '__construct'),
         );
     }
 
@@ -152,22 +152,22 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
     {
         assertType(
             'Closure(non-empty-string): $this',
-            self::getPrivateMethodInvoker($object, '__construct'),
+            $this->getPrivateMethodInvoker($object, '__construct'),
         );
     }
 
     /**
-     * @param class-string<ServicesFunctionReturnTypeExtension>|self $object
+     * @param class-string<ServicesFunctionReturnTypeExtension>|ConfigCheck $object
      */
     public function testOnUnionOfObjects(object|string $object): void
     {
         assertType(
             sprintf(
-                '%s|%s',
-                '(Closure(CodeIgniter\PHPStan\Type\ServicesReturnTypeHelper): never)',
-                '(Closure(non-empty-string): CodeIgniter\PHPStan\Tests\Fixtures\Type\ReflectionHelperGetPrivateMethodInvokerTest)',
+                '(%s)|(%s)',
+                'Closure(CodeIgniter\PHPStan\Helpers\ServicesReturnTypeHelper): never',
+                'Closure(Psr\Log\LoggerInterface, CodeIgniter\CLI\Commands): CodeIgniter\Commands\Utilities\ConfigCheck',
             ),
-            self::getPrivateMethodInvoker($object, '__construct'),
+            $this->getPrivateMethodInvoker($object, '__construct'),
         );
     }
 
@@ -178,7 +178,7 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
     {
         assertType(
             'Closure(Psr\Log\LoggerInterface, CodeIgniter\CLI\Commands): never',
-            self::getPrivateMethodInvoker($object, '__construct'),
+            $this->getPrivateMethodInvoker($object, '__construct'),
         );
     }
 
@@ -189,7 +189,7 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
     {
         assertType(
             '(Closure(): void)|(Closure(non-empty-string): $this)',
-            self::getPrivateMethodInvoker($this, $method),
+            $this->getPrivateMethodInvoker($this, $method),
         );
     }
 
@@ -201,7 +201,7 @@ final class ReflectionHelperGetPrivateMethodInvokerTest extends CIUnitTestCase
 
         assertType(
             'Closure(string, int, bool, string ...): void',
-            self::getPrivateMethodInvoker($anon, 'testing'),
+            $this->getPrivateMethodInvoker($anon, 'testing'),
         );
     }
 }

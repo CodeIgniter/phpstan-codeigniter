@@ -11,14 +11,14 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
-namespace CodeIgniter\PHPStan\Type;
+namespace CodeIgniter\PHPStan\Helpers;
 
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\ClosureType;
-use PHPStan\Type\DynamicStaticMethodReturnTypeExtension;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
@@ -26,31 +26,14 @@ use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
 
-final class ReflectionHelperGetPrivateMethodInvokerReturnTypeExtension implements DynamicStaticMethodReturnTypeExtension
+final class ReflectionHelperPrivateInvokerHelper
 {
     private const OBJECT_AS_STRING_CONTEXT = 0;
     private const OBJECT_AS_OBJECT_CONTEXT = 1;
 
-    /**
-     * @param class-string $class
-     */
-    public function __construct(
-        private readonly string $class,
-    ) {}
-
-    public function getClass(): string
+    public function checkMethodReturnType(MethodReflection $methodReflection, MethodCall|StaticCall $node, Scope $scope): ?Type
     {
-        return $this->class;
-    }
-
-    public function isStaticMethodSupported(MethodReflection $methodReflection): bool
-    {
-        return $methodReflection->getName() === 'getPrivateMethodInvoker';
-    }
-
-    public function getTypeFromStaticMethodCall(MethodReflection $methodReflection, StaticCall $methodCall, Scope $scope): ?Type
-    {
-        $args = $methodCall->getArgs();
+        $args = $node->getArgs();
 
         if (count($args) !== 2) {
             return null;
