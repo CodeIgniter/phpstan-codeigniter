@@ -11,11 +11,11 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/vendor/codeigniter4/codeigniter4/system/util_bootstrap.php';
+require_once __DIR__ . '/vendor/codeigniter4/framework/system/util_bootstrap.php';
 
 foreach ([
-    'vendor/codeigniter4/codeigniter4/app/Config',
-    'vendor/codeigniter4/codeigniter4/system/Helpers',
+    'vendor/codeigniter4/framework/app/Config',
+    'vendor/codeigniter4/framework/system/Helpers',
 ] as $directory) {
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS),
