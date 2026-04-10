@@ -8,15 +8,16 @@ on:
 jobs:
   build:
     name: Create a release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Create release
-        uses: crazy-max/ghaction-github-release@v2
-        with:
-          token: ${{ secrets.RELEASE_TOKEN }}
-          draft: true
-          prerelease: false
+        run: gh release create ${{ github.ref_name }} \
+          --title ${{ github.ref_name }} \
+          --draft \
+          --generate-notes
