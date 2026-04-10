@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Tests\Rules\Classes;
 
 use CodeIgniter\PHPStan\Rules\Classes\CacheHandlerInstantiationRule;
-use CodeIgniter\PHPStan\Tests\AdditionalConfigFilesTrait;
+use CodeIgniter\PHPStan\Tests\AdditionalConfigFilesProvider;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
 use PHPUnit\Framework\Attributes\Group;
@@ -24,10 +24,10 @@ use PHPUnit\Framework\Attributes\Group;
  *
  * @extends RuleTestCase<CacheHandlerInstantiationRule>
  */
-#[Group('Integration')]
+#[Group('static-analysis')]
 final class CacheHandlerInstantiationRuleTest extends RuleTestCase
 {
-    use AdditionalConfigFilesTrait;
+    use AdditionalConfigFilesProvider;
 
     protected function getRule(): Rule
     {
@@ -36,16 +36,16 @@ final class CacheHandlerInstantiationRuleTest extends RuleTestCase
 
     public function testRule(): void
     {
-        $this->analyse([__DIR__ . '/data/cache-handler.php'], [
+        $this->analyse([__DIR__ . '/../../data/rules/cache-handler.php'], [
             [
-                'Calling new FileHandler() directly is incomplete to get the cache instance.',
+                'Instantiating "CodeIgniter\Cache\Handlers\FileHandler" using new is incomplete to get a fully configured cache instance.',
                 19,
-                'Use CacheFactory::getHandler() or the cache() function to get the cache instance instead.',
+                'Use "CacheFactory::getHandler()" or the "cache()" function instead.',
             ],
             [
-                'Calling new RedisHandler() directly is incomplete to get the cache instance.',
+                'Instantiating "CodeIgniter\Cache\Handlers\RedisHandler" using new is incomplete to get a fully configured cache instance.',
                 20,
-                'Use CacheFactory::getHandler() or the cache() function to get the cache instance instead.',
+                'Use "CacheFactory::getHandler()" or the "cache()" function instead.',
             ],
         ]);
     }

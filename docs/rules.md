@@ -4,6 +4,15 @@ All rules of this extension is summarised below:
 
 ## Classes
 
+### CacheHandlerInstantiationRule
+
+**Class:** `CodeIgniter\PHPStan\Rules\Classes\CacheHandlerInstantiationRule`<br/>
+Fixable: No
+
+Simply instantiating cache handlers using `new` is incomplete. The public `initialize()` method
+needs to be called on the instance so that the required initializations are done. This is usually
+achieved by using `CacheFactory::getHandler()` or using the `cache()` function.
+
 ### FrameworkExceptionInstantiationRule
 
 **Class:** `CodeIgniter\PHPStan\Rules\Classes\FrameworkExceptionInstantiationRule`<br/>

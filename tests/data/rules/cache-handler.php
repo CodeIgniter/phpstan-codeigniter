@@ -18,7 +18,7 @@ use Config\Cache;
 
 $handler1 = new FileHandler(new Cache());
 $handler2 = new RedisHandler(new Cache());
-$handler3 = new MockCache();
+$handler3 = new MockCache(); // This should not trigger the rule as it's a mock class used in tests.
 
 $cache1 = $handler1->get('foo');
 $cache2 = $handler2->get('bar');

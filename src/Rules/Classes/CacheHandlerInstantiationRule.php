@@ -59,10 +59,10 @@ final class CacheHandlerInstantiationRule implements Rule
 
         return [
             RuleErrorBuilder::message(sprintf(
-                'Calling new %s() directly is incomplete to get the cache instance.',
-                $reflection->getNativeReflection()->getShortName(),
+                'Instantiating "%s" using new is incomplete to get a fully configured cache instance.',
+                $reflection->getName(),
             ))
-                ->tip('Use CacheFactory::getHandler() or the cache() function to get the cache instance instead.')
+                ->tip('Use "CacheFactory::getHandler()" or the "cache()" function instead.')
                 ->identifier('codeigniter.cacheHandlerInstance')
                 ->build(),
         ];
