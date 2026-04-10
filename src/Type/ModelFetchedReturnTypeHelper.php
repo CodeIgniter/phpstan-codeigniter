@@ -108,13 +108,13 @@ final class ModelFetchedReturnTypeHelper
             return new ConstantArrayType([], []);
         }
 
-        $fields = array_filter(
+        $fields = array_values(array_filter(
             array_map(
                 static fn (Type $type) => current($type->getConstantStrings()),
                 current($fieldsTypes)->getValueTypes(),
             ),
             static fn (ConstantStringType|false $constantStringType): bool => $constantStringType !== false,
-        );
+        ));
 
         return new ConstantArrayType(
             $fields,
