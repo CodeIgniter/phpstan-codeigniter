@@ -49,9 +49,14 @@ final class FrameworkExceptionInstantiationRule implements Rule
             throw new ShouldNotHappenException();
         }
 
-        return [RuleErrorBuilder::message(sprintf(
-            'Instantiating %s using new is not allowed. Use one of its named constructors instead.',
-            $objectType->getClassReflection()->getNativeReflection()->getShortName(),
-        ))->identifier('codeigniter.frameworkExceptionInstance')->build()];
+        return [
+            RuleErrorBuilder::message(sprintf(
+                'Instantiating "%s" using new is forbidden.',
+                $objectType->getClassReflection()->getName(),
+            ))
+                ->identifier('codeigniter.frameworkExceptionInstance')
+                ->tip('Use one of its named constructors instead.')
+                ->build(),
+        ];
     }
 }

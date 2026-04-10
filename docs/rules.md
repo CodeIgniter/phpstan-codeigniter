@@ -2,6 +2,16 @@
 
 All rules of this extension is summarised below:
 
+## Classes
+
+### FrameworkExceptionInstantiationRule
+
+**Class:** `CodeIgniter\PHPStan\Rules\Classes\FrameworkExceptionInstantiationRule`<br/>
+Fixable: No
+
+This rule forbids creating the `CodeIgniter\Exceptions\FrameworkException` and its child classes
+using the `new` keyword. Instead, it directs users to use one of their named constructor methods.
+
 ## Functions
 
 ### ServicesFunctionArgumentTypeRule

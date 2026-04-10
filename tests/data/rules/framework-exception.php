@@ -17,5 +17,5 @@ use CodeIgniter\View\Exceptions\ViewException;
 
 $e1 = new FrameworkException('Hello.');
 $e2 = new ViewException('Hi!');
-$e3 = new RuntimeException('Thanks.');
+$e3 = new RuntimeException('Thanks.'); // This one should not trigger as it's not a FrameworkException.
 $e4 = new HTTPException('Nice');
