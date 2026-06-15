@@ -59,6 +59,9 @@ services:
   columnTypeResolver:
     class: CodeIgniter\PHPStan\Database\Schema\ColumnTypeResolver
 
+  modelFetchedReturnTypeHelper:
+    class: CodeIgniter\PHPStan\Type\ModelFetchedReturnTypeHelper
+
   factoriesReturnTypeHelper:
     class: CodeIgniter\PHPStan\Helpers\FactoriesReturnTypeHelper
     arguments:
@@ -83,6 +86,11 @@ services:
 
   -
     class: CodeIgniter\PHPStan\NodeVisitor\UnsetOnSuperglobalsDimFetchVisitor
+    tags:
+      - phpstan.parser.richParserNodeVisitor
+
+  -
+    class: CodeIgniter\PHPStan\NodeVisitor\ModelReturnTypeTransformVisitor
     tags:
       - phpstan.parser.richParserNodeVisitor
 
@@ -112,6 +120,11 @@ services:
 
   -
     class: CodeIgniter\PHPStan\Type\SuperglobalsMethodDynamicReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicMethodReturnTypeExtension
+
+  -
+    class: CodeIgniter\PHPStan\Type\ModelFindReturnTypeExtension
     tags:
       - phpstan.broker.dynamicMethodReturnTypeExtension
 
