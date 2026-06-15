@@ -55,9 +55,12 @@ final class SchemaMigratorTest extends TestCase
 
     public function testRunsMigrationsResilientlyAndReturnsFingerprint(): void
     {
-        $fingerprint = (new SchemaMigrator())->migrate($this->db, self::FIXTURE_NAMESPACE);
+        $migrator    = new SchemaMigrator();
+        $fingerprint = $migrator->fingerprint($this->db, self::FIXTURE_NAMESPACE);
 
         self::assertMatchesRegularExpression('/^[0-9a-f]{64}$/', $fingerprint);
+
+        $migrator->migrate($this->db, self::FIXTURE_NAMESPACE);
 
         $schema = (new SchemaIntrospector())->introspect($this->db, $fingerprint);
 

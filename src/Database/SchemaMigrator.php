@@ -23,42 +23,44 @@ use stdClass;
 use Throwable;
 
 /**
- * Runs the project's migrations into a schema connection and returns a fingerprint
- * of the migration set.
- *
- * Migrations are run one by one rather than through `MigrationRunner::latest()`: a migration
- * that cannot run on SQLite leaves its tables out of the inferred schema instead of aborting
- * the whole build, and migrations pinned to a specific database group are skipped.
+ * Discovers and runs the project's migrations against a schema connection, skipping migrations
+ * pinned to another database group and tolerating migrations that fail to run.
  */
 final class SchemaMigrator
 {
-    public function migrate(Connection $db, ?string $namespace = null): string
+    /**
+     * Fingerprint of the migration set, computed from the files without running them.
+     */
+    public function fingerprint(Connection $db, ?string $namespace = null): string
     {
-        $runner = new MigrationRunner(config(Migrations::class), $db);
-
-        if ($namespace !== null) {
-            $runner->setNamespace($namespace);
-        }
-
-        $forge = Database::forge($db);
-
         $fingerprint = '';
 
-        foreach ($runner->findMigrations() as $migration) {
-            if (! $migration instanceof stdClass) {
-                continue;
-            }
+        foreach ($this->discoverMigrations($db, $namespace) as $migration) {
+            $path = $migration->path;
+            $uid  = $migration->uid;
 
-            $path  = $migration->path;
-            $class = $migration->class;
-            $uid   = $migration->uid;
-
-            if (! is_string($path) || ! is_string($class) || ! is_string($uid)) {
+            if (! is_string($path) || ! is_string($uid)) {
                 continue;
             }
 
             $fileHash = md5_file($path);
             $fingerprint .= $uid . ':' . ($fileHash === false ? '' : $fileHash) . "\n";
+        }
+
+        return hash('sha256', $fingerprint);
+    }
+
+    public function migrate(Connection $db, ?string $namespace = null): void
+    {
+        $forge = Database::forge($db);
+
+        foreach ($this->discoverMigrations($db, $namespace) as $migration) {
+            $path  = $migration->path;
+            $class = $migration->class;
+
+            if (! is_string($path) || ! is_string($class)) {
+                continue;
+            }
 
             require_once $path;
 
@@ -78,8 +80,23 @@ final class SchemaMigrator
                 // Degrade: the failed migration's tables are simply absent from the schema.
             }
         }
+    }
 
-        return hash('sha256', $fingerprint);
+    /**
+     * @return list<stdClass>
+     */
+    private function discoverMigrations(Connection $db, ?string $namespace): array
+    {
+        $runner = new MigrationRunner(config(Migrations::class), $db);
+
+        if ($namespace !== null) {
+            $runner->setNamespace($namespace);
+        }
+
+        return array_values(array_filter(
+            $runner->findMigrations(),
+            static fn (mixed $migration): bool => $migration instanceof stdClass,
+        ));
     }
 
     /**
