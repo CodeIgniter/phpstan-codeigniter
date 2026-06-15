@@ -42,10 +42,10 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
 
     public function isMethodSupported(MethodReflection $methodReflection): bool
     {
-        return in_array($methodReflection->getName(), ['find', 'findAll', 'first'], true);
+        return in_array($methodReflection->getName(), ['find', 'findAll', 'first', 'findColumn'], true);
     }
 
-    public function getTypeFromMethodCall(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): Type
+    public function getTypeFromMethodCall(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): ?Type
     {
         $methodName = $methodReflection->getName();
 
@@ -57,9 +57,42 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
             return $this->getTypeFromFindAll($methodCall, $scope);
         }
 
+        if ($methodName === 'findColumn') {
+            return $this->getTypeFromFindColumn($methodCall, $scope);
+        }
+
         $classReflection = $this->getClassReflection($methodCall, $scope);
 
         return TypeCombinator::addNull($this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $methodCall, $scope));
+    }
+
+    private function getTypeFromFindColumn(MethodCall $methodCall, Scope $scope): ?Type
+    {
+        $args = $methodCall->getArgs();
+
+        if (! isset($args[0])) {
+            return null;
+        }
+
+        $strings = $scope->getType($args[0]->value)->getConstantStrings();
+
+        if (count($strings) !== 1) {
+            return null;
+        }
+
+        $fieldType = $this->modelFetchedReturnTypeHelper->getColumnFieldType(
+            $this->getClassReflection($methodCall, $scope),
+            $strings[0]->getValue(),
+        );
+
+        if ($fieldType === null) {
+            return null;
+        }
+
+        return TypeCombinator::addNull(TypeCombinator::intersect(
+            new ArrayType(new IntegerType(), $fieldType),
+            new AccessoryArrayListType(),
+        ));
     }
 
     private function getClassReflection(MethodCall $methodCall, Scope $scope): ClassReflection

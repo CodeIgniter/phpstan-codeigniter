@@ -48,6 +48,12 @@ assertType('array{id: int, lowered: mixed}|null', $comments->select('id, LOWER(b
 // A selected field is still cast by the model (output name `user_id` casts via the model handler).
 assertType('array{user_id: CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money}|null', $posts->select('user_id')->first());
 
+// findColumn() returns a list of the single column's values.
+assertType('list<int>|null', $comments->findColumn('id'));
+assertType('list<string|null>|null', $comments->findColumn('body'));
+assertType('list<CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money>|null', $posts->findColumn('user_id'));
+assertType('list<CodeIgniter\I18n\Time>|null', $posts->findColumn('title'));
+
 function selectDynamically(BlogCommentModel $model, string $columns): void
 {
     assertType('array<string, mixed>|null', $model->select($columns)->asArray()->first());

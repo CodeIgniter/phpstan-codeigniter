@@ -67,6 +67,27 @@ final class ModelFetchedReturnTypeHelper
         return new ObjectWithoutClassType();
     }
 
+    /**
+     * Resolves the type of a single column's value, as returned element-wise by `findColumn()`.
+     */
+    public function getColumnFieldType(ClassReflection $classReflection, string $columnName): ?Type
+    {
+        $tableName = $classReflection->getNativeReflection()->getDefaultProperties()['table'] ?? null;
+
+        $table = is_string($tableName) && $tableName !== '' ? $this->schemaProvider->get()->getTable($tableName) : null;
+
+        if ($table === null) {
+            return null;
+        }
+
+        return $this->fieldType(
+            $columnName,
+            $table->getColumn($columnName),
+            $this->readStringMap($classReflection, 'casts'),
+            $this->readStringMap($classReflection, 'castHandlers'),
+        );
+    }
+
     private function resolveReturnType(ClassReflection $classReflection, ?MethodCall $methodCall, Scope $scope): string
     {
         if ($methodCall !== null && $methodCall->hasAttribute(ModelReturnTypeTransformVisitor::RETURN_TYPE)) {
