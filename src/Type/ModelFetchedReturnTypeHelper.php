@@ -16,6 +16,7 @@ namespace CodeIgniter\PHPStan\Type;
 use CodeIgniter\PHPStan\Database\Schema\CastFieldTypeResolver;
 use CodeIgniter\PHPStan\Database\Schema\Column;
 use CodeIgniter\PHPStan\Database\Schema\ColumnTypeResolver;
+use CodeIgniter\PHPStan\Database\Schema\Table;
 use CodeIgniter\PHPStan\Database\SchemaProvider;
 use CodeIgniter\PHPStan\NodeVisitor\ModelReturnTypeTransformVisitor;
 use PhpParser\Node\Expr;
@@ -36,7 +37,7 @@ use stdClass;
 
 /**
  * Resolves the type of a single fetched row for a model, honoring its `$returnType` (or the
- * `asArray()`/`asObject()` override) and shaping array rows from the live columns and `$casts`.
+ * `asArray()`/`asObject()` override), the `select()` field list, the live columns, and `$casts`.
  */
 final class ModelFetchedReturnTypeHelper
 {
@@ -52,11 +53,11 @@ final class ModelFetchedReturnTypeHelper
         $returnType = $this->resolveReturnType($classReflection, $methodCall, $scope);
 
         if ($returnType === 'object') {
-            return $this->resolveObjectRowType($classReflection);
+            return $this->resolveObjectRowType($classReflection, $methodCall, $scope);
         }
 
         if ($returnType === 'array') {
-            return $this->resolveArrayRowType($classReflection);
+            return $this->resolveArrayRowType($classReflection, $methodCall, $scope);
         }
 
         if ($this->reflectionProvider->hasClass($returnType)) {
@@ -85,9 +86,9 @@ final class ModelFetchedReturnTypeHelper
         return is_string($returnType) ? $returnType : 'array';
     }
 
-    private function resolveArrayRowType(ClassReflection $classReflection): Type
+    private function resolveArrayRowType(ClassReflection $classReflection, ?MethodCall $methodCall, Scope $scope): Type
     {
-        $fields = $this->resolveRowFieldTypes($classReflection);
+        $fields = $this->resolveRowFieldTypes($classReflection, $methodCall, $scope);
 
         if ($fields === null) {
             return new ArrayType(new StringType(), new MixedType());
@@ -102,9 +103,9 @@ final class ModelFetchedReturnTypeHelper
         return $builder->getArray();
     }
 
-    private function resolveObjectRowType(ClassReflection $classReflection): Type
+    private function resolveObjectRowType(ClassReflection $classReflection, ?MethodCall $methodCall, Scope $scope): Type
     {
-        $fields = $this->resolveRowFieldTypes($classReflection);
+        $fields = $this->resolveRowFieldTypes($classReflection, $methodCall, $scope);
 
         if ($fields === null) {
             return new ObjectType(stdClass::class);
@@ -114,9 +115,9 @@ final class ModelFetchedReturnTypeHelper
     }
 
     /**
-     * @return array<string, Type>|null Null when the model's table cannot be resolved.
+     * @return array<string, Type>|null Null when the row shape cannot be resolved.
      */
-    private function resolveRowFieldTypes(ClassReflection $classReflection): ?array
+    private function resolveRowFieldTypes(ClassReflection $classReflection, ?MethodCall $methodCall, Scope $scope): ?array
     {
         $tableName = $classReflection->getNativeReflection()->getDefaultProperties()['table'] ?? null;
 
@@ -128,10 +129,137 @@ final class ModelFetchedReturnTypeHelper
 
         $casts        = $this->readStringMap($classReflection, 'casts');
         $castHandlers = $this->readStringMap($classReflection, 'castHandlers');
-        $fields       = [];
+
+        $selects = $methodCall !== null && $methodCall->hasAttribute(ModelReturnTypeTransformVisitor::SELECTS)
+            ? $methodCall->getAttribute(ModelReturnTypeTransformVisitor::SELECTS)
+            : null;
+
+        if (! is_array($selects)) {
+            return $this->columnsToFields($table, $casts, $castHandlers);
+        }
+
+        return $this->resolveSelectedFields($selects, $table, $casts, $castHandlers, $scope);
+    }
+
+    /**
+     * @param array<mixed, mixed>   $selects
+     * @param array<string, string> $casts
+     * @param array<string, string> $castHandlers
+     *
+     * @return array<string, Type>|null
+     */
+    private function resolveSelectedFields(array $selects, Table $table, array $casts, array $castHandlers, Scope $scope): ?array
+    {
+        $fields = [];
+
+        foreach ($selects as $expr) {
+            if (! $expr instanceof Expr) {
+                return null;
+            }
+
+            $strings = $scope->getType($expr)->getConstantStrings();
+
+            if (count($strings) !== 1) {
+                return null;
+            }
+
+            foreach ($this->splitSelect($strings[0]->getValue()) as $part) {
+                $resolved = $this->resolveSelectPart($part, $table, $casts, $castHandlers);
+
+                if ($resolved === null) {
+                    return null;
+                }
+
+                foreach ($resolved as $name => $type) {
+                    $fields[$name] = $type;
+                }
+            }
+        }
+
+        return $fields;
+    }
+
+    /**
+     * @param array<string, string> $casts
+     * @param array<string, string> $castHandlers
+     *
+     * @return array<string, Type>|null
+     */
+    private function resolveSelectPart(string $part, Table $modelTable, array $casts, array $castHandlers): ?array
+    {
+        if ($part === '*') {
+            return $this->columnsToFields($modelTable, $casts, $castHandlers);
+        }
+
+        if (preg_match('/^(\w+)\.\*$/', $part, $matches) === 1) {
+            $table = $this->schemaProvider->get()->getTable($matches[1]);
+
+            return $table === null ? null : $this->columnsToFields($table, $casts, $castHandlers);
+        }
+
+        if (preg_match('/^(\w+)(?:\.(\w+))?(?:\s+(?:as\s+)?(\w+))?$/i', $part, $matches) === 1) {
+            $qualified  = ($matches[2] ?? '') !== '';
+            $columnName = $qualified ? $matches[2] : $matches[1];
+            $outputName = ($matches[3] ?? '') !== '' ? $matches[3] : $columnName;
+            $table      = $qualified ? $this->schemaProvider->get()->getTable($matches[1]) : $modelTable;
+
+            if ($table === null) {
+                return null;
+            }
+
+            return [$outputName => $this->fieldType($outputName, $table->getColumn($columnName), $casts, $castHandlers)];
+        }
+
+        if (preg_match('/\bas\s+(\w+)\s*$/i', $part, $matches) === 1) {
+            return [$matches[1] => $this->fieldType($matches[1], null, $casts, $castHandlers)];
+        }
+
+        return null;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function splitSelect(string $select): array
+    {
+        $parts   = [];
+        $current = '';
+        $depth   = 0;
+
+        foreach (str_split($select === '' ? ' ' : $select) as $char) {
+            if ($char === '(') {
+                $depth++;
+            } elseif ($char === ')') {
+                $depth--;
+            }
+
+            if ($char === ',' && $depth === 0) {
+                $parts[] = $current;
+                $current = '';
+
+                continue;
+            }
+
+            $current .= $char;
+        }
+
+        $parts[] = $current;
+
+        return array_values(array_filter(array_map(trim(...), $parts), static fn (string $part): bool => $part !== ''));
+    }
+
+    /**
+     * @param array<string, string> $casts
+     * @param array<string, string> $castHandlers
+     *
+     * @return array<string, Type>
+     */
+    private function columnsToFields(Table $table, array $casts, array $castHandlers): array
+    {
+        $fields = [];
 
         foreach ($table->columns as $column) {
-            $fields[$column->name] = $this->resolveFieldType($column, $casts, $castHandlers);
+            $fields[$column->name] = $this->fieldType($column->name, $column, $casts, $castHandlers);
         }
 
         return $fields;
@@ -141,13 +269,13 @@ final class ModelFetchedReturnTypeHelper
      * @param array<string, string> $casts
      * @param array<string, string> $castHandlers
      */
-    private function resolveFieldType(Column $column, array $casts, array $castHandlers): Type
+    private function fieldType(string $name, ?Column $column, array $casts, array $castHandlers): Type
     {
-        if (isset($casts[$column->name])) {
-            return $this->castFieldTypeResolver->resolve($casts[$column->name], $castHandlers);
+        if (isset($casts[$name])) {
+            return $this->castFieldTypeResolver->resolve($casts[$name], $castHandlers);
         }
 
-        return $this->columnTypeResolver->resolve($column);
+        return $column !== null ? $this->columnTypeResolver->resolve($column) : new MixedType();
     }
 
     /**

@@ -33,3 +33,22 @@ $posts = new BlogPostModel();
 
 assertType('array{id: int, user_id: CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money, title: CodeIgniter\I18n\Time}|null', $posts->first());
 assertType('list<array{id: int, user_id: CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money, title: CodeIgniter\I18n\Time}>', $posts->findAll());
+
+// select() narrows and renames the row shape.
+assertType('array{id: int, body: string|null}|null', $comments->select('id, body')->asArray()->first());
+assertType('array{id: int, note: string|null}|null', $comments->select('id, body as note')->asArray()->first());
+assertType('object{id: int, body: string|null}|null', $comments->select('id, body')->asObject()->first());
+
+// `table.*` and a qualified field from a joined table are resolved against the live schema.
+assertType('array{id: int, body: string|null, votes: int, payload: string|null, created_at: string|null, author: string}|null', $comments->select('blog_comments.*, blog_users.name as author')->asArray()->first());
+
+// Expressions are typed as mixed under their alias.
+assertType('array{id: int, lowered: mixed}|null', $comments->select('id, LOWER(body) as lowered')->asArray()->first());
+
+// A selected field is still cast by the model (output name `user_id` casts via the model handler).
+assertType('array{user_id: CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money}|null', $posts->select('user_id')->first());
+
+function selectDynamically(BlogCommentModel $model, string $columns): void
+{
+    assertType('array<string, mixed>|null', $model->select($columns)->asArray()->first());
+}

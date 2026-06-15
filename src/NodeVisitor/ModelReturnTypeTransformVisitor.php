@@ -21,14 +21,13 @@ use PhpParser\NodeVisitorAbstract;
 
 /**
  * Annotates `find()`/`findAll()`/`first()` calls with the effective return type forced by an
- * `asArray()` or `asObject()` earlier in the same call chain.
+ * `asArray()`/`asObject()` and with the `select()` argument expressions earlier in the same chain.
  */
 final class ModelReturnTypeTransformVisitor extends NodeVisitorAbstract
 {
-    public const RETURN_TYPE = 'returnType';
-
-    private const RETURN_TYPE_GETTERS = ['find', 'findAll', 'first'];
-
+    public const RETURN_TYPE               = 'returnType';
+    public const SELECTS                   = 'selects';
+    private const RETURN_TYPE_GETTERS      = ['find', 'findAll', 'first'];
     private const RETURN_TYPE_TRANSFORMERS = ['asArray', 'asObject'];
 
     /**
@@ -48,7 +47,9 @@ final class ModelReturnTypeTransformVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        $lastNode = $node;
+        $getter             = $node;
+        $selects            = [];
+        $returnTypeResolved = false;
 
         while ($node->var instanceof MethodCall) {
             $node = $node->var;
@@ -57,27 +58,35 @@ final class ModelReturnTypeTransformVisitor extends NodeVisitorAbstract
                 continue;
             }
 
-            if (! in_array($node->name->name, self::RETURN_TYPE_TRANSFORMERS, true)) {
+            if ($node->name->name === 'select') {
+                $args = $node->getArgs();
+
+                if (isset($args[0])) {
+                    $selects[] = $args[0]->value;
+                }
+
                 continue;
             }
 
-            if ($node->name->name === 'asArray') {
-                $lastNode->setAttribute(self::RETURN_TYPE, new Scalar\String_('array'));
+            if ($returnTypeResolved || ! in_array($node->name->name, self::RETURN_TYPE_TRANSFORMERS, true)) {
+                continue;
+            }
 
-                break;
+            $returnTypeResolved = true;
+
+            if ($node->name->name === 'asArray') {
+                $getter->setAttribute(self::RETURN_TYPE, new Scalar\String_('array'));
+
+                continue;
             }
 
             $args = $node->getArgs();
 
-            if ($args === []) {
-                $lastNode->setAttribute(self::RETURN_TYPE, new Scalar\String_('object'));
+            $getter->setAttribute(self::RETURN_TYPE, $args === [] ? new Scalar\String_('object') : $args[0]->value);
+        }
 
-                break;
-            }
-
-            $lastNode->setAttribute(self::RETURN_TYPE, $args[0]->value);
-
-            break;
+        if ($selects !== []) {
+            $getter->setAttribute(self::SELECTS, array_reverse($selects));
         }
 
         return null;
