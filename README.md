@@ -13,6 +13,7 @@ This PHPStan extension provides type inference support and rules for `CodeIgnite
 
 * [Rules](docs/rules.md)
 * [Type inference](docs/type-inference.md)
+* [Upgrading from 1.x to 2.x](docs/upgrading.md)
 
 ## Installation
 
@@ -34,6 +35,23 @@ includes:
     - vendor/codeigniter/phpstan-codeigniter/extension.neon
 ```
 </details>
+
+## Bootstrapping CodeIgniter
+
+This extension boots CodeIgniter during analysis so it can read your configuration, services, and database
+schema. Point PHPStan at a bootstrap file that loads the framework. CodeIgniter's own test bootstrap works
+out of the box:
+
+```yml
+parameters:
+    bootstrapFiles:
+        - vendor/codeigniter4/framework/system/Test/bootstrap.php
+```
+
+The Model and Entity type inference additionally materializes your schema by running your migrations against
+a temporary SQLite database, so the `sqlite3` PHP extension is required (it is declared in this package's
+`composer.json`). The schema is cached under the working directory's `tmp` folder by default. See the
+[type inference docs](docs/type-inference.md) for how to point it at a specific namespace.
 
 ## Contributing
 

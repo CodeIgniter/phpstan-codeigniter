@@ -121,6 +121,10 @@ Both are optional. The defaults work for a typical application.
 
 ## Known limitations
 
+- **Column types reflect SQLite affinity, not your production database.** The schema is materialized in
+  SQLite, so a column's type follows SQLite's column affinity rather than your MySQL or Postgres type. A
+  `BOOLEAN` column reads back as `int`, `DECIMAL` as `string`, and `ENUM`/`SET` as `string`. Add a `$casts`
+  entry (for example `'is_active' => 'boolean'`) when you want the precise PHP type.
 - **Models that set `$table` in the constructor are not mapped.** The entity-to-table bridge reads `$table`
   from the model's default property value. A model that assigns `$this->table` inside its constructor is not
   resolved, so its entity's non-cast properties fall back to `mixed`.
