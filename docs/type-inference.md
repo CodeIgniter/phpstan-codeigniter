@@ -23,6 +23,27 @@ This extension provides precise return types for the `service()` and `single_ser
 >       - Acme\Blog\Config\Services
 > ```
 
+### FactoriesFunctionReturnTypeExtension
+
+**Class:** `CodeIgniter\PHPStan\Type\FactoriesFunctionReturnTypeExtension`
+
+This extension provides precise return types for the `config()` and `model()` functions, resolving the
+class from the passed name or class string.
+
+> [!NOTE]
+> **Configuration:**
+>
+> You can instruct PHPStan to consider additional namespaces when resolving the passed name to a class.
+>
+> ```yml
+> parameters:
+>   codeigniter:
+>     additionalConfigNamespaces:
+>       - Acme\Blog\Config\
+>     additionalModelNamespaces:
+>       - Acme\Blog\Models\
+> ```
+
 ## Dynamic Method Return Type Extensions
 
 ### ReflectionHelperMethodInvokerStaticReturnTypeExtension

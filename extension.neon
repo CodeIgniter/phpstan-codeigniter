@@ -6,14 +6,31 @@ parameters:
   universalObjectCratesClasses:
     - CodeIgniter\Entity\Entity
   codeigniter:
+    additionalConfigNamespaces:
+      - CodeIgniter\Config\
+    additionalModelNamespaces: []
     additionalServices: []
+    checkArgumentTypeOfConfig: true
+    checkArgumentTypeOfModel: true
+    checkArgumentTypeOfFactories: true
 
 parametersSchema:
   codeigniter: structure([
+    additionalConfigNamespaces: listOf(string())
+    additionalModelNamespaces: listOf(string())
     additionalServices: listOf(string())
+    checkArgumentTypeOfConfig: bool()
+    checkArgumentTypeOfModel: bool()
+    checkArgumentTypeOfFactories: bool()
   ])
 
 services:
+  factoriesReturnTypeHelper:
+    class: CodeIgniter\PHPStan\Helpers\FactoriesReturnTypeHelper
+    arguments:
+      additionalConfigNamespaces: %codeigniter.additionalConfigNamespaces%
+      additionalModelNamespaces: %codeigniter.additionalModelNamespaces%
+
   reflectionHelperPrivateInvokerHelper:
     class: CodeIgniter\PHPStan\Helpers\ReflectionHelperPrivateInvokerHelper
 
@@ -50,6 +67,11 @@ services:
       - phpstan.broker.dynamicStaticMethodReturnTypeExtension
 
   -
+    class: CodeIgniter\PHPStan\Type\FactoriesFunctionReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicFunctionReturnTypeExtension
+
+  -
     class: CodeIgniter\PHPStan\Type\ServicesFunctionReturnTypeExtension
     tags:
       - phpstan.broker.dynamicFunctionReturnTypeExtension
@@ -63,6 +85,16 @@ services:
     class: CodeIgniter\PHPStan\Type\ServicesGetSharedInstanceReturnTypeExtension
     tags:
       - phpstan.broker.dynamicStaticMethodReturnTypeExtension
+
+  -
+    class: CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule
+    arguments:
+      checkArgumentTypeOfConfig: %codeigniter.checkArgumentTypeOfConfig%
+      checkArgumentTypeOfModel: %codeigniter.checkArgumentTypeOfModel%
+
+conditionalTags:
+  CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule:
+    phpstan.rules.rule: %codeigniter.checkArgumentTypeOfFactories%
 
 rules:
   - CodeIgniter\PHPStan\Rules\Classes\FrameworkExceptionInstantiationRule

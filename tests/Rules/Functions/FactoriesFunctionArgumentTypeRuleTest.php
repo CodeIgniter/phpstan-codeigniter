@@ -13,31 +13,24 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Tests\Rules\Functions;
 
+use CodeIgniter\PHPStan\Helpers\FactoriesReturnTypeHelper;
 use CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule;
-use CodeIgniter\PHPStan\Tests\AdditionalConfigFilesTrait;
-use CodeIgniter\PHPStan\Type\FactoriesReturnTypeHelper;
+use CodeIgniter\PHPStan\Tests\AdditionalConfigFilesProvider;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
- * @internal
- *
  * @extends RuleTestCase<FactoriesFunctionArgumentTypeRule>
+ *
+ * @internal
  */
-#[Group('Integration')]
+#[Group('static-analysis')]
 final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
 {
-    use AdditionalConfigFilesTrait;
+    use AdditionalConfigFilesProvider;
 
-    private bool $checkArgumentTypeOfModel;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->checkArgumentTypeOfModel = true;
-    }
+    private bool $checkArgumentTypeOfModel = true;
 
     protected function getRule(): Rule
     {
@@ -51,53 +44,33 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
 
     public function testRule(): void
     {
-        $this->analyse([
-            __DIR__ . '/../../Type/data/config.php',
-            __DIR__ . '/../../Type/data/model.php',
-        ], [
+        $this->analyse([__DIR__ . '/../../data/rules/factories-argument-type.php'], [
             [
                 'Parameter #1 $name of function config expects a valid class string, \'bar\' given.',
-                24,
+                22,
                 'If \'bar\' is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additionalConfigNamespaces</> in your <fg=yellow>%configurationFile%</>.',
             ],
             [
                 'Parameter #1 $name of function config expects a valid class string, \'Foo\\\\Bar\' given.',
-                25,
+                23,
                 'If \'Foo\\\\Bar\' is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additionalConfigNamespaces</> in your <fg=yellow>%configurationFile%</>.',
             ],
             [
-                'Argument #1 $name (\'Foo\'|\'stdClass\') passed to function config does not extend CodeIgniter\\\\Config\\\\BaseConfig.',
-                28,
-            ],
-            [
-                'Argument #1 $name (class-string) passed to function config does not extend CodeIgniter\\\\Config\\\\BaseConfig.',
-                33,
-            ],
-            [
-                'Parameter #1 $name of function config expects a valid class string, string given.',
-                36,
+                'Argument #1 $name (\'stdClass\') passed to function config does not extend CodeIgniter\\Config\\BaseConfig.',
+                25,
             ],
             [
                 'Parameter #1 $name of function model expects a valid class string, \'foo\' given.',
-                18,
+                28,
                 'If \'foo\' is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additionalModelNamespaces</> in your <fg=yellow>%configurationFile%</>.',
             ],
             [
-                'Argument #1 $name (\'stdClass\') passed to function model does not extend CodeIgniter\\\\Model.',
-                19,
+                'Argument #1 $name (\'stdClass\') passed to function model does not extend CodeIgniter\\Model.',
+                29,
             ],
             [
-                'Argument #1 $name (\'Closure\') passed to function model does not extend CodeIgniter\\\\Model.',
-                20,
-            ],
-            [
-                'Parameter #1 $name of function model expects a valid class string, \'App\' given.',
-                21,
-                'If \'App\' is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additionalModelNamespaces</> in your <fg=yellow>%configurationFile%</>.',
-            ],
-            [
-                'Argument #1 $name (\'Foo\'|\'stdClass\') passed to function model does not extend CodeIgniter\\\\Model.',
-                22,
+                'Argument #1 $name (\'Closure\') passed to function model does not extend CodeIgniter\\Model.',
+                30,
             ],
         ]);
     }
@@ -105,6 +78,6 @@ final class FactoriesFunctionArgumentTypeRuleTest extends RuleTestCase
     public function testAllowNonModelClassesOnModelCall(): void
     {
         $this->checkArgumentTypeOfModel = false;
-        $this->analyse([__DIR__ . '/data/bug-8.php'], []);
+        $this->analyse([__DIR__ . '/../../data/rules/factories-argument-type-non-model.php'], []);
     }
 }

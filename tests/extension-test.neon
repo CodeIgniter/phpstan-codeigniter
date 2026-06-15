@@ -2,6 +2,8 @@ parameters:
   bootstrapFiles:
     - ../bootstrap.php
   codeigniter:
+    additionalModelNamespaces:
+      - CodeIgniter\PHPStan\Tests\Fixtures
     additionalServices:
       - CodeIgniter\PHPStan\Tests\Fixtures\InvalidServices
       - CodeIgniter\PHPStan\Tests\Fixtures\OtherServices

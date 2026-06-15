@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Type;
 
+use CodeIgniter\PHPStan\Helpers\FactoriesReturnTypeHelper;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
@@ -32,14 +33,14 @@ final class FactoriesFunctionReturnTypeExtension implements DynamicFunctionRetur
 
     public function getTypeFromFunctionCall(FunctionReflection $functionReflection, FuncCall $functionCall, Scope $scope): ?Type
     {
-        $arguments = $functionCall->getArgs();
+        $args = $functionCall->getArgs();
 
-        if ($arguments === []) {
+        if ($args === []) {
             return null;
         }
 
         return $this->factoriesReturnTypeHelper->check(
-            $scope->getType($arguments[0]->value),
+            $scope->getType($args[0]->value),
             $functionReflection->getName(),
         );
     }

@@ -11,8 +11,9 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
-namespace CodeIgniter\PHPStan\Tests\Fixtures\Type;
+namespace CodeIgniter\PHPStan\Tests\Type;
 
+use Closure;
 use CodeIgniter\Shield\Config\AuthJWT;
 use Config\App;
 use stdClass;
@@ -21,13 +22,15 @@ use function PHPStan\Testing\assertType;
 
 $class = (static fn (): string => mt_rand(0, 10) > 5 ? stdClass::class : 'Foo')();
 
+// config()
 assertType('null', config('bar'));
 assertType('null', config('Foo\Bar'));
 assertType('Config\App', config('App'));
 assertType('Config\App', config(App::class));
 assertType('stdClass|null', config($class));
+assertType('CodeIgniter\Shield\Config\AuthJWT', config(AuthJWT::class));
 
-function bar(string $name): void
+function configWithUnknownString(string $name): void
 {
     if (class_exists($name)) {
         assertType('object', config($name));
@@ -36,4 +39,10 @@ function bar(string $name): void
     assertType('null', config($name));
 }
 
-assertType('CodeIgniter\Shield\Config\AuthJWT', config(AuthJWT::class));
+// model()
+assertType('null', model('foo'));
+assertType('stdClass', model(stdClass::class));
+assertType('Closure', model(Closure::class));
+assertType('null', model('App'));
+assertType('stdClass|null', model($class));
+assertType('CodeIgniter\PHPStan\Tests\Fixtures\BarModel', model('BarModel'));

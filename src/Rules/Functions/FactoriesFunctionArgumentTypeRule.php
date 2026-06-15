@@ -15,7 +15,7 @@ namespace CodeIgniter\PHPStan\Rules\Functions;
 
 use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Model;
-use CodeIgniter\PHPStan\Type\FactoriesReturnTypeHelper;
+use CodeIgniter\PHPStan\Helpers\FactoriesReturnTypeHelper;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ParametersAcceptorSelector;
@@ -41,7 +41,7 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
     /**
      * @var array<string, bool>
      */
-    private array $argumentTypeCheck = [];
+    private array $argumentTypeCheck;
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
@@ -85,33 +85,30 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
             return []; // caught elsewhere
         }
 
-        $returnType = $this->factoriesReturnTypeHelper->check($nameType, $function);
-
+        $returnType     = $this->factoriesReturnTypeHelper->check($nameType, $function);
         $firstParameter = ParametersAcceptorSelector::selectFromArgs(
             $scope,
-            $node->getArgs(),
+            $args,
             $this->reflectionProvider->getFunction($nameNode, $scope)->getVariants(),
         )->getParameters()[0];
 
         if ($returnType->isNull()->yes()) {
-            $addTip = static function (RuleErrorBuilder $ruleErrorBuilder) use ($nameType, $function): RuleErrorBuilder {
-                foreach ($nameType->getConstantStrings() as $constantStringType) {
-                    $ruleErrorBuilder->addTip(sprintf(
-                        'If %s is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additional%sNamespaces</> in your <fg=yellow>%%configurationFile%%</>.',
-                        $constantStringType->describe(VerbosityLevel::precise()),
-                        ucfirst($function),
-                    ));
-                }
-
-                return $ruleErrorBuilder;
-            };
-
-            return [$addTip(RuleErrorBuilder::message(sprintf(
+            $ruleErrorBuilder = RuleErrorBuilder::message(sprintf(
                 'Parameter #1 $%s of function %s expects a valid class string, %s given.',
                 $firstParameter->getName(),
                 $function,
                 $nameType->describe(VerbosityLevel::precise()),
-            )))->identifier(sprintf('codeigniter.%sArgumentType', $function))->build()];
+            ))->identifier(sprintf('codeigniter.%sArgumentType', $function));
+
+            foreach ($nameType->getConstantStrings() as $constantStringType) {
+                $ruleErrorBuilder->addTip(sprintf(
+                    'If %s is a valid class string, you can add its possible namespace(s) in <fg=cyan>codeigniter.additional%sNamespaces</> in your <fg=yellow>%%configurationFile%%</>.',
+                    $constantStringType->describe(VerbosityLevel::precise()),
+                    ucfirst($function),
+                ));
+            }
+
+            return [$ruleErrorBuilder->build()];
         }
 
         if (! (new ObjectType($this->instanceofMap[$function]))->isSuperTypeOf($returnType)->yes()) {
@@ -119,13 +116,17 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
                 return [];
             }
 
-            return [RuleErrorBuilder::message(sprintf(
-                'Argument #1 $%s (%s) passed to function %s does not extend %s.',
-                $firstParameter->getName(),
-                $nameType->describe(VerbosityLevel::precise()),
-                $function,
-                addcslashes($this->instanceofMap[$function], '\\'),
-            ))->identifier(sprintf('codeigniter.%sArgumentInstanceof', $function))->build()];
+            return [
+                RuleErrorBuilder::message(sprintf(
+                    'Argument #1 $%s (%s) passed to function %s does not extend %s.',
+                    $firstParameter->getName(),
+                    $nameType->describe(VerbosityLevel::precise()),
+                    $function,
+                    $this->instanceofMap[$function],
+                ))
+                    ->identifier(sprintf('codeigniter.%sArgumentInstanceof', $function))
+                    ->build(),
+            ];
         }
 
         return [];

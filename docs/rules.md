@@ -23,6 +23,17 @@ using the `new` keyword. Instead, it directs users to use one of their named con
 
 ## Functions
 
+### FactoriesFunctionArgumentTypeRule
+
+**Class:** `CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule`<br/>
+Fixable: No
+
+This rule validates the class string passed to either the `config()` or `model()` function. It reports
+a passed string that does not resolve to a known class, and, when enabled, a resolved class that does not
+extend `CodeIgniter\Config\BaseConfig` or `CodeIgniter\Model` respectively. The rule is registered only
+when `codeigniter.checkArgumentTypeOfFactories` is `true`, and the per-function instance checks are
+toggled by `codeigniter.checkArgumentTypeOfConfig` and `codeigniter.checkArgumentTypeOfModel`.
+
 ### ServicesFunctionArgumentTypeRule
 
 **Class:** `CodeIgniter\PHPStan\Rules\Functions\ServicesFunctionArgumentTypeRule`<br/>

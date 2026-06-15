@@ -11,7 +11,7 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
-namespace CodeIgniter\PHPStan\Type;
+namespace CodeIgniter\PHPStan\Helpers;
 
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\IntersectionType;
@@ -34,10 +34,7 @@ final class FactoriesReturnTypeHelper
     /**
      * @var array<string, list<string>>
      */
-    private array $additionalNamespacesMap = [
-        'config' => [],
-        'model'  => [],
-    ];
+    private array $additionalNamespacesMap;
 
     /**
      * @param list<string> $additionalConfigNamespaces
@@ -51,8 +48,8 @@ final class FactoriesReturnTypeHelper
         $cb = static fn (string $item): string => rtrim($item, '\\') . '\\';
 
         $this->additionalNamespacesMap = [
-            'config' => [...$this->additionalNamespacesMap['config'], ...array_map($cb, $additionalConfigNamespaces)],
-            'model'  => [...$this->additionalNamespacesMap['model'], ...array_map($cb, $additionalModelNamespaces)],
+            'config' => array_map($cb, $additionalConfigNamespaces),
+            'model'  => array_map($cb, $additionalModelNamespaces),
         ];
     }
 
