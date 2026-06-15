@@ -128,3 +128,23 @@ This extension provides precise return type for the static `getSharedInstance()`
 >     additionalServices:
 >       - Acme\Blog\Config\Services
 > ```
+
+### CacheFactoryGetHandlerReturnTypeExtension
+
+**Class:** `CodeIgniter\PHPStan\Type\CacheFactoryGetHandlerReturnTypeExtension`
+
+This extension provides precise return types for the static `CacheFactory::getHandler()` method, resolving
+the handler class from the `validHandlers` of the passed `Config\Cache` and the requested handler and backup
+handler names.
+
+> [!NOTE]
+> **Configuration:**
+>
+> By default, only the resolved primary handler is used as the return type. To also include the backup handler
+> in the inferred return type, enable:
+>
+> ```yml
+> parameters:
+>   codeigniter:
+>     addBackupHandlerAsReturnType: true
+> ```

@@ -11,9 +11,10 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
-namespace CodeIgniter\PHPStan\Tests\Fixtures\Type;
+namespace CodeIgniter\PHPStan\Tests\Type;
 
 use CodeIgniter\Cache\CacheFactory;
+use CodeIgniter\Cache\Handlers\ApcuHandler;
 use CodeIgniter\Cache\Handlers\BaseHandler;
 use CodeIgniter\Cache\Handlers\DummyHandler;
 use CodeIgniter\Cache\Handlers\FileHandler;
@@ -29,6 +30,7 @@ $cache = new Cache();
 assertType(FileHandler::class, CacheFactory::getHandler($cache));
 assertType(FileHandler::class, CacheFactory::getHandler($cache, null));
 
+assertType(ApcuHandler::class, CacheFactory::getHandler($cache, 'apcu'));
 assertType(DummyHandler::class, CacheFactory::getHandler($cache, 'dummy'));
 assertType(FileHandler::class, CacheFactory::getHandler($cache, 'file'));
 assertType(MemcachedHandler::class, CacheFactory::getHandler($cache, 'memcached'));
