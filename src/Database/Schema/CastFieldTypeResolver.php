@@ -33,9 +33,21 @@ final class CastFieldTypeResolver
     /**
      * @param array<string, string> $castHandlers
      */
-    public function resolve(string $cast, array $castHandlers): Type
+    public function resolve(string $cast, array $castHandlers, bool $columnIsNonNullable = false): Type
     {
-        return $this->castTypeResolver->resolve($cast) ?? $this->resolveCustomHandler($cast, $castHandlers);
+        $type = $this->castTypeResolver->resolve($cast);
+
+        if ($type === null) {
+            return $this->resolveCustomHandler($cast, $castHandlers);
+        }
+
+        // A null column value survives null-preserving casts (datetime/json) as null, so the property
+        // is nullable unless the backing column is known to be non-null.
+        if (! $columnIsNonNullable && $this->castTypeResolver->preservesNull($cast)) {
+            return TypeCombinator::addNull($type);
+        }
+
+        return $type;
     }
 
     /**

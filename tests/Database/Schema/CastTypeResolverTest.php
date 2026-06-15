@@ -84,4 +84,40 @@ final class CastTypeResolverTest extends TestCase
     {
         self::assertNull((new CastTypeResolver())->resolve('mycustomhandler'));
     }
+
+    #[DataProvider('providePreservesNullCases')]
+    public function testPreservesNull(string $cast, bool $expected): void
+    {
+        self::assertSame($expected, (new CastTypeResolver())->preservesNull($cast));
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function providePreservesNullCases(): iterable
+    {
+        yield 'datetime' => ['datetime', true];
+
+        yield 'json' => ['json', true];
+
+        yield 'json[array]' => ['json[array]', true];
+
+        yield 'json-array' => ['json-array', true];
+
+        yield 'nullable int' => ['?int', true];
+
+        yield 'int' => ['int', false];
+
+        yield 'string' => ['string', false];
+
+        yield 'csv' => ['csv', false];
+
+        yield 'object' => ['object', false];
+
+        yield 'timestamp' => ['timestamp', false];
+
+        yield 'uri' => ['uri', false];
+
+        yield 'enum with class' => ['enum[CodeIgniter\Test\TestLogger]', false];
+    }
 }

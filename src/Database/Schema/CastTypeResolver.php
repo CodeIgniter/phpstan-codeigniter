@@ -63,6 +63,23 @@ final class CastTypeResolver
     }
 
     /**
+     * Whether the cast's handler returns null for a null input, so a null column value survives the
+     * cast as null. The other built-in handlers coerce null (e.g. `(int) null` is `0`) or throw.
+     */
+    public function preservesNull(string $cast): bool
+    {
+        if (str_starts_with($cast, '?') || $cast === 'json-array') {
+            return true;
+        }
+
+        if (preg_match('/\A(.+)\[.+\]\z/', $cast, $matches) === 1) {
+            $cast = $matches[1];
+        }
+
+        return in_array($cast, ['datetime', 'json'], true);
+    }
+
+    /**
      * @param list<string> $params
      */
     private function mapCast(string $cast, array $params): ?Type

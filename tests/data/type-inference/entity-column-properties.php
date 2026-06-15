@@ -23,7 +23,7 @@ assertType('int', $comment->id);
 assertType('int', $comment->identifier);
 assertType('string|null', $comment->body);
 assertType('int', $comment->votes);
-assertType('stdClass', $comment->payload);
-assertType('CodeIgniter\I18n\Time', $comment->created_at);
+assertType('stdClass|null', $comment->payload);
+assertType('CodeIgniter\I18n\Time|null', $comment->created_at);
 
 assertType('mixed', $comment->nonexistent);

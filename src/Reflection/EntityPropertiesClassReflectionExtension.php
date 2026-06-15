@@ -26,6 +26,7 @@ use PHPStan\Reflection\PropertyReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
 
 /**
  * Types virtual properties on `CodeIgniter\Entity\Entity` subclasses, layering `$dates` and `$casts`
@@ -61,12 +62,19 @@ final class EntityPropertiesClassReflectionExtension implements PropertiesClassR
 
         // `__get()` mutates date fields to Time before any cast. Only claim real columns so that
         // the framework's default `$dates` don't fabricate Time properties on unrelated entities.
+        // A null column value mutates to null, so a nullable date column is `Time|null`.
         if ($schema !== null && in_array($column, $this->readStringList($classReflection, 'dates'), true)) {
-            return new ObjectType(Time::class);
+            $time = new ObjectType(Time::class);
+
+            return $schema->nullable ? TypeCombinator::addNull($time) : $time;
         }
 
         if (isset($casts[$column])) {
-            return $this->castFieldTypeResolver->resolve($casts[$column], $this->readStringMap($classReflection, 'castHandlers'));
+            return $this->castFieldTypeResolver->resolve(
+                $casts[$column],
+                $this->readStringMap($classReflection, 'castHandlers'),
+                $schema !== null && ! $schema->nullable,
+            );
         }
 
         if ($schema !== null && ! $this->hasGetter($classReflection, $column)) {

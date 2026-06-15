@@ -293,7 +293,7 @@ final class ModelFetchedReturnTypeHelper
     private function fieldType(string $name, ?Column $column, array $casts, array $castHandlers): Type
     {
         if (isset($casts[$name])) {
-            return $this->castFieldTypeResolver->resolve($casts[$name], $castHandlers);
+            return $this->castFieldTypeResolver->resolve($casts[$name], $castHandlers, $column !== null && ! $column->nullable);
         }
 
         return $column !== null ? $this->columnTypeResolver->resolve($column) : new MixedType();
