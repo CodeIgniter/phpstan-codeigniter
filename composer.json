@@ -23,6 +23,7 @@
     },
     "require": {
         "php": "^8.2",
+        "ext-sqlite3": "*",
         "phpstan/phpstan": "^2.2"
     },
     "require-dev": {

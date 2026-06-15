@@ -14,6 +14,7 @@ parameters:
     checkArgumentTypeOfConfig: true
     checkArgumentTypeOfModel: true
     checkArgumentTypeOfFactories: true
+    checkArgumentTypeOfServices: true
     schemaCacheDirectory: %currentWorkingDirectory%/tmp
     schemaNamespace: null
 
@@ -26,6 +27,7 @@ parametersSchema:
     checkArgumentTypeOfConfig: bool()
     checkArgumentTypeOfModel: bool()
     checkArgumentTypeOfFactories: bool()
+    checkArgumentTypeOfServices: bool()
     schemaCacheDirectory: string()
     schemaNamespace: schema(string(), nullable())
   ])
@@ -159,11 +161,17 @@ services:
       checkArgumentTypeOfConfig: %codeigniter.checkArgumentTypeOfConfig%
       checkArgumentTypeOfModel: %codeigniter.checkArgumentTypeOfModel%
 
+  -
+    class: CodeIgniter\PHPStan\Rules\Functions\ServicesFunctionArgumentTypeRule
+
 conditionalTags:
   CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule:
     phpstan.rules.rule: %codeigniter.checkArgumentTypeOfFactories%
+  CodeIgniter\PHPStan\Rules\Functions\ServicesFunctionArgumentTypeRule:
+    phpstan.rules.rule: %codeigniter.checkArgumentTypeOfServices%
 
 rules:
+  - CodeIgniter\PHPStan\Rules\Classes\CacheHandlerInstantiationRule
   - CodeIgniter\PHPStan\Rules\Classes\FrameworkExceptionInstantiationRule
   - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsGlobalAssignRule
   - CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAccessRule

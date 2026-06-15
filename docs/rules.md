@@ -40,7 +40,8 @@ toggled by `codeigniter.checkArgumentTypeOfConfig` and `codeigniter.checkArgumen
 Fixable: No
 
 This rule validates the service method name passed to either `service()` or `single_service()` function
-if coming from a valid Services class. It also validates the return if a valid object instance.
+if coming from a valid Services class. It also validates the return if a valid object instance. The rule is
+registered only when `codeigniter.checkArgumentTypeOfServices` is `true`.
 
 ## Superglobals
 
