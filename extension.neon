@@ -122,6 +122,11 @@ services:
       - phpstan.broker.dynamicFunctionReturnTypeExtension
 
   -
+    class: CodeIgniter\PHPStan\Type\FakeFunctionReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicFunctionReturnTypeExtension
+
+  -
     class: CodeIgniter\PHPStan\Type\SuperglobalsMethodDynamicReturnTypeExtension
     tags:
       - phpstan.broker.dynamicMethodReturnTypeExtension
