@@ -7,3 +7,5 @@ parameters:
     additionalServices:
       - CodeIgniter\PHPStan\Tests\Fixtures\InvalidServices
       - CodeIgniter\PHPStan\Tests\Fixtures\OtherServices
+    schemaNamespace: CodeIgniter\PHPStan\Tests\Fixtures
+    schemaCacheDirectory: tmp

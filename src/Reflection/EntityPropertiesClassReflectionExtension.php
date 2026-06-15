@@ -14,46 +14,70 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Reflection;
 
 use CodeIgniter\Entity\Entity;
+use CodeIgniter\I18n\Time;
+use CodeIgniter\PHPStan\Database\ModelTableMapProvider;
 use CodeIgniter\PHPStan\Database\Schema\CastTypeResolver;
+use CodeIgniter\PHPStan\Database\Schema\Column;
+use CodeIgniter\PHPStan\Database\Schema\ColumnTypeResolver;
+use CodeIgniter\PHPStan\Database\SchemaProvider;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\PropertiesClassReflectionExtension;
 use PHPStan\Reflection\PropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 
 /**
- * Types virtual properties on `CodeIgniter\Entity\Entity` subclasses from their `$casts` entries,
- * reflecting custom `$castHandlers` for casts the framework does not define.
+ * Types virtual properties on `CodeIgniter\Entity\Entity` subclasses, layering `$dates` and `$casts`
+ * over the raw type of the backing database column, and reflecting custom `$castHandlers`.
  */
 final class EntityPropertiesClassReflectionExtension implements PropertiesClassReflectionExtension
 {
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
         private readonly CastTypeResolver $castTypeResolver,
+        private readonly SchemaProvider $schemaProvider,
+        private readonly ModelTableMapProvider $modelTableMapProvider,
+        private readonly ColumnTypeResolver $columnTypeResolver,
     ) {}
 
     public function hasProperty(ClassReflection $classReflection, string $propertyName): bool
     {
-        if (! $classReflection->is(Entity::class)) {
-            return false;
-        }
-
-        $casts  = $this->readStringMap($classReflection, 'casts');
-        $column = $this->mapColumn($classReflection, $propertyName);
-
-        return isset($casts[$column]);
+        return $classReflection->is(Entity::class);
     }
 
     public function getProperty(ClassReflection $classReflection, string $propertyName): PropertyReflection
     {
-        $casts  = $this->readStringMap($classReflection, 'casts');
-        $column = $this->mapColumn($classReflection, $propertyName);
-        $cast   = $casts[$column] ?? '';
+        return new EntityPropertyReflection(
+            $classReflection,
+            $this->resolveType($classReflection, $propertyName) ?? new MixedType(),
+        );
+    }
 
-        return new EntityPropertyReflection($classReflection, $this->resolveCastType($classReflection, $cast));
+    private function resolveType(ClassReflection $classReflection, string $propertyName): ?Type
+    {
+        $column = $this->mapColumn($classReflection, $propertyName);
+        $casts  = $this->readStringMap($classReflection, 'casts');
+        $schema = $this->lookupColumn($classReflection, $column);
+
+        // `__get()` mutates date fields to Time before any cast. Only claim real columns so that
+        // the framework's default `$dates` don't fabricate Time properties on unrelated entities.
+        if ($schema !== null && in_array($column, $this->readStringList($classReflection, 'dates'), true)) {
+            return new ObjectType(Time::class);
+        }
+
+        if (isset($casts[$column])) {
+            return $this->resolveCastType($classReflection, $casts[$column]);
+        }
+
+        if ($schema !== null && ! $this->hasGetter($classReflection, $column)) {
+            return $this->columnTypeResolver->resolve($schema);
+        }
+
+        return null;
     }
 
     private function resolveCastType(ClassReflection $classReflection, string $cast): Type
@@ -84,6 +108,24 @@ final class EntityPropertiesClassReflectionExtension implements PropertiesClassR
         $type = ParametersAcceptorSelector::combineAcceptors($handlerReflection->getNativeMethod('get')->getVariants())->getReturnType();
 
         return $nullable ? TypeCombinator::addNull($type) : $type;
+    }
+
+    private function lookupColumn(ClassReflection $classReflection, string $column): ?Column
+    {
+        $table = $this->modelTableMapProvider->getTableForEntity($classReflection->getName());
+
+        if ($table === null) {
+            return null;
+        }
+
+        return $this->schemaProvider->get()->getTable($table)?->getColumn($column);
+    }
+
+    private function hasGetter(ClassReflection $classReflection, string $column): bool
+    {
+        $method = 'get' . str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $column)));
+
+        return $classReflection->hasNativeMethod($method) || $classReflection->hasNativeMethod('_' . $method);
     }
 
     private function castName(string $cast): string
@@ -122,5 +164,27 @@ final class EntityPropertiesClassReflectionExtension implements PropertiesClassR
         }
 
         return $map;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function readStringList(ClassReflection $classReflection, string $property): array
+    {
+        $value = $classReflection->getNativeReflection()->getDefaultProperties()[$property] ?? [];
+
+        if (! is_array($value)) {
+            return [];
+        }
+
+        $list = [];
+
+        foreach ($value as $item) {
+            if (is_string($item)) {
+                $list[] = $item;
+            }
+        }
+
+        return $list;
     }
 }

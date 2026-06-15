@@ -15,6 +15,7 @@ parameters:
     checkArgumentTypeOfModel: true
     checkArgumentTypeOfFactories: true
     schemaCacheDirectory: %currentWorkingDirectory%/tmp
+    schemaNamespace: null
 
 parametersSchema:
   codeigniter: structure([
@@ -26,6 +27,7 @@ parametersSchema:
     checkArgumentTypeOfModel: bool()
     checkArgumentTypeOfFactories: bool()
     schemaCacheDirectory: string()
+    schemaNamespace: schema(string(), nullable())
   ])
 
 services:
@@ -45,9 +47,17 @@ services:
 
   schemaProvider:
     class: CodeIgniter\PHPStan\Database\SchemaProvider
+    arguments:
+      namespace: %codeigniter.schemaNamespace%
+
+  modelTableMapProvider:
+    class: CodeIgniter\PHPStan\Database\ModelTableMapProvider
 
   castTypeResolver:
     class: CodeIgniter\PHPStan\Database\Schema\CastTypeResolver
+
+  columnTypeResolver:
+    class: CodeIgniter\PHPStan\Database\Schema\ColumnTypeResolver
 
   factoriesReturnTypeHelper:
     class: CodeIgniter\PHPStan\Helpers\FactoriesReturnTypeHelper

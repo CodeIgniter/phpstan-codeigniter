@@ -29,3 +29,5 @@ foreach ([
         }
     }
 }
+
+service('autoloader')->addNamespace('CodeIgniter\\PHPStan\\Tests\\Fixtures', __DIR__ . '/tests/Fixtures');

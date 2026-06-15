@@ -31,4 +31,4 @@ assertType('CodeIgniter\I18n\Time', $entity->published);
 assertType('CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money', $entity->balance);
 assertType('CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money|null', $entity->discount);
 
-assertType('array<int|string, mixed>|bool|float|int|object|string|null', $entity->unknown);
+assertType('mixed', $entity->unknown);

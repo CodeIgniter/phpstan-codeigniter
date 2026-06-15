@@ -65,4 +65,11 @@ final class ColumnTypeResolverTest extends TestCase
 
         yield 'nullable VARCHAR' => ['VARCHAR', true, 'string|null'];
     }
+
+    public function testPrimaryKeyColumnIsNeverNullable(): void
+    {
+        $type = (new ColumnTypeResolver())->resolve(new Column('id', 'INTEGER', true, true, null));
+
+        self::assertSame('int', $type->describe(VerbosityLevel::precise()));
+    }
 }

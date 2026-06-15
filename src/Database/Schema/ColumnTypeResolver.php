@@ -28,7 +28,7 @@ final class ColumnTypeResolver
     {
         $type = $this->mapDeclaredType($column->type);
 
-        return $column->nullable ? TypeCombinator::addNull($type) : $type;
+        return $column->nullable && ! $column->primaryKey ? TypeCombinator::addNull($type) : $type;
     }
 
     private function mapDeclaredType(string $declaredType): Type
