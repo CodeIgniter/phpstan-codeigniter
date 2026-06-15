@@ -54,7 +54,8 @@
             "CodeIgniter\\PHPStan\\Tests\\": "tests/"
         },
         "exclude-from-classmap": [
-            "tests/data/**"
+            "tests/data/**",
+            "tests/Fixtures/Database/Migrations/**"
         ]
     },
     "config": {
