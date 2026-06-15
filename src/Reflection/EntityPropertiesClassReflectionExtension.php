@@ -16,19 +16,16 @@ namespace CodeIgniter\PHPStan\Reflection;
 use CodeIgniter\Entity\Entity;
 use CodeIgniter\I18n\Time;
 use CodeIgniter\PHPStan\Database\ModelTableMapProvider;
-use CodeIgniter\PHPStan\Database\Schema\CastTypeResolver;
+use CodeIgniter\PHPStan\Database\Schema\CastFieldTypeResolver;
 use CodeIgniter\PHPStan\Database\Schema\Column;
 use CodeIgniter\PHPStan\Database\Schema\ColumnTypeResolver;
 use CodeIgniter\PHPStan\Database\SchemaProvider;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\PropertiesClassReflectionExtension;
 use PHPStan\Reflection\PropertyReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeCombinator;
 
 /**
  * Types virtual properties on `CodeIgniter\Entity\Entity` subclasses, layering `$dates` and `$casts`
@@ -37,8 +34,7 @@ use PHPStan\Type\TypeCombinator;
 final class EntityPropertiesClassReflectionExtension implements PropertiesClassReflectionExtension
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly CastTypeResolver $castTypeResolver,
+        private readonly CastFieldTypeResolver $castFieldTypeResolver,
         private readonly SchemaProvider $schemaProvider,
         private readonly ModelTableMapProvider $modelTableMapProvider,
         private readonly ColumnTypeResolver $columnTypeResolver,
@@ -70,7 +66,7 @@ final class EntityPropertiesClassReflectionExtension implements PropertiesClassR
         }
 
         if (isset($casts[$column])) {
-            return $this->resolveCastType($classReflection, $casts[$column]);
+            return $this->castFieldTypeResolver->resolve($casts[$column], $this->readStringMap($classReflection, 'castHandlers'));
         }
 
         if ($schema !== null && ! $this->hasGetter($classReflection, $column)) {
@@ -78,36 +74,6 @@ final class EntityPropertiesClassReflectionExtension implements PropertiesClassR
         }
 
         return null;
-    }
-
-    private function resolveCastType(ClassReflection $classReflection, string $cast): Type
-    {
-        return $this->castTypeResolver->resolve($cast) ?? $this->resolveCustomHandlerType($classReflection, $cast);
-    }
-
-    private function resolveCustomHandlerType(ClassReflection $classReflection, string $cast): Type
-    {
-        $nullable = str_starts_with($cast, '?');
-
-        if ($nullable) {
-            $cast = substr($cast, 1);
-        }
-
-        $handler = $this->readStringMap($classReflection, 'castHandlers')[$this->castName($cast)] ?? null;
-
-        if ($handler === null || ! $this->reflectionProvider->hasClass($handler)) {
-            return new MixedType();
-        }
-
-        $handlerReflection = $this->reflectionProvider->getClass($handler);
-
-        if (! $handlerReflection->hasNativeMethod('get')) {
-            return new MixedType();
-        }
-
-        $type = ParametersAcceptorSelector::combineAcceptors($handlerReflection->getNativeMethod('get')->getVariants())->getReturnType();
-
-        return $nullable ? TypeCombinator::addNull($type) : $type;
     }
 
     private function lookupColumn(ClassReflection $classReflection, string $column): ?Column
@@ -126,15 +92,6 @@ final class EntityPropertiesClassReflectionExtension implements PropertiesClassR
         $method = 'get' . str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $column)));
 
         return $classReflection->hasNativeMethod($method) || $classReflection->hasNativeMethod('_' . $method);
-    }
-
-    private function castName(string $cast): string
-    {
-        if (preg_match('/\A(.+)\[.+\]\z/', $cast, $matches) === 1) {
-            return $matches[1];
-        }
-
-        return $cast;
     }
 
     private function mapColumn(ClassReflection $classReflection, string $propertyName): string

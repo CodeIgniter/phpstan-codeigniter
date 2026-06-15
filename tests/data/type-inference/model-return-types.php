@@ -31,5 +31,5 @@ assertType('stdClass|null', $comments->asObject()->first());
 
 $posts = new BlogPostModel();
 
-assertType('array{id: int, user_id: string, title: CodeIgniter\I18n\Time}|null', $posts->first());
-assertType('list<array{id: int, user_id: string, title: CodeIgniter\I18n\Time}>', $posts->findAll());
+assertType('array{id: int, user_id: CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money, title: CodeIgniter\I18n\Time}|null', $posts->first());
+assertType('list<array{id: int, user_id: CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money, title: CodeIgniter\I18n\Time}>', $posts->findAll());

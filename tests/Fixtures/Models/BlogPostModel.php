@@ -14,12 +14,16 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Tests\Fixtures\Models;
 
 use CodeIgniter\Model;
+use CodeIgniter\PHPStan\Tests\Fixtures\Entity\MoneyCast;
 
 final class BlogPostModel extends Model
 {
     protected $table       = 'blog_posts';
     protected array $casts = [
-        'user_id' => 'string',
+        'user_id' => 'money',
         'title'   => 'datetime',
+    ];
+    protected array $castHandlers = [
+        'money' => MoneyCast::class,
     ];
 }

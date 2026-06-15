@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Type;
 
-use CodeIgniter\PHPStan\Database\Schema\CastTypeResolver;
+use CodeIgniter\PHPStan\Database\Schema\CastFieldTypeResolver;
 use CodeIgniter\PHPStan\Database\Schema\Column;
 use CodeIgniter\PHPStan\Database\Schema\ColumnTypeResolver;
 use CodeIgniter\PHPStan\Database\SchemaProvider;
@@ -43,7 +43,7 @@ final class ModelFetchedReturnTypeHelper
         private readonly ReflectionProvider $reflectionProvider,
         private readonly SchemaProvider $schemaProvider,
         private readonly ColumnTypeResolver $columnTypeResolver,
-        private readonly CastTypeResolver $castTypeResolver,
+        private readonly CastFieldTypeResolver $castFieldTypeResolver,
     ) {}
 
     public function getFetchedReturnType(ClassReflection $classReflection, ?MethodCall $methodCall, Scope $scope): Type
@@ -94,11 +94,12 @@ final class ModelFetchedReturnTypeHelper
             return new ArrayType(new StringType(), new MixedType());
         }
 
-        $casts   = $this->readStringMap($classReflection, 'casts');
-        $builder = ConstantArrayTypeBuilder::createEmpty();
+        $casts        = $this->readStringMap($classReflection, 'casts');
+        $castHandlers = $this->readStringMap($classReflection, 'castHandlers');
+        $builder      = ConstantArrayTypeBuilder::createEmpty();
 
         foreach ($table->columns as $column) {
-            $builder->setOffsetValueType(new ConstantStringType($column->name), $this->resolveFieldType($column, $casts));
+            $builder->setOffsetValueType(new ConstantStringType($column->name), $this->resolveFieldType($column, $casts, $castHandlers));
         }
 
         return $builder->getArray();
@@ -106,11 +107,12 @@ final class ModelFetchedReturnTypeHelper
 
     /**
      * @param array<string, string> $casts
+     * @param array<string, string> $castHandlers
      */
-    private function resolveFieldType(Column $column, array $casts): Type
+    private function resolveFieldType(Column $column, array $casts, array $castHandlers): Type
     {
         if (isset($casts[$column->name])) {
-            return $this->castTypeResolver->resolve($casts[$column->name]) ?? new MixedType();
+            return $this->castFieldTypeResolver->resolve($casts[$column->name], $castHandlers);
         }
 
         return $this->columnTypeResolver->resolve($column);
