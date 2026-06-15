@@ -44,6 +44,14 @@ class from the passed name or class string.
 >       - Acme\Blog\Models\
 > ```
 
+### FakeFunctionReturnTypeExtension
+
+**Class:** `CodeIgniter\PHPStan\Type\FakeFunctionReturnTypeExtension`
+
+This extension provides the precise return type for the `fake()` function, typing it as a single fabricated
+record of the given model's return type (an entity, a shaped array, or a `stdClass`). The model may be passed
+as a class string, a model name, or a model instance.
+
 ## Dynamic Method Return Type Extensions
 
 ### ReflectionHelperMethodInvokerStaticReturnTypeExtension
@@ -82,6 +90,29 @@ This extension provides precise return types for the following methods of `CodeI
 - `cookie()`
 - `request()`
 - `getGlobalArray()`
+
+### ModelFindReturnTypeExtension
+
+**Class:** `CodeIgniter\PHPStan\Type\ModelFindReturnTypeExtension`
+
+This extension provides precise return types for the `find()`, `findAll()`, `first()`, and `findColumn()`
+methods of `CodeIgniter\Model` subclasses.
+
+A fetched row is typed from the model's `$returnType`:
+- an entity instance (whose properties are typed by the entity extension below),
+- a shaped array built from the table's columns and the model's `$casts`, or
+- a `stdClass` with those same fields.
+
+The row type also honors an `asArray()`/`asObject()` override and a `select()` field list earlier in the call
+chain. A `select()` supports `column`, `table.column`, `as` aliases, and `table.*`, resolving qualified
+references (including joined tables) against the introspected schema. A non-constant or unparseable `select()`
+falls back to a generic array.
+
+Each method then wraps that row type:
+- `find()`: a single row or `null` for a scalar id, a list of rows for an array of ids or no argument.
+- `findAll()`: a list of rows.
+- `first()`: a single row or `null`.
+- `findColumn()`: a list of the selected column's values, or `null`.
 
 ## Dynamic Static Method Return Type Extensions
 
@@ -148,3 +179,14 @@ handler names.
 >   codeigniter:
 >     addBackupHandlerAsReturnType: true
 > ```
+
+## Properties Class Reflection Extensions
+
+### EntityPropertiesClassReflectionExtension
+
+**Class:** `CodeIgniter\PHPStan\Reflection\EntityPropertiesClassReflectionExtension`
+
+This extension types the virtual properties of `CodeIgniter\Entity\Entity` subclasses. For each property it
+layers the entity's `$dates` and `$casts` (resolving custom `$castHandlers` by reflecting their `get()` method)
+over the type of the backing database column. That column is found through the table of the model whose
+`$returnType` is the entity. Properties that are neither a date, a cast, nor a known column resolve to `mixed`.
