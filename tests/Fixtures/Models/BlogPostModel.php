@@ -17,5 +17,9 @@ use CodeIgniter\Model;
 
 final class BlogPostModel extends Model
 {
-    protected $table = 'blog_posts';
+    protected $table       = 'blog_posts';
+    protected array $casts = [
+        'user_id' => 'string',
+        'title'   => 'datetime',
+    ];
 }

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Type;
 
+use CodeIgniter\PHPStan\Database\Schema\CastTypeResolver;
+use CodeIgniter\PHPStan\Database\Schema\Column;
 use CodeIgniter\PHPStan\Database\Schema\ColumnTypeResolver;
 use CodeIgniter\PHPStan\Database\SchemaProvider;
 use CodeIgniter\PHPStan\NodeVisitor\ModelReturnTypeTransformVisitor;
@@ -33,7 +35,7 @@ use stdClass;
 
 /**
  * Resolves the type of a single fetched row for a model, honoring its `$returnType` (or the
- * `asArray()`/`asObject()` override) and shaping array rows from the live table columns.
+ * `asArray()`/`asObject()` override) and shaping array rows from the live columns and `$casts`.
  */
 final class ModelFetchedReturnTypeHelper
 {
@@ -41,6 +43,7 @@ final class ModelFetchedReturnTypeHelper
         private readonly ReflectionProvider $reflectionProvider,
         private readonly SchemaProvider $schemaProvider,
         private readonly ColumnTypeResolver $columnTypeResolver,
+        private readonly CastTypeResolver $castTypeResolver,
     ) {}
 
     public function getFetchedReturnType(ClassReflection $classReflection, ?MethodCall $methodCall, Scope $scope): Type
@@ -91,12 +94,47 @@ final class ModelFetchedReturnTypeHelper
             return new ArrayType(new StringType(), new MixedType());
         }
 
+        $casts   = $this->readStringMap($classReflection, 'casts');
         $builder = ConstantArrayTypeBuilder::createEmpty();
 
         foreach ($table->columns as $column) {
-            $builder->setOffsetValueType(new ConstantStringType($column->name), $this->columnTypeResolver->resolve($column));
+            $builder->setOffsetValueType(new ConstantStringType($column->name), $this->resolveFieldType($column, $casts));
         }
 
         return $builder->getArray();
+    }
+
+    /**
+     * @param array<string, string> $casts
+     */
+    private function resolveFieldType(Column $column, array $casts): Type
+    {
+        if (isset($casts[$column->name])) {
+            return $this->castTypeResolver->resolve($casts[$column->name]) ?? new MixedType();
+        }
+
+        return $this->columnTypeResolver->resolve($column);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function readStringMap(ClassReflection $classReflection, string $property): array
+    {
+        $value = $classReflection->getNativeReflection()->getDefaultProperties()[$property] ?? [];
+
+        if (! is_array($value)) {
+            return [];
+        }
+
+        $map = [];
+
+        foreach ($value as $key => $cast) {
+            if (is_string($key) && is_string($cast)) {
+                $map[$key] = $cast;
+            }
+        }
+
+        return $map;
     }
 }
