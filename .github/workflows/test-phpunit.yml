@@ -44,6 +44,7 @@ jobs:
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
           php-version: ${{ matrix.php-version }}
+          extensions: sqlite3
           coverage: xdebug
 
       - name: Get composer cache directory
@@ -68,4 +69,6 @@ jobs:
           composer audit --ansi --abandoned=report
 
       - name: Run Extension Tests
-        run: composer test:stan
+        run: |
+          composer test:stan
+          composer test:unit

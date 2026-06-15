@@ -83,9 +83,11 @@
         "test:all": [
             "@cs:check",
             "@phpstan:check",
-            "@test:stan"
+            "@test:stan",
+            "@test:unit"
         ],
-        "test:stan": "phpunit --colors=always --group=static-analysis"
+        "test:stan": "phpunit --colors=always --group=static-analysis",
+        "test:unit": "phpunit --colors=always --group=unit"
     },
     "scripts-descriptions": {
         "cs:check": "Checks for coding style violations",
@@ -93,6 +95,7 @@
         "phpstan:baseline": "Runs PHPStan and dumps resulting errors to baseline",
         "phpstan:check": "Runs PHPStan with identifiers support",
         "test:all": "Runs all tests",
-        "test:stan": "Runs the Static Analysis Tests"
+        "test:stan": "Runs the Static Analysis Tests",
+        "test:unit": "Runs the Unit Tests"
     }
 }
