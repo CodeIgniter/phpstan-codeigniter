@@ -71,4 +71,17 @@ final class SchemaMigratorTest extends TestCase
         // A migration pinned to another database group is skipped.
         self::assertNull($schema->getTable('blog_groups'));
     }
+
+    public function testNullNamespaceScansEveryRegisteredNamespace(): void
+    {
+        $migrator    = new SchemaMigrator();
+        $fingerprint = $migrator->fingerprint($this->db, null);
+        $migrator->migrate($this->db, null);
+
+        $schema = (new SchemaIntrospector())->introspect($this->db, $fingerprint);
+
+        // The fixture migrations live outside the app namespace, so finding them proves a null
+        // namespace scans all registered namespaces rather than only `App\Database\Migrations`.
+        self::assertNotNull($schema->getTable('blog_users'));
+    }
 }

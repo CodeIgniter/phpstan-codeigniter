@@ -89,9 +89,9 @@ final class SchemaMigrator
     {
         $runner = new MigrationRunner(config(Migrations::class), $db);
 
-        if ($namespace !== null) {
-            $runner->setNamespace($namespace);
-        }
+        // A null namespace makes the runner scan every registered namespace (the app plus installed
+        // packages), so a library analyzed on its own and an app's vendor migrations are both found.
+        $runner->setNamespace($namespace);
 
         return array_values(array_filter(
             $runner->findMigrations(),

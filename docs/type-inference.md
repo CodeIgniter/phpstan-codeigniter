@@ -190,3 +190,16 @@ This extension types the virtual properties of `CodeIgniter\Entity\Entity` subcl
 layers the entity's `$dates` and `$casts` (resolving custom `$castHandlers` by reflecting their `get()` method)
 over the type of the backing database column. That column is found through the table of the model whose
 `$returnType` is the entity. Properties that are neither a date, a cast, nor a known column resolve to `mixed`.
+
+> [!NOTE]
+> **Configuration:**
+>
+> The Model and Entity column types are derived from a live schema, built by running your migrations against a
+> throwaway SQLite database (this requires the `sqlite3` PHP extension). By default every registered namespace
+> is scanned (your app plus installed packages). To restrict the schema to a single namespace, set:
+>
+> ```yml
+> parameters:
+>   codeigniter:
+>     schemaNamespace: Acme\Blog
+> ```
