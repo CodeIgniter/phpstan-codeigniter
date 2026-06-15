@@ -46,6 +46,9 @@ services:
   schemaProvider:
     class: CodeIgniter\PHPStan\Database\SchemaProvider
 
+  castTypeResolver:
+    class: CodeIgniter\PHPStan\Database\Schema\CastTypeResolver
+
   factoriesReturnTypeHelper:
     class: CodeIgniter\PHPStan\Helpers\FactoriesReturnTypeHelper
     arguments:
@@ -113,6 +116,11 @@ services:
       addBackupHandlerAsReturnType: %codeigniter.addBackupHandlerAsReturnType%
     tags:
       - phpstan.broker.dynamicStaticMethodReturnTypeExtension
+
+  -
+    class: CodeIgniter\PHPStan\Reflection\EntityPropertiesClassReflectionExtension
+    tags:
+      - phpstan.broker.propertiesClassReflectionExtension
 
   -
     class: CodeIgniter\PHPStan\Rules\Functions\FactoriesFunctionArgumentTypeRule
