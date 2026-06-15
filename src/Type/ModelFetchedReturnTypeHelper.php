@@ -27,6 +27,7 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayTypeBuilder;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\ObjectShapeType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\StringType;
@@ -51,7 +52,7 @@ final class ModelFetchedReturnTypeHelper
         $returnType = $this->resolveReturnType($classReflection, $methodCall, $scope);
 
         if ($returnType === 'object') {
-            return new ObjectType(stdClass::class);
+            return $this->resolveObjectRowType($classReflection);
         }
 
         if ($returnType === 'array') {
@@ -86,23 +87,54 @@ final class ModelFetchedReturnTypeHelper
 
     private function resolveArrayRowType(ClassReflection $classReflection): Type
     {
+        $fields = $this->resolveRowFieldTypes($classReflection);
+
+        if ($fields === null) {
+            return new ArrayType(new StringType(), new MixedType());
+        }
+
+        $builder = ConstantArrayTypeBuilder::createEmpty();
+
+        foreach ($fields as $name => $type) {
+            $builder->setOffsetValueType(new ConstantStringType($name), $type);
+        }
+
+        return $builder->getArray();
+    }
+
+    private function resolveObjectRowType(ClassReflection $classReflection): Type
+    {
+        $fields = $this->resolveRowFieldTypes($classReflection);
+
+        if ($fields === null) {
+            return new ObjectType(stdClass::class);
+        }
+
+        return new ObjectShapeType($fields, []);
+    }
+
+    /**
+     * @return array<string, Type>|null Null when the model's table cannot be resolved.
+     */
+    private function resolveRowFieldTypes(ClassReflection $classReflection): ?array
+    {
         $tableName = $classReflection->getNativeReflection()->getDefaultProperties()['table'] ?? null;
 
         $table = is_string($tableName) && $tableName !== '' ? $this->schemaProvider->get()->getTable($tableName) : null;
 
         if ($table === null) {
-            return new ArrayType(new StringType(), new MixedType());
+            return null;
         }
 
         $casts        = $this->readStringMap($classReflection, 'casts');
         $castHandlers = $this->readStringMap($classReflection, 'castHandlers');
-        $builder      = ConstantArrayTypeBuilder::createEmpty();
+        $fields       = [];
 
         foreach ($table->columns as $column) {
-            $builder->setOffsetValueType(new ConstantStringType($column->name), $this->resolveFieldType($column, $casts, $castHandlers));
+            $fields[$column->name] = $this->resolveFieldType($column, $casts, $castHandlers);
         }
 
-        return $builder->getArray();
+        return $fields;
     }
 
     /**

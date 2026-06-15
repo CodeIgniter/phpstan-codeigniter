@@ -27,7 +27,7 @@ assertType('list<CodeIgniter\PHPStan\Tests\Fixtures\Entity\BlogComment>', $comme
 assertType('CodeIgniter\PHPStan\Tests\Fixtures\Entity\BlogComment|null', $comments->first());
 
 assertType('array{id: int, body: string|null, votes: int, payload: string|null, created_at: string|null}|null', $comments->asArray()->first());
-assertType('stdClass|null', $comments->asObject()->first());
+assertType('object{id: int, body: string|null, votes: int, payload: string|null, created_at: string|null}|null', $comments->asObject()->first());
 
 $posts = new BlogPostModel();
 
