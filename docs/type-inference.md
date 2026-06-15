@@ -187,9 +187,10 @@ handler names.
 **Class:** `CodeIgniter\PHPStan\Reflection\EntityPropertiesClassReflectionExtension`
 
 This extension types the virtual properties of `CodeIgniter\Entity\Entity` subclasses. For each property it
-layers the entity's `$dates` and `$casts` (resolving custom `$castHandlers` by reflecting their `get()` method)
-over the type of the backing database column. That column is found through the table of the model whose
-`$returnType` is the entity. Properties that are neither a date, a cast, nor a known column resolve to `mixed`.
+applies, in order, the entity's `$dates`, the entity's `$casts`, then the `$casts` of the model whose
+`$returnType` is the entity (CodeIgniter applies those before hydrating the entity), and finally the type of
+the backing database column. Custom `$castHandlers` are resolved by reflecting their `get()` method, and the
+backing column is found through the model's table. Properties that match none of these resolve to `mixed`.
 
 > [!NOTE]
 > **Configuration:**

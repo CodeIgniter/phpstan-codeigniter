@@ -69,6 +69,7 @@ final class EntityPropertiesClassReflectionExtension implements PropertiesClassR
             return $schema->nullable ? TypeCombinator::addNull($time) : $time;
         }
 
+        // The entity's own cast is applied last in `__get()`, so it wins over a model cast and the column.
         if (isset($casts[$column])) {
             return $this->castFieldTypeResolver->resolve(
                 $casts[$column],
@@ -77,7 +78,25 @@ final class EntityPropertiesClassReflectionExtension implements PropertiesClassR
             );
         }
 
-        if ($schema !== null && ! $this->hasGetter($classReflection, $column)) {
+        // A getter returns the stored value unchanged, so its type cannot be inferred here.
+        if ($this->hasGetter($classReflection, $column)) {
+            return null;
+        }
+
+        // The model that returns this entity casts the column before hydration, so its cast describes a
+        // property the entity does not cast. This applies even when the column was not introspected.
+        $entityName = $classReflection->getName();
+        $modelCasts = $this->modelTableMapProvider->getModelCastsForEntity($entityName);
+
+        if (isset($modelCasts[$column])) {
+            return $this->castFieldTypeResolver->resolve(
+                $modelCasts[$column],
+                $this->modelTableMapProvider->getModelCastHandlersForEntity($entityName),
+                $schema !== null && ! $schema->nullable,
+            );
+        }
+
+        if ($schema !== null) {
             return $this->columnTypeResolver->resolve($schema);
         }
 

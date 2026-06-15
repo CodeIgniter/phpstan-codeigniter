@@ -17,23 +17,42 @@ use CodeIgniter\Model;
 use ReflectionClass;
 
 /**
- * Maps an entity class to the table of the model that returns it, discovered by reflecting every
- * model found under the registered `Models/` namespaces.
+ * Maps an entity class to the table and `$casts`/`$castHandlers` of the model that returns it,
+ * discovered by reflecting every model found under the registered `Models/` namespaces.
  */
 final class ModelTableMapProvider
 {
     /**
-     * @var array<class-string, string>|null
+     * @var array<class-string, array{table: string, casts: array<string, string>, handlers: array<string, string>}>|null
      */
     private ?array $map = null;
 
     public function getTableForEntity(string $entityClass): ?string
     {
-        return $this->map()[$entityClass] ?? null;
+        return $this->map()[$entityClass]['table'] ?? null;
     }
 
     /**
-     * @return array<class-string, string>
+     * The `$casts` of the model returning this entity. CodeIgniter applies them before hydrating the
+     * entity, so they describe the stored value of a property the entity itself does not cast.
+     *
+     * @return array<string, string>
+     */
+    public function getModelCastsForEntity(string $entityClass): array
+    {
+        return $this->map()[$entityClass]['casts'] ?? [];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getModelCastHandlersForEntity(string $entityClass): array
+    {
+        return $this->map()[$entityClass]['handlers'] ?? [];
+    }
+
+    /**
+     * @return array<class-string, array{table: string, casts: array<string, string>, handlers: array<string, string>}>
      */
     private function map(): array
     {
@@ -52,12 +71,36 @@ final class ModelTableMapProvider
                 continue;
             }
 
-            $map[$returnType] = $table;
+            $map[$returnType] = [
+                'table'    => $table,
+                'casts'    => $this->stringMap($defaults['casts'] ?? null),
+                'handlers' => $this->stringMap($defaults['castHandlers'] ?? null),
+            ];
         }
 
         $this->map = $map;
 
         return $this->map;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function stringMap(mixed $value): array
+    {
+        if (! is_array($value)) {
+            return [];
+        }
+
+        $map = [];
+
+        foreach ($value as $key => $cast) {
+            if (is_string($key) && is_string($cast)) {
+                $map[$key] = $cast;
+            }
+        }
+
+        return $map;
     }
 
     /**
