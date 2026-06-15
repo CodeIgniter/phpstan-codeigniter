@@ -99,7 +99,9 @@ This extension provides precise return types for the `find()`, `findAll()`, `fir
 methods of `CodeIgniter\Model` subclasses.
 
 A fetched row is typed from the model's `$returnType`:
-- an entity instance (whose properties are typed by the entity extension below),
+- an entity instance (whose properties are typed by the entity extension below, with the producing model's
+  `$casts` layered on so an `asObject(SomeEntity::class)` fetch reflects that model's casts, not only the
+  entity's own model's),
 - a shaped array built from the table's columns and the model's `$casts`, or
 - a `stdClass` with those same fields.
 

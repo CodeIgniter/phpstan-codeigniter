@@ -128,9 +128,9 @@ Both are optional. The defaults work for a typical application.
 - **Models that set `$table` in the constructor are not mapped.** The entity-to-table bridge reads `$table`
   from the model's default property value. A model that assigns `$this->table` inside its constructor is not
   resolved, so its entity's non-cast properties fall back to `mixed`.
-- **An `asObject(SomeEntity::class)` override uses the casts of the entity's own model.** An entity's
-  properties are typed from the `$casts` of the model whose `$returnType` is that entity. Fetching the same
-  entity through a different model via `asObject()` or `asArray()` does not pick up that model's `$casts`.
+- **An explicit `@var` annotation overrides the inferred entity type.** A `/** @var SomeEntity $x */` on a
+  fetched row replaces the cast-aware type with a plain `SomeEntity`, so its properties fall back to their
+  framework types. Such annotations, often added when 1.x inference was wrong, are unnecessary in 2.x.
 - **Only migrations build the schema.** Tables created outside migrations (for example, in test setup) are
   not introspected.
 - **A non-constant `select()` degrades the shape.** When the `select()` argument is not a constant string,

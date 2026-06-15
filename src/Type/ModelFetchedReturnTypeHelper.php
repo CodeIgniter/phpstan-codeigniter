@@ -61,10 +61,53 @@ final class ModelFetchedReturnTypeHelper
         }
 
         if ($this->reflectionProvider->hasClass($returnType)) {
-            return new ObjectType($returnType);
+            return $this->entityTypeWithModelCasts($classReflection, $returnType);
         }
 
         return new ObjectWithoutClassType();
+    }
+
+    /**
+     * Types the entity with the producing model's `$casts`. The producing model is statically known here
+     * (unlike in the entity reflection), so a model fetched through `asObject()` overrides the column types
+     * its own model would otherwise apply. The entity's own `$casts` still win, as they run last in `__get()`.
+     */
+    private function entityTypeWithModelCasts(ClassReflection $modelReflection, string $entityClass): Type
+    {
+        $modelCasts = $this->readStringMap($modelReflection, 'casts');
+
+        if ($modelCasts === []) {
+            return new ObjectType($entityClass);
+        }
+
+        $entityReflection  = $this->reflectionProvider->getClass($entityClass);
+        $entityCasts       = $this->readStringMap($entityReflection, 'casts');
+        $datamap           = $this->readStringMap($entityReflection, 'datamap');
+        $modelCastHandlers = $this->readStringMap($modelReflection, 'castHandlers');
+
+        $tableName = $modelReflection->getNativeReflection()->getDefaultProperties()['table'] ?? null;
+        $table     = is_string($tableName) && $tableName !== '' ? $this->schemaProvider->get()->getTable($tableName) : null;
+
+        $overrides = [];
+
+        foreach ($modelCasts as $column => $cast) {
+            if (isset($entityCasts[$column])) {
+                continue;
+            }
+
+            $schemaColumn       = $table?->getColumn($column);
+            $overrides[$column] = $this->castFieldTypeResolver->resolve(
+                $cast,
+                $modelCastHandlers,
+                $schemaColumn !== null && ! $schemaColumn->nullable,
+            );
+        }
+
+        if ($overrides === []) {
+            return new ObjectType($entityClass);
+        }
+
+        return new ModelCastEntityType($entityClass, $overrides, $datamap);
     }
 
     /**
