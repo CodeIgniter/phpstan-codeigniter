@@ -60,12 +60,12 @@ final class ResultMethodReturnTypeExtension implements DynamicMethodReturnTypeEx
     public function getTypeFromMethodCall(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): ?Type
     {
         return match ($methodReflection->getName()) {
-            'getResult'             => $this->resultType($methodCall, $scope),
-            'getResultArray'        => $this->listOf(new ArrayType(new StringType(), new MixedType())),
-            'getResultObject'       => $this->listOf(new ObjectType(stdClass::class)),
+            'getResult'             => $this->resolveResultType($methodCall, $scope),
+            'getResultArray'        => $this->wrapInList(new ArrayType(new StringType(), new MixedType())),
+            'getResultObject'       => $this->wrapInList(new ObjectType(stdClass::class)),
             'getRowArray'           => TypeCombinator::addNull(new ArrayType(new StringType(), new MixedType())),
             'getRowObject'          => TypeCombinator::addNull(new ObjectType(stdClass::class)),
-            'getCustomResultObject' => $this->listOf($this->customObjectType($methodCall, $scope)),
+            'getCustomResultObject' => $this->wrapInList($this->resolveCustomObject($methodCall, $scope)),
             default                 => null,
         };
     }
@@ -74,12 +74,12 @@ final class ResultMethodReturnTypeExtension implements DynamicMethodReturnTypeEx
      * Types `getResult($type)` from its constant `$type`: `'array'`, `'object'` (the default), or a
      * class name. A non-constant `$type` leaves the framework's declared `array`.
      */
-    private function resultType(MethodCall $methodCall, Scope $scope): ?Type
+    private function resolveResultType(MethodCall $methodCall, Scope $scope): ?Type
     {
         $args = $methodCall->getArgs();
 
         if (! isset($args[0])) {
-            return $this->listOf(new ObjectType(stdClass::class));
+            return $this->wrapInList(new ObjectType(stdClass::class));
         }
 
         $strings = $scope->getType($args[0]->value)->getConstantStrings();
@@ -91,13 +91,13 @@ final class ResultMethodReturnTypeExtension implements DynamicMethodReturnTypeEx
         $value = $strings[0]->getValue();
 
         return match ($value) {
-            'array'  => $this->listOf(new ArrayType(new StringType(), new MixedType())),
-            'object' => $this->listOf(new ObjectType(stdClass::class)),
-            default  => $this->listOf($this->reflectionProvider->hasClass($value) ? new ObjectType($value) : new ObjectWithoutClassType()),
+            'array'  => $this->wrapInList(new ArrayType(new StringType(), new MixedType())),
+            'object' => $this->wrapInList(new ObjectType(stdClass::class)),
+            default  => $this->wrapInList($this->reflectionProvider->hasClass($value) ? new ObjectType($value) : new ObjectWithoutClassType()),
         };
     }
 
-    private function customObjectType(MethodCall $methodCall, Scope $scope): Type
+    private function resolveCustomObject(MethodCall $methodCall, Scope $scope): Type
     {
         $args = $methodCall->getArgs();
 
@@ -114,7 +114,7 @@ final class ResultMethodReturnTypeExtension implements DynamicMethodReturnTypeEx
         return new ObjectWithoutClassType();
     }
 
-    private function listOf(Type $itemType): Type
+    private function wrapInList(Type $itemType): Type
     {
         return TypeCombinator::intersect(
             new ArrayType(new IntegerType(), $itemType),
