@@ -147,6 +147,32 @@ or a loose JSON union:
   from the declared `array|bool|float|int|stdClass|null`. A `false`, absent, or non-constant `$assoc`
   leaves the union in place.
 
+### IncomingRequestMethodReturnTypeExtension
+
+**Class:** `CodeIgniter\PHPStan\Type\IncomingRequestMethodReturnTypeExtension`
+
+This extension sharpens the `CodeIgniter\HTTP\IncomingRequest` input accessors built on
+`RequestTrait::fetchGlobal()` (`getGet`, `getPost`, `getCookie`, `getPostGet`, `getGetPost`, and
+`getRawInputVar`), all declared as the loose union `array|bool|float|int|object|string|null`. The
+`$index` argument shape drives the result:
+
+- a null or absent index returns the whole global as `array<string, mixed>`,
+- an array of keys returns `array<string, mixed>`,
+- a constant string index returns `array<mixed>|string|null` (the value can be a nested array, or null
+  when the key is absent). `getRawInputVar` defers here, as its dotted-path leaf does not narrow usefully.
+
+A filter argument (the second parameter) or a non-constant index leaves the declared union in place.
+`getVar()` is not handled: it falls back to the JSON input stream, so its result cannot be narrowed
+soundly.
+
+### CLIRequestMethodReturnTypeExtension
+
+**Class:** `CodeIgniter\PHPStan\Type\CLIRequestMethodReturnTypeExtension`
+
+On the CLI these same accessors (`getGet`, `getPost`, `getCookie`, `getPostGet`, `getGetPost`) never read
+a real superglobal. They return an empty array for a null or array index and `null` for a string index,
+narrowing the declared `array|null` accordingly.
+
 ## Dynamic Static Method Return Type Extensions
 
 ### ReflectionHelperMethodInvokerStaticReturnTypeExtension

@@ -149,6 +149,16 @@ services:
       - phpstan.broker.dynamicMethodReturnTypeExtension
 
   -
+    class: CodeIgniter\PHPStan\Type\IncomingRequestMethodReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicMethodReturnTypeExtension
+
+  -
+    class: CodeIgniter\PHPStan\Type\CLIRequestMethodReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicMethodReturnTypeExtension
+
+  -
     class: CodeIgniter\PHPStan\Type\ServicesGetSharedInstanceReturnTypeExtension
     tags:
       - phpstan.broker.dynamicStaticMethodReturnTypeExtension
