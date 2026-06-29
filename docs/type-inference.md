@@ -125,6 +125,8 @@ framework declares as a bare `array` or a loose object union at the interface le
 
 - `getResultArray()`: `list<array<string, mixed>>`
 - `getResultObject()`: `list<stdClass>`
+- `getResult($type)`: a list keyed off the constant `$type`, namely `list<array<string, mixed>>` for
+  `'array'`, `list<stdClass>` for `'object'` (the default), and `list<T>` for a `class-string`.
 - `getRowArray()`: `array<string, mixed>|null`
 - `getRowObject()`: `stdClass|null`
 - `getCustomResultObject($className)`: `list<T>` when `$className` is a constant `class-string`, or a

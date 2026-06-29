@@ -48,6 +48,7 @@ final class ResultMethodReturnTypeExtension implements DynamicMethodReturnTypeEx
     public function isMethodSupported(MethodReflection $methodReflection): bool
     {
         return in_array($methodReflection->getName(), [
+            'getResult',
             'getResultArray',
             'getResultObject',
             'getRowArray',
@@ -59,12 +60,40 @@ final class ResultMethodReturnTypeExtension implements DynamicMethodReturnTypeEx
     public function getTypeFromMethodCall(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): ?Type
     {
         return match ($methodReflection->getName()) {
+            'getResult'             => $this->resultType($methodCall, $scope),
             'getResultArray'        => $this->listOf(new ArrayType(new StringType(), new MixedType())),
             'getResultObject'       => $this->listOf(new ObjectType(stdClass::class)),
             'getRowArray'           => TypeCombinator::addNull(new ArrayType(new StringType(), new MixedType())),
             'getRowObject'          => TypeCombinator::addNull(new ObjectType(stdClass::class)),
             'getCustomResultObject' => $this->listOf($this->customObjectType($methodCall, $scope)),
             default                 => null,
+        };
+    }
+
+    /**
+     * Types `getResult($type)` from its constant `$type`: `'array'`, `'object'` (the default), or a
+     * class name. A non-constant `$type` leaves the framework's declared `array`.
+     */
+    private function resultType(MethodCall $methodCall, Scope $scope): ?Type
+    {
+        $args = $methodCall->getArgs();
+
+        if (! isset($args[0])) {
+            return $this->listOf(new ObjectType(stdClass::class));
+        }
+
+        $strings = $scope->getType($args[0]->value)->getConstantStrings();
+
+        if (count($strings) !== 1) {
+            return null;
+        }
+
+        $value = $strings[0]->getValue();
+
+        return match ($value) {
+            'array'  => $this->listOf(new ArrayType(new StringType(), new MixedType())),
+            'object' => $this->listOf(new ObjectType(stdClass::class)),
+            default  => $this->listOf($this->reflectionProvider->hasClass($value) ? new ObjectType($value) : new ObjectWithoutClassType()),
         };
     }
 

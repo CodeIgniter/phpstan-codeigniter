@@ -34,4 +34,13 @@ function resultAccessors(ResultInterface $result, string $dynamic): void
 
     // Already precise on the interface via a conditional @return, so the extension leaves it untouched.
     assertType('stdClass|null', $result->getRow(0));
+
+    // getResult($type) is typed from its constant $type argument.
+    assertType('list<stdClass>', $result->getResult());
+    assertType('list<stdClass>', $result->getResult('object'));
+    assertType('list<array<string, mixed>>', $result->getResult('array'));
+    assertType('list<CodeIgniter\PHPStan\Tests\Fixtures\Entity\BlogComment>', $result->getResult(BlogComment::class));
+
+    // A non-constant $type leaves the framework's declared array.
+    assertType('array', $result->getResult($dynamic));
 }
