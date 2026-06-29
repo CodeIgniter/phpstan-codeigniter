@@ -116,6 +116,20 @@ Each method then wraps that row type:
 - `first()`: a single row or `null`.
 - `findColumn()`: a list of the selected column's values, or `null`.
 
+### ResultMethodReturnTypeExtension
+
+**Class:** `CodeIgniter\PHPStan\Type\ResultMethodReturnTypeExtension`
+
+This extension sharpens the row-set accessors of `CodeIgniter\Database\ResultInterface`, which the
+framework declares as a bare `array` or a loose object union at the interface level:
+
+- `getResultArray()`: `list<array<string, mixed>>`
+- `getResultObject()`: `list<stdClass>`
+- `getRowArray()`: `array<string, mixed>|null`
+- `getRowObject()`: `stdClass|null`
+- `getCustomResultObject($className)`: `list<T>` when `$className` is a constant `class-string`, or a
+  list of unknown objects otherwise.
+
 ## Dynamic Static Method Return Type Extensions
 
 ### ReflectionHelperMethodInvokerStaticReturnTypeExtension
