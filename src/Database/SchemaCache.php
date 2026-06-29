@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Database;
 
+use CodeIgniter\Database\SQLite3\Connection;
 use CodeIgniter\PHPStan\Database\Schema\Schema;
+use stdClass;
 
 /**
  * Builds and caches the project's database schema as a var_export'd PHP file, rebuilding it when
@@ -35,19 +37,16 @@ final class SchemaCache
         $db           = $this->connectionFactory->create($databasePath);
 
         try {
-            $fingerprint = $this->migrator->fingerprint($db, $namespace);
+            $migrations  = $this->migrator->discover($db, $namespace);
+            $fingerprint = $this->migrator->fingerprint($migrations);
 
-            $cached = is_file($cacheFile) ? include $cacheFile : null;
+            $cached = $this->load($cacheFile);
 
-            if ($cached instanceof Schema && $cached->hash === $fingerprint) {
+            if ($cached !== null && $cached->hash === $fingerprint) {
                 return $cached;
             }
 
-            $this->migrator->migrate($db, $namespace);
-            $schema = $this->introspector->introspect($db, $fingerprint);
-            $this->store($cacheFile, $schema);
-
-            return $schema;
+            return $this->build($cacheFile, $db, $migrations, $fingerprint);
         } finally {
             $db->close();
 
@@ -57,11 +56,52 @@ final class SchemaCache
         }
     }
 
+    /**
+     * Builds the schema under an exclusive lock, then reads back any matching cache a concurrent worker
+     * wrote while this one waited for the lock, so only the first worker on a cold cache runs the migrations.
+     *
+     * @param list<stdClass> $migrations
+     */
+    private function build(string $cacheFile, Connection $db, array $migrations, string $fingerprint): Schema
+    {
+        $lock = fopen(sprintf('%s.lock', $cacheFile), 'cb');
+
+        if ($lock !== false) {
+            flock($lock, LOCK_EX);
+        }
+
+        try {
+            $cached = $this->load($cacheFile);
+
+            if ($cached !== null && $cached->hash === $fingerprint) {
+                return $cached;
+            }
+
+            $this->migrator->migrate($db, $migrations);
+            $schema = $this->introspector->introspect($db, $fingerprint);
+            $this->store($cacheFile, $schema);
+
+            return $schema;
+        } finally {
+            if ($lock !== false) {
+                flock($lock, LOCK_UN);
+                fclose($lock);
+            }
+        }
+    }
+
+    private function load(string $cacheFile): ?Schema
+    {
+        $cached = is_file($cacheFile) ? include $cacheFile : null;
+
+        return $cached instanceof Schema ? $cached : null;
+    }
+
     private function store(string $cacheFile, Schema $schema): void
     {
-        $temporaryFile = $cacheFile . '.' . uniqid('', true) . '.tmp';
+        $temporaryFile = sprintf('%s.%s.tmp', $cacheFile, uniqid('', true));
 
-        file_put_contents($temporaryFile, '<?php return ' . var_export($schema, true) . ";\n");
+        file_put_contents($temporaryFile, sprintf("<?php\n\nreturn %s;\n", var_export($schema, true)));
         rename($temporaryFile, $cacheFile);
     }
 }

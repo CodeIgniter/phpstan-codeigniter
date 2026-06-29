@@ -29,13 +29,35 @@ use Throwable;
 final class SchemaMigrator
 {
     /**
-     * Fingerprint of the migration set, computed from the files without running them.
+     * Discovers the project's migrations without running them, so the caller can fingerprint and apply
+     * the same set without scanning twice.
+     *
+     * @return list<stdClass>
      */
-    public function fingerprint(Connection $db, ?string $namespace = null): string
+    public function discover(Connection $db, ?string $namespace = null): array
+    {
+        $runner = new MigrationRunner(config(Migrations::class), $db);
+
+        // A null namespace makes the runner scan every registered namespace (the app plus installed
+        // packages), so a library analyzed on its own and an app's vendor migrations are both found.
+        $runner->setNamespace($namespace);
+
+        return array_values(array_filter(
+            $runner->findMigrations(),
+            static fn (mixed $migration): bool => $migration instanceof stdClass,
+        ));
+    }
+
+    /**
+     * Fingerprint of a discovered migration set, computed from the files without running them.
+     *
+     * @param list<stdClass> $migrations
+     */
+    public function fingerprint(array $migrations): string
     {
         $fingerprint = '';
 
-        foreach ($this->discoverMigrations($db, $namespace) as $migration) {
+        foreach ($migrations as $migration) {
             $path = $migration->path;
             $uid  = $migration->uid;
 
@@ -50,11 +72,14 @@ final class SchemaMigrator
         return hash('sha256', $fingerprint);
     }
 
-    public function migrate(Connection $db, ?string $namespace = null): void
+    /**
+     * @param list<stdClass> $migrations
+     */
+    public function migrate(Connection $db, array $migrations): void
     {
         $forge = Database::forge($db);
 
-        foreach ($this->discoverMigrations($db, $namespace) as $migration) {
+        foreach ($migrations as $migration) {
             $path  = $migration->path;
             $class = $migration->class;
 
@@ -80,23 +105,6 @@ final class SchemaMigrator
                 // Degrade: the failed migration's tables are simply absent from the schema.
             }
         }
-    }
-
-    /**
-     * @return list<stdClass>
-     */
-    private function discoverMigrations(Connection $db, ?string $namespace): array
-    {
-        $runner = new MigrationRunner(config(Migrations::class), $db);
-
-        // A null namespace makes the runner scan every registered namespace (the app plus installed
-        // packages), so a library analyzed on its own and an app's vendor migrations are both found.
-        $runner->setNamespace($namespace);
-
-        return array_values(array_filter(
-            $runner->findMigrations(),
-            static fn (mixed $migration): bool => $migration instanceof stdClass,
-        ));
     }
 
     /**

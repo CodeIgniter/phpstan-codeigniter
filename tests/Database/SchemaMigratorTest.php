@@ -56,11 +56,12 @@ final class SchemaMigratorTest extends TestCase
     public function testRunsMigrationsResilientlyAndReturnsFingerprint(): void
     {
         $migrator    = new SchemaMigrator();
-        $fingerprint = $migrator->fingerprint($this->db, self::FIXTURE_NAMESPACE);
+        $migrations  = $migrator->discover($this->db, self::FIXTURE_NAMESPACE);
+        $fingerprint = $migrator->fingerprint($migrations);
 
         self::assertMatchesRegularExpression('/^[0-9a-f]{64}$/', $fingerprint);
 
-        $migrator->migrate($this->db, self::FIXTURE_NAMESPACE);
+        $migrator->migrate($this->db, $migrations);
 
         $schema = (new SchemaIntrospector())->introspect($this->db, $fingerprint);
 
@@ -75,8 +76,9 @@ final class SchemaMigratorTest extends TestCase
     public function testNullNamespaceScansEveryRegisteredNamespace(): void
     {
         $migrator    = new SchemaMigrator();
-        $fingerprint = $migrator->fingerprint($this->db, null);
-        $migrator->migrate($this->db, null);
+        $migrations  = $migrator->discover($this->db, null);
+        $fingerprint = $migrator->fingerprint($migrations);
+        $migrator->migrate($this->db, $migrations);
 
         $schema = (new SchemaIntrospector())->introspect($this->db, $fingerprint);
 
