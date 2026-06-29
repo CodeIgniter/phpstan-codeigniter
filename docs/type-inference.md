@@ -132,6 +132,21 @@ framework declares as a bare `array` or a loose object union at the interface le
 - `getCustomResultObject($className)`: `list<T>` when `$className` is a constant `class-string`, or a
   list of unknown objects otherwise.
 
+### RequestMethodReturnTypeExtension
+
+**Class:** `CodeIgniter\PHPStan\Type\RequestMethodReturnTypeExtension`
+
+This extension sharpens two `CodeIgniter\HTTP\Request` accessors the framework declares as bare `mixed`
+or a loose JSON union:
+
+- `getServer($index)`: a null or absent `$index` returns the whole `array<string, mixed>`. A constant
+  key in the server map (`argv`, `argc`, `REQUEST_TIME`, `REQUEST_TIME_FLOAT`) resolves to its mapped
+  type, and any other constant key to `string`, each with `null` for an absent key. A filter argument or
+  a non-constant key leaves the declared `mixed`.
+- `getJSON($assoc)`: a constant `true` decodes objects as associative arrays, so `stdClass` is dropped
+  from the declared `array|bool|float|int|stdClass|null`. A `false`, absent, or non-constant `$assoc`
+  leaves the union in place.
+
 ## Dynamic Static Method Return Type Extensions
 
 ### ReflectionHelperMethodInvokerStaticReturnTypeExtension
