@@ -156,6 +156,11 @@ services:
       - phpstan.broker.dynamicStaticMethodReturnTypeExtension
 
   -
+    class: CodeIgniter\PHPStan\Type\FactoriesStaticMethodReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicStaticMethodReturnTypeExtension
+
+  -
     class: CodeIgniter\PHPStan\Reflection\EntityPropertiesClassReflectionExtension
     tags:
       - phpstan.broker.propertiesClassReflectionExtension

@@ -71,13 +71,13 @@ final class FactoriesReturnTypeHelper
 
                 $constantString = $constantStringType->getValue();
 
-                $appName = $this->namespaceMap[$function] . $constantString;
+                $namespace = $this->namespaceMap[$function] ?? null;
 
-                if ($this->reflectionProvider->hasClass($appName)) {
-                    return new ObjectType($appName);
+                if ($namespace !== null && $this->reflectionProvider->hasClass($namespace . $constantString)) {
+                    return new ObjectType($namespace . $constantString);
                 }
 
-                foreach ($this->additionalNamespacesMap[$function] as $additionalNamespace) {
+                foreach ($this->additionalNamespacesMap[$function] ?? [] as $additionalNamespace) {
                     $moduleClassName = $additionalNamespace . $constantString;
 
                     if ($this->reflectionProvider->hasClass($moduleClassName)) {

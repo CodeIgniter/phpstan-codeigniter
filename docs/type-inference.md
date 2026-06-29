@@ -198,6 +198,16 @@ handler names.
 >     addBackupHandlerAsReturnType: true
 > ```
 
+### FactoriesStaticMethodReturnTypeExtension
+
+**Class:** `CodeIgniter\PHPStan\Type\FactoriesStaticMethodReturnTypeExtension`
+
+This extension provides precise return types for the static factory entry points `Factories::config()`,
+`Factories::models()`, and `Factories::get()`, the static counterparts of the `config()` and `model()`
+functions. A class-string argument resolves to that class for any component, while a string alias resolves
+through the `config`/`model` namespaces (including the `additionalConfigNamespaces` and
+`additionalModelNamespaces` settings of the `FactoriesFunctionReturnTypeExtension`).
+
 ## Properties Class Reflection Extensions
 
 ### EntityPropertiesClassReflectionExtension
