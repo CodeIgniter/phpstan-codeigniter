@@ -129,6 +129,11 @@ services:
       - phpstan.broker.dynamicFunctionReturnTypeExtension
 
   -
+    class: CodeIgniter\PHPStan\Type\UrlHelperFunctionReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicFunctionReturnTypeExtension
+
+  -
     class: CodeIgniter\PHPStan\Type\SuperglobalsMethodDynamicReturnTypeExtension
     tags:
       - phpstan.broker.dynamicMethodReturnTypeExtension

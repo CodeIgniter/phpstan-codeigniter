@@ -52,6 +52,14 @@ This extension provides the precise return type for the `fake()` function, typin
 record of the given model's return type (an entity, a shaped array, or a `stdClass`). The model may be passed
 as a class string, a model name, or a model instance.
 
+### UrlHelperFunctionReturnTypeExtension
+
+**Class:** `CodeIgniter\PHPStan\Type\UrlHelperFunctionReturnTypeExtension`
+
+This extension resolves the `string|URI` url helpers `current_url()` and `previous_url()` from their
+constant `$returnObject` flag: a constant `true` returns a `CodeIgniter\HTTP\URI`, while `false` or an
+absent flag returns a `string`. A non-constant flag leaves the declared union in place.
+
 ## Dynamic Method Return Type Extensions
 
 ### ReflectionHelperMethodInvokerStaticReturnTypeExtension
