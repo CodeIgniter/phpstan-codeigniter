@@ -40,10 +40,10 @@ function test_get_server(IncomingRequest $request, string $name): void
 function test_get_json(IncomingRequest $request, bool $assoc): void
 {
     // A constant true decodes objects as associative arrays, so stdClass is dropped.
-    assertType('array|bool|float|int|null', $request->getJSON(true));
+    assertType('array<int|string, mixed>|bool|float|int|null', $request->getJSON(true));
 
     // A false, absent, or non-constant $assoc leaves the declared union.
-    assertType('array|bool|float|int|stdClass|null', $request->getJSON());
-    assertType('array|bool|float|int|stdClass|null', $request->getJSON(false));
-    assertType('array|bool|float|int|stdClass|null', $request->getJSON($assoc));
+    assertType('array<int|string, mixed>|bool|float|int|stdClass|null', $request->getJSON());
+    assertType('array<int|string, mixed>|bool|float|int|stdClass|null', $request->getJSON(false));
+    assertType('array<int|string, mixed>|bool|float|int|stdClass|null', $request->getJSON($assoc));
 }

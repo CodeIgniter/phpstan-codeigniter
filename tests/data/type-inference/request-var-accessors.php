@@ -44,13 +44,13 @@ function test_incoming_request(IncomingRequest $request, string $key, array $key
     assertType('array<mixed>|string|null', $request->getGetPost('id'));
 
     // getRawInputVar's string leaf is left as the declared union.
-    assertType('array|bool|float|int|object|string|null', $request->getRawInputVar('field'));
+    assertType('mixed', $request->getRawInputVar('field'));
 
     // A filter argument re-types the value, so the declared union is left in place.
-    assertType('array|bool|float|int|object|string|null', $request->getGet('q', FILTER_VALIDATE_INT));
+    assertType('mixed', $request->getGet('q', FILTER_VALIDATE_INT));
 
     // An ambiguous index (string or null) cannot be resolved.
-    assertType('array|bool|float|int|object|string|null', $request->getGet($maybe));
+    assertType('mixed', $request->getGet($maybe));
 }
 
 /**
