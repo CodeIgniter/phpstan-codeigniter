@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Tests\Type;
 
+use CodeIgniter\PHPStan\Tests\Fixtures\BarModel;
 use CodeIgniter\PHPStan\Tests\Fixtures\Models\BlogCommentModel;
 use CodeIgniter\PHPStan\Tests\Fixtures\Models\BlogPostModel;
+use CodeIgniter\PHPStan\Tests\Fixtures\Models\LegacyCommentModel;
 
 use function PHPStan\Testing\assertType;
 
@@ -57,4 +59,16 @@ assertType('list<CodeIgniter\I18n\Time>|null', $posts->findColumn('title'));
 function selectDynamically(BlogCommentModel $model, string $columns): void
 {
     assertType('array<string, mixed>|null', $model->select($columns)->asArray()->first());
+}
+
+function fetchFromUnionReceiver(BlogCommentModel $comments, BlogPostModel $posts, LegacyCommentModel $legacy, BarModel $bar, bool $flag): void
+{
+    $either = $flag ? $comments : $posts;
+
+    assertType('array{id: int, user_id: CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money, title: CodeIgniter\I18n\Time}|CodeIgniter\PHPStan\Tests\Fixtures\Entity\BlogComment|null', $either->find(1));
+    assertType('list<array{id: int, user_id: CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money, title: CodeIgniter\I18n\Time}|CodeIgniter\PHPStan\Tests\Fixtures\Entity\BlogComment>', $either->find([1, 2]));
+    assertType('list<array{id: int, user_id: CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money, title: CodeIgniter\I18n\Time}|CodeIgniter\PHPStan\Tests\Fixtures\Entity\BlogComment>', $either->findAll());
+    assertType('array{id: int, user_id: CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money, title: CodeIgniter\I18n\Time}|CodeIgniter\PHPStan\Tests\Fixtures\Entity\BlogComment|null', $either->first());
+    assertType('list<array|string|null>|null', ($flag ? $comments : $legacy)->findColumn('body'));
+    assertType('list<bool|float|int|list<mixed>|object|string|null>|null', ($flag ? $comments : $bar)->findColumn('id'));
 }

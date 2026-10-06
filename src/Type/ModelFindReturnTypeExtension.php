@@ -47,26 +47,49 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
 
     public function getTypeFromMethodCall(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): ?Type
     {
-        $methodName = $methodReflection->getName();
+        $classReflections = $scope->getType($methodCall->var)->getObjectClassReflections();
 
+        if ($classReflections === []) {
+            return null;
+        }
+
+        $types = [];
+
+        foreach ($classReflections as $classReflection) {
+            if (! $classReflection->is(Model::class)) {
+                return null;
+            }
+
+            $type = $this->getTypeForModel($classReflection, $methodReflection->getName(), $methodCall, $scope);
+
+            if ($type === null) {
+                return null;
+            }
+
+            $types[] = $type;
+        }
+
+        return TypeCombinator::union(...$types);
+    }
+
+    private function getTypeForModel(ClassReflection $classReflection, string $methodName, MethodCall $methodCall, Scope $scope): ?Type
+    {
         if ($methodName === 'find') {
-            return $this->getTypeFromFind($methodCall, $scope);
+            return $this->getTypeFromFind($classReflection, $methodCall, $scope);
         }
 
         if ($methodName === 'findAll') {
-            return $this->getTypeFromFindAll($methodCall, $scope);
+            return $this->getTypeFromFindAll($classReflection, $methodCall, $scope);
         }
 
         if ($methodName === 'findColumn') {
-            return $this->getTypeFromFindColumn($methodCall, $scope);
+            return $this->getTypeFromFindColumn($classReflection, $methodCall, $scope);
         }
-
-        $classReflection = $this->getClassReflection($methodCall, $scope);
 
         return TypeCombinator::addNull($this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $methodCall, $scope));
     }
 
-    private function getTypeFromFindColumn(MethodCall $methodCall, Scope $scope): ?Type
+    private function getTypeFromFindColumn(ClassReflection $classReflection, MethodCall $methodCall, Scope $scope): ?Type
     {
         $args = $methodCall->getArgs();
 
@@ -80,10 +103,7 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
             return null;
         }
 
-        $fieldType = $this->modelFetchedReturnTypeHelper->getColumnFieldType(
-            $this->getClassReflection($methodCall, $scope),
-            $strings[0]->getValue(),
-        );
+        $fieldType = $this->modelFetchedReturnTypeHelper->getColumnFieldType($classReflection, $strings[0]->getValue());
 
         if ($fieldType === null) {
             return null;
@@ -95,25 +115,17 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
         ));
     }
 
-    private function getClassReflection(MethodCall $methodCall, Scope $scope): ClassReflection
-    {
-        $classTypes = $scope->getType($methodCall->var)->getObjectClassReflections();
-        assert(count($classTypes) === 1);
-
-        return current($classTypes);
-    }
-
-    private function getTypeFromFind(MethodCall $methodCall, Scope $scope): Type
+    private function getTypeFromFind(ClassReflection $classReflection, MethodCall $methodCall, Scope $scope): Type
     {
         $args = $methodCall->getArgs();
 
         if (! isset($args[0])) {
-            return $this->getTypeFromFindAll($methodCall, $scope);
+            return $this->getTypeFromFindAll($classReflection, $methodCall, $scope);
         }
 
         return TypeTraverser::map(
             $scope->getType($args[0]->value),
-            function (Type $idType, callable $traverse) use ($methodCall, $scope): Type {
+            function (Type $idType, callable $traverse) use ($classReflection, $methodCall, $scope): Type {
                 if ($idType instanceof UnionType || $idType instanceof IntersectionType) {
                     return $traverse($idType);
                 }
@@ -123,20 +135,16 @@ final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExten
                 }
 
                 if ($idType->isInteger()->yes() || $idType->isString()->yes()) {
-                    $classReflection = $this->getClassReflection($methodCall, $scope);
-
                     return TypeCombinator::addNull($this->modelFetchedReturnTypeHelper->getFetchedReturnType($classReflection, $methodCall, $scope));
                 }
 
-                return $this->getTypeFromFindAll($methodCall, $scope);
+                return $this->getTypeFromFindAll($classReflection, $methodCall, $scope);
             },
         );
     }
 
-    private function getTypeFromFindAll(MethodCall $methodCall, Scope $scope): Type
+    private function getTypeFromFindAll(ClassReflection $classReflection, MethodCall $methodCall, Scope $scope): Type
     {
-        $classReflection = $this->getClassReflection($methodCall, $scope);
-
         return TypeCombinator::intersect(
             new ArrayType(
                 new IntegerType(),
