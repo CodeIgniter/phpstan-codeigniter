@@ -19,19 +19,15 @@ use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\PhpDoc\TypeStringResolver;
 use PHPStan\Reflection\MethodReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
-use stdClass;
 
 /**
- * Sharpens the request accessors declared as bare `mixed` or a loose JSON union: `getServer()` is typed
- * from the server-key map, and `getJSON($assoc)` drops `stdClass` when the constant `$assoc` is `true`.
+ * Return type extension for `Request::getServer()`, typed from the server-key map.
  */
 final class RequestMethodReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
@@ -46,16 +42,12 @@ final class RequestMethodReturnTypeExtension implements DynamicMethodReturnTypeE
 
     public function isMethodSupported(MethodReflection $methodReflection): bool
     {
-        return in_array($methodReflection->getName(), ['getServer', 'getJSON'], true);
+        return $methodReflection->getName() === 'getServer';
     }
 
     public function getTypeFromMethodCall(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): ?Type
     {
-        return match ($methodReflection->getName()) {
-            'getServer' => $this->resolveServer($methodCall, $scope),
-            'getJSON'   => $this->resolveJson($methodReflection, $methodCall, $scope),
-            default     => null,
-        };
+        return $this->resolveServer($methodCall, $scope);
     }
 
     /**
@@ -92,26 +84,5 @@ final class RequestMethodReturnTypeExtension implements DynamicMethodReturnTypeE
         }
 
         return TypeCombinator::addNull(TypeCombinator::union(...$types));
-    }
-
-    /**
-     * Types `getJSON($assoc)`: a constant `true` decodes objects as associative arrays, so `stdClass` is
-     * dropped from the declared union. A `false`, absent, or non-constant `$assoc` leaves it in place.
-     */
-    private function resolveJson(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): ?Type
-    {
-        $args = $methodCall->getArgs();
-
-        if (! isset($args[0]) || ! $scope->getType($args[0]->value)->isTrue()->yes()) {
-            return null;
-        }
-
-        $declared = ParametersAcceptorSelector::selectFromArgs(
-            $scope,
-            $args,
-            $methodReflection->getVariants(),
-        )->getReturnType();
-
-        return TypeCombinator::remove($declared, new ObjectType(stdClass::class));
     }
 }

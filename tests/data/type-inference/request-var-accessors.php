@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Tests\Type;
 
-use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
 
 use function PHPStan\Testing\assertType;
@@ -51,25 +50,4 @@ function test_incoming_request(IncomingRequest $request, string $key, array $key
 
     // An ambiguous index (string or null) cannot be resolved.
     assertType('mixed', $request->getGet($maybe));
-}
-
-/**
- * @param list<string> $keys
- */
-function test_cli_request(CLIRequest $request, string $key, array $keys, ?string $maybe): void
-{
-    // A null or array index yields an empty array.
-    assertType('array{}', $request->getGet());
-    assertType('array{}', $request->getPost(null));
-    assertType('array{}', $request->getCookie());
-    assertType('array{}', $request->getGet(['a']));
-    assertType('array{}', $request->getPostGet($keys));
-
-    // A string index always returns null on the CLI.
-    assertType('null', $request->getGet('q'));
-    assertType('null', $request->getPost($key));
-    assertType('null', $request->getCookie('session'));
-
-    // An ambiguous index is left as the declared union.
-    assertType('array|null', $request->getGet($maybe));
 }

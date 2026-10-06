@@ -52,14 +52,6 @@ This extension provides the precise return type for the `fake()` function, typin
 record of the given model's return type (an entity, a shaped array, or a `stdClass`). The model may be passed
 as a class string, a model name, or a model instance.
 
-### UrlHelperFunctionReturnTypeExtension
-
-**Class:** `CodeIgniter\PHPStan\Type\UrlHelperFunctionReturnTypeExtension`
-
-This extension resolves the `string|URI` url helpers `current_url()` and `previous_url()` from their
-constant `$returnObject` flag: a constant `true` returns a `CodeIgniter\HTTP\URI`, while `false` or an
-absent flag returns a `string`. A non-constant flag leaves the declared union in place.
-
 ## Dynamic Method Return Type Extensions
 
 ### ReflectionHelperMethodInvokerStaticReturnTypeExtension
@@ -124,36 +116,15 @@ Each method then wraps that row type:
 - `first()`: a single row or `null`.
 - `findColumn()`: a list of the selected column's values, or `null`.
 
-### ResultMethodReturnTypeExtension
-
-**Class:** `CodeIgniter\PHPStan\Type\ResultMethodReturnTypeExtension`
-
-This extension sharpens the row-set accessors of `CodeIgniter\Database\ResultInterface`, which the
-framework declares as a bare `array` or a loose object union at the interface level:
-
-- `getResultArray()`: `list<array<string, mixed>>`
-- `getResultObject()`: `list<stdClass>`
-- `getResult($type)`: a list keyed off the constant `$type`, namely `list<array<string, mixed>>` for
-  `'array'`, `list<stdClass>` for `'object'` (the default), and `list<T>` for a `class-string`.
-- `getRowArray()`: `array<string, mixed>|null`
-- `getRowObject()`: `stdClass|null`
-- `getCustomResultObject($className)`: `list<T>` when `$className` is a constant `class-string`, or a
-  list of unknown objects otherwise.
-
 ### RequestMethodReturnTypeExtension
 
 **Class:** `CodeIgniter\PHPStan\Type\RequestMethodReturnTypeExtension`
 
-This extension sharpens two `CodeIgniter\HTTP\Request` accessors the framework declares as bare `mixed`
-or a loose JSON union:
-
-- `getServer($index)`: a null or absent `$index` returns the whole `array<string, mixed>`. A constant
-  key in the server map (`argv`, `argc`, `REQUEST_TIME`, `REQUEST_TIME_FLOAT`) resolves to its mapped
-  type, and any other constant key to `string`, each with `null` for an absent key. A filter argument or
-  a non-constant key leaves the declared `mixed`.
-- `getJSON($assoc)`: a constant `true` decodes objects as associative arrays, so `stdClass` is dropped
-  from the declared `array|bool|float|int|stdClass|null`. A `false`, absent, or non-constant `$assoc`
-  leaves the union in place.
+This extension sharpens `CodeIgniter\HTTP\Request::getServer($index)`, declared as bare `mixed`. A null
+or absent `$index` returns the whole `array<string, mixed>`. A constant key in the server map (`argv`,
+`argc`, `REQUEST_TIME`, `REQUEST_TIME_FLOAT`) resolves to its mapped type, and any other constant key to
+`string`, each with `null` for an absent key. A filter argument or a non-constant key leaves the declared
+`mixed`.
 
 ### IncomingRequestMethodReturnTypeExtension
 
@@ -172,14 +143,6 @@ This extension sharpens the `CodeIgniter\HTTP\IncomingRequest` input accessors b
 A filter argument (the second parameter) or a non-constant index leaves the declared union in place.
 `getVar()` is not handled: it falls back to the JSON input stream, so its result cannot be narrowed
 soundly.
-
-### CLIRequestMethodReturnTypeExtension
-
-**Class:** `CodeIgniter\PHPStan\Type\CLIRequestMethodReturnTypeExtension`
-
-On the CLI these same accessors (`getGet`, `getPost`, `getCookie`, `getPostGet`, `getGetPost`) never read
-a real superglobal. They return an empty array for a null or array index and `null` for a string index,
-narrowing the declared `array|null` accordingly.
 
 ## Dynamic Static Method Return Type Extensions
 
