@@ -30,7 +30,7 @@ final class UnsetOnSuperglobalsDimFetchVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        foreach ($node->vars as $i => $var) {
+        foreach ($node->vars as $var) {
             if (! $var instanceof Node\Expr\ArrayDimFetch) {
                 continue;
             }

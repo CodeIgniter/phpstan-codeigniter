@@ -83,7 +83,7 @@ final class ReflectionHelperStaticMethodInvokerTest extends CIUnitTestCase
             self::getPrivateMethodInvoker($object, 'isStaticMethodSupported'),
         );
         assertType(
-            'Closure(PHPStan\Reflection\MethodReflection, PhpParser\Node\Expr\StaticCall, PHPStan\Analyser\Scope): never',
+            'Closure(PHPStan\Reflection\MethodReflection, PhpParser\Node\Expr\StaticCall, PHPStan\Analyser\DependencyTracker&PHPStan\Analyser\Scope): never',
             self::getPrivateMethodInvoker($object, 'getTypeFromStaticMethodCall'),
         );
     }
