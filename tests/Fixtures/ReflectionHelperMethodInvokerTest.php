@@ -48,14 +48,14 @@ final class ReflectionHelperMethodInvokerTest extends CIUnitTestCase
 
         $object = new Environment(service('logger'), service('commands'));
         assertType(
-            'Closure(array<int|string, string|null>): int',
+            'Closure(array<string|null>): int',
             $this->getPrivateMethodInvoker($object, 'run'),
         );
         assertType('Closure(string): bool', $this->getPrivateMethodInvoker($object, 'writeNewEnvironmentToEnvFile'));
 
         $object = new ConfigCheck(service('logger'), service('commands'));
         assertType(
-            'Closure(array<int|string, string|null>): int',
+            'Closure(array<string|null>): int',
             $this->getPrivateMethodInvoker($object, 'run'),
         );
         assertType('Closure(object): string', $this->getPrivateMethodInvoker($object, 'getVarDump'));
