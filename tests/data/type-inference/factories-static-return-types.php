@@ -15,6 +15,7 @@ namespace CodeIgniter\PHPStan\Tests\Type;
 
 use CodeIgniter\Config\Factories;
 use CodeIgniter\PHPStan\Tests\Fixtures\BarModel;
+use CodeIgniter\View\Cells\Cell;
 use Config\App;
 
 use function PHPStan\Testing\assertType;
@@ -39,10 +40,14 @@ assertType('CodeIgniter\PHPStan\Tests\Fixtures\BarModel', Factories::get('filter
 // A non-class-string alias under an unmapped component is left as the framework's declared type.
 assertType('object|null', Factories::get('filters', 'toolbar'));
 
+assertType('CodeIgniter\View\Cells\Cell', Factories::cells(Cell::class));
+assertType('object|null', Factories::cells('toolbar'));
+
 // A non-constant alias is unresolvable, so the declared type is left in place rather than narrowed to null.
 function staticFactoriesDynamic(string $name): void
 {
     assertType('CodeIgniter\Config\BaseConfig|null', Factories::config($name));
     assertType('CodeIgniter\Model|null', Factories::models($name));
     assertType('object|null', Factories::get('config', $name));
+    assertType('object|null', Factories::cells($name));
 }

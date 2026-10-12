@@ -38,7 +38,7 @@ final class FactoriesStaticMethodReturnTypeExtension implements DynamicStaticMet
 
     public function isStaticMethodSupported(MethodReflection $methodReflection): bool
     {
-        return in_array($methodReflection->getName(), ['get', 'config', 'models'], true);
+        return in_array($methodReflection->getName(), ['get', 'cells', 'config', 'models'], true);
     }
 
     public function getTypeFromStaticMethodCall(MethodReflection $methodReflection, StaticCall $methodCall, Scope $scope): ?Type
