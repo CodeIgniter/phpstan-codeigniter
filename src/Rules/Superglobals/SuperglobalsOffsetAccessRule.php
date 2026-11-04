@@ -15,6 +15,7 @@ namespace CodeIgniter\PHPStan\Rules\Superglobals;
 
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
 use CodeIgniter\PHPStan\NodeVisitor\UnsetOnSuperglobalsDimFetchVisitor;
+use CodeIgniter\PHPStan\NodeVisitor\VariableContextOnSuperglobalsDimFetchVisitor;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use PHPStan\DependencyInjection\RegisteredRule;
@@ -87,13 +88,19 @@ final class SuperglobalsOffsetAccessRule implements Rule
             $value = $this->exprPrinter->printExpr($dim);
         }
 
+        $builder = RuleErrorBuilder::message(sprintf('Direct access to $%s[%s] is not allowed.', $varName, $value))
+            ->identifier('codeigniter.superglobalsOffsetAccess');
+
+        if ($node->getAttribute(VariableContextOnSuperglobalsDimFetchVisitor::VISITOR_KEY) === true) {
+            return [$builder->build()];
+        }
+
         return [
-            RuleErrorBuilder::message(sprintf('Direct access to $%s[%s] is not allowed.', $varName, $value))
-                ->identifier('codeigniter.superglobalsOffsetAccess')
-                ->tip(sprintf('Use service(\'superglobals\')->%s(%s) instead.', $methodGetter, $value))
+            $builder
+                ->tip(sprintf('Use single_service(\'superglobals\')->%s(%s) instead.', $methodGetter, $value))
                 ->fixNode($node, static fn (): Node\Expr\MethodCall => new Node\Expr\MethodCall(
                     new Node\Expr\FuncCall(
-                        new Node\Name('service'),
+                        new Node\Name('single_service'),
                         [new Node\Arg(new Node\Scalar\String_('superglobals'))],
                     ),
                     new Node\Identifier($methodGetter),

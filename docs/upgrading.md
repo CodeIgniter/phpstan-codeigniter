@@ -55,11 +55,13 @@ the identifiers and messages changed, any baseline entries for the old rules wil
 regenerated.
 
 Most of these errors are auto-fixable, so you can fix them in place instead of baselining them.
-`SuperglobalsOffsetAccessRule` and `SuperglobalsOffsetAssignRule` are fully fixable, and
+`SuperglobalsOffsetAccessRule` and `SuperglobalsOffsetAssignRule` are fixable, and
 `SuperglobalsGlobalAssignRule` is partially fixable (single-element array assignments). Running PHPStan's
 fixer (`vendor/bin/phpstan analyse --fix`) rewrites the direct access into the equivalent
-`service('superglobals')` call, for example `$_SERVER['argv']` becomes
-`service('superglobals')->server('argv')`.
+`Superglobals` call. Reads use `single_service('superglobals')` so they see the live global, for example
+`$_SERVER['argv']` becomes `single_service('superglobals')->server('argv')`. Writes use the shared
+`service('superglobals')`. Reads that PHP only accepts as a variable (`isset()`, compound assignment,
+increment, `foreach` targets and list destructuring) are reported but left unfixed.
 
 ### `model()`/`config()` with a class string is no longer discouraged
 

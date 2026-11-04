@@ -57,7 +57,7 @@ in `Superglobals` class.
 ### SuperglobalsOffsetAccessRule
 
 **Class:** `CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAccessRule`<br/>
-Fixable: Yes
+Fixable: Yes (except where PHP requires a variable, such as inside `isset()`)
 
 This rule forbids direct offset access on all superglobals (except `$_FILES`, `$_ENV`, and `$_SESSION`).
 Instead, it recommends using the equivalent method getter in the `Superglobals` class.

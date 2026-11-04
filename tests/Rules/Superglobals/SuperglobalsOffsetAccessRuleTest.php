@@ -45,33 +45,37 @@ final class SuperglobalsOffsetAccessRuleTest extends RuleTestCase
             [
                 'Direct access to $_SERVER[$name] is not allowed.',
                 18,
-                'Use service(\'superglobals\')->server($name) instead.',
+                'Use single_service(\'superglobals\')->server($name) instead.',
             ],
             [
                 'Direct access to $_GET[\'key\'] is not allowed.',
                 19,
-                'Use service(\'superglobals\')->get(\'key\') instead.',
+                'Use single_service(\'superglobals\')->get(\'key\') instead.',
             ],
             [
                 'Direct access to $_POST[\'key\'] is not allowed.',
                 20,
-                'Use service(\'superglobals\')->post(\'key\') instead.',
+                'Use single_service(\'superglobals\')->post(\'key\') instead.',
             ],
             [
                 'Direct access to $_COOKIE[\'key\'] is not allowed.',
                 21,
-                'Use service(\'superglobals\')->cookie(\'key\') instead.',
+                'Use single_service(\'superglobals\')->cookie(\'key\') instead.',
             ],
             [
                 'Direct access to $_REQUEST[\'key\'] is not allowed.',
                 23,
-                'Use service(\'superglobals\')->request(\'key\') instead.',
+                'Use single_service(\'superglobals\')->request(\'key\') instead.',
             ],
             [
                 'Direct access to $_SERVER[$key] is not allowed.',
                 26,
-                'Use service(\'superglobals\')->server($key) instead.',
+                'Use single_service(\'superglobals\')->server($key) instead.',
             ],
+            ['Direct access to $_GET[\'a\'] is not allowed.', 28],
+            ['Direct access to $_GET[\'a\'] is not allowed.', 29],
+            ['Direct access to $_GET[\'c\'] is not allowed.', 30],
+            ['Direct access to $_GET[\'d\'] is not allowed.', 31],
         ]);
     }
 

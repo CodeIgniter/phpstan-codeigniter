@@ -24,4 +24,14 @@ function test_superglobals_offset_access(string $name): void
 
     $key = (static fn (): string => mt_rand(0, 1) ? 'key1' : 'key2')();
     $_SERVER[$key];
+
+    isset($_GET['a']);
+    isset($_GET['a']['b']);
+    $_GET['c'] .= 'x';
+    $_GET['d']++;
+
+    foreach ([1] as $_POST['e']) {
+    }
+    [$_POST['f']] = [1];
+    $ref          = &$_COOKIE['g'];
 }

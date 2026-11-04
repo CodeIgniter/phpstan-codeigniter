@@ -15,13 +15,23 @@ namespace CodeIgniter\PHPStan\Tests\Rules;
 
 function test_superglobals_offset_access(string $name): void
 {
-    service('superglobals')->server($name);
-    service('superglobals')->get('key');
-    service('superglobals')->post('key');
-    service('superglobals')->cookie('key');
+    single_service('superglobals')->server($name);
+    single_service('superglobals')->get('key');
+    single_service('superglobals')->post('key');
+    single_service('superglobals')->cookie('key');
     $_FILES['key']; // should not error
-    service('superglobals')->request('key');
+    single_service('superglobals')->request('key');
 
     $key = (static fn (): string => mt_rand(0, 1) ? 'key1' : 'key2')();
-    service('superglobals')->server($key);
+    single_service('superglobals')->server($key);
+
+    isset($_GET['a']);
+    isset($_GET['a']['b']);
+    $_GET['c'] .= 'x';
+    $_GET['d']++;
+
+    foreach ([1] as $_POST['e']) {
+    }
+    [$_POST['f']] = [1];
+    $ref          = &$_COOKIE['g'];
 }
