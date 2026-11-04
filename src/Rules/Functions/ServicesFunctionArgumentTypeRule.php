@@ -16,6 +16,8 @@ namespace CodeIgniter\PHPStan\Rules\Functions;
 use CodeIgniter\PHPStan\Helpers\ServicesReturnTypeHelper;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredService;
+use PHPStan\DependencyInjection\Conditional;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\Rule;
@@ -27,6 +29,7 @@ use PHPStan\Type\VerbosityLevel;
 /**
  * @implements Rule<Node\Expr\FuncCall>
  */
+#[Conditional(attribute: new AutowiredService(), if: '%codeigniter.checkArgumentTypeOfServices%')]
 final class ServicesFunctionArgumentTypeRule implements Rule
 {
     public function __construct(

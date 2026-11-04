@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Database\Schema;
 
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
@@ -23,6 +24,7 @@ use PHPStan\Type\TypeCombinator;
  * Resolves a `$casts` entry to the type its handler reads back, using the framework built-ins and
  * reflecting custom `$castHandlers` for cast names the framework does not define.
  */
+#[AutowiredService(name: 'castFieldTypeResolver')]
 final class CastFieldTypeResolver
 {
     public function __construct(

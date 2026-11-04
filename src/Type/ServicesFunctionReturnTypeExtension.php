@@ -16,10 +16,12 @@ namespace CodeIgniter\PHPStan\Type;
 use CodeIgniter\PHPStan\Helpers\ServicesReturnTypeHelper;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
 use PHPStan\Type\Type;
 
+#[AutowiredService]
 final class ServicesFunctionReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
     public function __construct(

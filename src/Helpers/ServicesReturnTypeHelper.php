@@ -17,6 +17,8 @@ use CodeIgniter\Config\BaseService;
 use CodeIgniter\Config\Services as FrameworkServices;
 use Config\Services as AppServices;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredParameter;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
@@ -24,6 +26,7 @@ use PHPStan\ShouldNotHappenException;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 
+#[AutowiredService(name: 'servicesReturnTypeHelper')]
 final class ServicesReturnTypeHelper
 {
     public const IMPOSSIBLE_SERVICE_METHOD_NAMES = [
@@ -54,8 +57,12 @@ final class ServicesReturnTypeHelper
     /**
      * @param list<class-string> $additionalServices
      */
-    public function __construct(private readonly ReflectionProvider $reflectionProvider, array $additionalServices)
-    {
+    public function __construct(
+        private readonly ReflectionProvider $reflectionProvider,
+
+        #[AutowiredParameter(ref: '%codeigniter.additionalServices%')]
+        array $additionalServices,
+    ) {
         $this->services = [FrameworkServices::class, AppServices::class, ...$additionalServices];
     }
 

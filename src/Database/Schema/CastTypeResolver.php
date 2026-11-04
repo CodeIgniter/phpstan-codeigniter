@@ -15,6 +15,7 @@ namespace CodeIgniter\PHPStan\Database\Schema;
 
 use CodeIgniter\HTTP\URI;
 use CodeIgniter\I18n\Time;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Type\Accessory\AccessoryArrayListType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
@@ -32,6 +33,7 @@ use UnitEnum;
  * Maps a CodeIgniter `$casts` entry to the PHPStan type its handler reads back, or null when the
  * cast name is not a framework built-in.
  */
+#[AutowiredService(name: 'castTypeResolver')]
 final class CastTypeResolver
 {
     public function resolve(string $cast): ?Type

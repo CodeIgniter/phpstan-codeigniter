@@ -15,12 +15,14 @@ namespace CodeIgniter\PHPStan\Database;
 
 use CodeIgniter\Database\SQLite3\Connection;
 use Config\Database;
+use PHPStan\DependencyInjection\AutowiredService;
 use RuntimeException;
 
 /**
  * Creates an isolated SQLite3 connection used to materialize the user's schema,
  * leaving the user's own database connections untouched.
  */
+#[AutowiredService(name: 'schemaConnectionFactory')]
 final class SchemaConnectionFactory
 {
     /**

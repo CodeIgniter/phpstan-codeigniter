@@ -16,6 +16,7 @@ namespace CodeIgniter\PHPStan\Rules\Classes;
 use CodeIgniter\Exceptions\FrameworkException;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\RegisteredRule;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\ShouldNotHappenException;
@@ -24,6 +25,7 @@ use PHPStan\Type\ObjectType;
 /**
  * @implements Rule<Node\Expr\New_>
  */
+#[RegisteredRule(level: 0)]
 final class FrameworkExceptionInstantiationRule implements Rule
 {
     public function getNodeType(): string

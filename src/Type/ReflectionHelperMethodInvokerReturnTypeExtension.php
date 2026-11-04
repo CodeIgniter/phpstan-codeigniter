@@ -14,12 +14,16 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Type;
 
 use CodeIgniter\PHPStan\Helpers\ReflectionHelperPrivateInvokerHelper;
+use CodeIgniter\Test\CIUnitTestCase;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredParameter;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\Type;
 
+#[AutowiredService]
 final class ReflectionHelperMethodInvokerReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
     /**
@@ -27,6 +31,8 @@ final class ReflectionHelperMethodInvokerReturnTypeExtension implements DynamicM
      */
     public function __construct(
         private readonly ReflectionHelperPrivateInvokerHelper $reflectionHelperPrivateInvokerHelper,
+
+        #[AutowiredParameter(ref: CIUnitTestCase::class)]
         private readonly string $className,
     ) {}
 

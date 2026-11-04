@@ -14,16 +14,21 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Database;
 
 use CodeIgniter\PHPStan\Database\Schema\Schema;
+use PHPStan\DependencyInjection\AutowiredParameter;
+use PHPStan\DependencyInjection\AutowiredService;
 
 /**
  * Provides the project's database schema, building it once per process.
  */
+#[AutowiredService(name: 'schemaProvider')]
 final class SchemaProvider
 {
     private ?Schema $schema = null;
 
     public function __construct(
         private readonly SchemaCache $cache,
+
+        #[AutowiredParameter(ref: '%codeigniter.schemaNamespace%')]
         private readonly ?string $namespace = null,
     ) {}
 

@@ -18,6 +18,7 @@ use CodeIgniter\Cache\CacheInterface;
 use CodeIgniter\Test\Mock\MockCache;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\RegisteredRule;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\Type\ObjectType;
@@ -25,6 +26,7 @@ use PHPStan\Type\ObjectType;
 /**
  * @implements Rule<Node\Expr\New_>
  */
+#[RegisteredRule(level: 0)]
 final class CacheHandlerInstantiationRule implements Rule
 {
     public function getNodeType(): string

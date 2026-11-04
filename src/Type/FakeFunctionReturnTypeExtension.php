@@ -17,6 +17,7 @@ use CodeIgniter\Model;
 use CodeIgniter\PHPStan\Helpers\FactoriesReturnTypeHelper;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
 use PHPStan\Type\Type;
@@ -24,6 +25,7 @@ use PHPStan\Type\Type;
 /**
  * Types `fake()` as a single fabricated record of the given model's return type.
  */
+#[AutowiredService]
 final class FakeFunctionReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
     public function __construct(

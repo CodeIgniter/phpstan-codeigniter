@@ -17,6 +17,7 @@ use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
 use CodeIgniter\PHPStan\NodeVisitor\UnsetOnSuperglobalsDimFetchVisitor;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\RegisteredRule;
 use PHPStan\Node\Printer\ExprPrinter;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
@@ -25,6 +26,7 @@ use PHPStan\Type\VerbosityLevel;
 /**
  * @implements Rule<Node\Expr\ArrayDimFetch>
  */
+#[RegisteredRule(level: 0)]
 final class SuperglobalsOffsetAccessRule implements Rule
 {
     public function __construct(

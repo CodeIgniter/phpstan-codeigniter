@@ -18,6 +18,7 @@ use CodeIgniter\Database\MigrationRunner;
 use CodeIgniter\Database\SQLite3\Connection;
 use Config\Database;
 use Config\Migrations;
+use PHPStan\DependencyInjection\AutowiredService;
 use ReflectionClass;
 use stdClass;
 use Throwable;
@@ -26,6 +27,7 @@ use Throwable;
  * Discovers and runs the project's migrations against a schema connection, skipping migrations
  * pinned to another database group and tolerating migrations that fail to run.
  */
+#[AutowiredService(name: 'schemaMigrator')]
 final class SchemaMigrator
 {
     /**

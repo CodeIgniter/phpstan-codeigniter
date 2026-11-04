@@ -22,6 +22,7 @@ use CodeIgniter\PHPStan\NodeVisitor\ModelReturnTypeTransformVisitor;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
@@ -39,6 +40,7 @@ use stdClass;
  * Resolves the type of a single fetched row for a model, honoring its `$returnType` (or the
  * `asArray()`/`asObject()` override), the `select()` field list, the live columns, and `$casts`.
  */
+#[AutowiredService(name: 'modelFetchedReturnTypeHelper')]
 final class ModelFetchedReturnTypeHelper
 {
     public function __construct(

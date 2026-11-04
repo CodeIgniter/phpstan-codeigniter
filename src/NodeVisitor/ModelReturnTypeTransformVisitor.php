@@ -18,11 +18,13 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar;
 use PhpParser\NodeVisitorAbstract;
+use PHPStan\DependencyInjection\AutowiredService;
 
 /**
  * Annotates `find()`/`findAll()`/`first()` calls with the effective return type forced by an
  * `asArray()`/`asObject()` and with the `select()` argument expressions earlier in the same chain.
  */
+#[AutowiredService]
 final class ModelReturnTypeTransformVisitor extends NodeVisitorAbstract
 {
     public const RETURN_TYPE               = 'returnType';

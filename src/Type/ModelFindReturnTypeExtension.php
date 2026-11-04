@@ -16,6 +16,7 @@ namespace CodeIgniter\PHPStan\Type;
 use CodeIgniter\Model;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\Accessory\AccessoryArrayListType;
@@ -29,6 +30,7 @@ use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
 
+#[AutowiredService]
 final class ModelFindReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
     public function __construct(

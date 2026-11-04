@@ -16,6 +16,7 @@ namespace CodeIgniter\PHPStan\Helpers;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\ClosureType;
@@ -26,6 +27,7 @@ use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
 
+#[AutowiredService(name: 'reflectionHelperPrivateInvokerHelper')]
 final class ReflectionHelperPrivateInvokerHelper
 {
     private const OBJECT_AS_STRING_CONTEXT = 0;

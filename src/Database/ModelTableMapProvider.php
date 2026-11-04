@@ -14,12 +14,14 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Database;
 
 use CodeIgniter\Model;
+use PHPStan\DependencyInjection\AutowiredService;
 use ReflectionClass;
 
 /**
  * Maps an entity class to the table and `$casts`/`$castHandlers` of the model that returns it,
  * discovered by reflecting every model found under the registered `Models/` namespaces.
  */
+#[AutowiredService(name: 'modelTableMapProvider')]
 final class ModelTableMapProvider
 {
     /**

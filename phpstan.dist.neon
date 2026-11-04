@@ -19,9 +19,6 @@ parameters:
   bootstrapFiles:
     - bootstrap.php
   ignoreErrors:
-    -
-      message: '#^Call to internal method PHPStan\\Rules\\RuleErrorBuilder::fixNode\(\) from outside its root namespace PHPStan\.$#'
-      identifier: method.internal
     # Retyping an entity property by the producing model's casts has no public API and must reach into
     # PHPStan's property-prototype internals.
     -

@@ -15,7 +15,9 @@ namespace CodeIgniter\PHPStan\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
+use PHPStan\DependencyInjection\AutowiredService;
 
+#[AutowiredService]
 final class ConsecutiveAssignsVisitor extends NodeVisitorAbstract
 {
     public const VISITOR_KEY = 'consecutive_assigns';

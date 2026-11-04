@@ -17,10 +17,12 @@ use CodeIgniter\Database\SQLite3\Connection;
 use CodeIgniter\PHPStan\Database\Schema\Column;
 use CodeIgniter\PHPStan\Database\Schema\Schema;
 use CodeIgniter\PHPStan\Database\Schema\Table;
+use PHPStan\DependencyInjection\AutowiredService;
 
 /**
  * Reads the tables and columns of a live database connection into a `Schema`.
  */
+#[AutowiredService(name: 'schemaIntrospector')]
 final class SchemaIntrospector
 {
     /**

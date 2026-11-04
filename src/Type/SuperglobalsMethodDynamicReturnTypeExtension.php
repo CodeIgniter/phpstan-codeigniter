@@ -17,6 +17,7 @@ use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
 use CodeIgniter\Superglobals;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\PhpDoc\TypeStringResolver;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
@@ -25,6 +26,7 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 
+#[AutowiredService]
 final class SuperglobalsMethodDynamicReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
     public function __construct(

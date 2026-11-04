@@ -16,7 +16,9 @@ namespace CodeIgniter\PHPStan\NodeVisitor;
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
+use PHPStan\DependencyInjection\AutowiredService;
 
+#[AutowiredService]
 final class UnsetOnSuperglobalsDimFetchVisitor extends NodeVisitorAbstract
 {
     public const VISITOR_KEY = 'unset_on_superglobals_dim_fetch';

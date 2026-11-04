@@ -17,6 +17,7 @@ use CodeIgniter\Config\Factories;
 use CodeIgniter\PHPStan\Helpers\FactoriesReturnTypeHelper;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicStaticMethodReturnTypeExtension;
 use PHPStan\Type\Type;
@@ -25,6 +26,7 @@ use PHPStan\Type\Type;
  * Resolves the static factory entry points `Factories::config()`, `Factories::models()`, and
  * `Factories::get()` to the concrete class named by the call, mirroring the `config()`/`model()` functions.
  */
+#[AutowiredService]
 final class FactoriesStaticMethodReturnTypeExtension implements DynamicStaticMethodReturnTypeExtension
 {
     public function __construct(

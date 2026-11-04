@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Database\Schema;
 
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\StringType;
@@ -22,6 +23,7 @@ use PHPStan\Type\TypeCombinator;
 /**
  * Maps an introspected column to the PHPStan type of its raw, uncast database value.
  */
+#[AutowiredService(name: 'columnTypeResolver')]
 final class ColumnTypeResolver
 {
     public function resolve(Column $column): Type

@@ -16,6 +16,7 @@ namespace CodeIgniter\PHPStan\Type;
 use CodeIgniter\HTTP\IncomingRequest;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\PhpDoc\TypeStringResolver;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
@@ -25,6 +26,7 @@ use PHPStan\Type\Type;
  * Sharpens the `IncomingRequest` input accessors built on `RequestTrait::fetchGlobal()`, declared as the
  * loose union `array|bool|float|int|object|string|null`. The `$index` argument shape decides the result.
  */
+#[AutowiredService]
 final class IncomingRequestMethodReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
     private const SUPPORTED_METHODS = [

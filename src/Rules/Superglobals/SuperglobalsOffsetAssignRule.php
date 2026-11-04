@@ -16,6 +16,7 @@ namespace CodeIgniter\PHPStan\Rules\Superglobals;
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\RegisteredRule;
 use PHPStan\Node\Printer\ExprPrinter;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
@@ -24,6 +25,7 @@ use PHPStan\Type\VerbosityLevel;
 /**
  * @implements Rule<Node\Expr\Assign>
  */
+#[RegisteredRule(level: 0)]
 final class SuperglobalsOffsetAssignRule implements Rule
 {
     public function __construct(

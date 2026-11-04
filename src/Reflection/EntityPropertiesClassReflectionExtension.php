@@ -20,6 +20,7 @@ use CodeIgniter\PHPStan\Database\Schema\CastFieldTypeResolver;
 use CodeIgniter\PHPStan\Database\Schema\Column;
 use CodeIgniter\PHPStan\Database\Schema\ColumnTypeResolver;
 use CodeIgniter\PHPStan\Database\SchemaProvider;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\PropertiesClassReflectionExtension;
 use PHPStan\Reflection\PropertyReflection;
@@ -32,6 +33,7 @@ use PHPStan\Type\TypeCombinator;
  * Types virtual properties on `CodeIgniter\Entity\Entity` subclasses, layering `$dates` and `$casts`
  * over the raw type of the backing database column, and reflecting custom `$castHandlers`.
  */
+#[AutowiredService]
 final class EntityPropertiesClassReflectionExtension implements PropertiesClassReflectionExtension
 {
     public function __construct(

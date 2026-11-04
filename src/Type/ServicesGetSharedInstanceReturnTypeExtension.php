@@ -17,10 +17,12 @@ use CodeIgniter\Config\BaseService;
 use CodeIgniter\PHPStan\Helpers\ServicesReturnTypeHelper;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicStaticMethodReturnTypeExtension;
 use PHPStan\Type\Type;
 
+#[AutowiredService]
 final class ServicesGetSharedInstanceReturnTypeExtension implements DynamicStaticMethodReturnTypeExtension
 {
     public function __construct(

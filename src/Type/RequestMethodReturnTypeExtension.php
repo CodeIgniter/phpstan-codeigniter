@@ -17,6 +17,7 @@ use CodeIgniter\HTTP\Request;
 use CodeIgniter\PHPStan\Helpers\SuperglobalsHelper;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\PhpDoc\TypeStringResolver;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\ArrayType;
@@ -29,6 +30,7 @@ use PHPStan\Type\TypeCombinator;
 /**
  * Return type extension for `Request::getServer()`, typed from the server-key map.
  */
+#[AutowiredService]
 final class RequestMethodReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
     public function __construct(

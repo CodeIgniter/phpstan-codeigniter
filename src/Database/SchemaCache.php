@@ -15,18 +15,25 @@ namespace CodeIgniter\PHPStan\Database;
 
 use CodeIgniter\Database\SQLite3\Connection;
 use CodeIgniter\PHPStan\Database\Schema\Schema;
+use PHPStan\DependencyInjection\AutowiredParameter;
+use PHPStan\DependencyInjection\AutowiredService;
 use stdClass;
 
 /**
  * Builds and caches the project's database schema as a var_export'd PHP file, rebuilding it when
  * the migration fingerprint changes.
  */
+#[AutowiredService(name: 'schemaCache')]
 final class SchemaCache
 {
     public function __construct(
+        #[AutowiredParameter(ref: '%codeigniter.schemaCacheDirectory%')]
         private readonly string $cacheDirectory,
+
         private readonly SchemaConnectionFactory $connectionFactory,
+
         private readonly SchemaMigrator $migrator,
+
         private readonly SchemaIntrospector $introspector,
     ) {}
 

@@ -22,6 +22,8 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredParameter;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicStaticMethodReturnTypeExtension;
 use PHPStan\Type\IntersectionType;
@@ -33,9 +35,11 @@ use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\TypeUtils;
 use PHPStan\Type\UnionType;
 
+#[AutowiredService]
 final class CacheFactoryGetHandlerReturnTypeExtension implements DynamicStaticMethodReturnTypeExtension
 {
     public function __construct(
+        #[AutowiredParameter(ref: '%codeigniter.addBackupHandlerAsReturnType%')]
         private readonly bool $addBackupHandlerAsReturnType,
     ) {}
 

@@ -18,6 +18,9 @@ use CodeIgniter\Model;
 use CodeIgniter\PHPStan\Helpers\FactoriesReturnTypeHelper;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredParameter;
+use PHPStan\DependencyInjection\AutowiredService;
+use PHPStan\DependencyInjection\Conditional;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\Rule;
@@ -28,6 +31,7 @@ use PHPStan\Type\VerbosityLevel;
 /**
  * @implements Rule<Node\Expr\FuncCall>
  */
+#[Conditional(attribute: new AutowiredService(), if: '%codeigniter.checkArgumentTypeOfFactories%')]
 final class FactoriesFunctionArgumentTypeRule implements Rule
 {
     /**
@@ -45,8 +49,13 @@ final class FactoriesFunctionArgumentTypeRule implements Rule
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
+
         private readonly FactoriesReturnTypeHelper $factoriesReturnTypeHelper,
+
+        #[AutowiredParameter(ref: '%codeigniter.checkArgumentTypeOfConfig%')]
         bool $checkArgumentTypeOfConfig,
+
+        #[AutowiredParameter(ref: '%codeigniter.checkArgumentTypeOfModel%')]
         bool $checkArgumentTypeOfModel,
     ) {
         $this->argumentTypeCheck = [

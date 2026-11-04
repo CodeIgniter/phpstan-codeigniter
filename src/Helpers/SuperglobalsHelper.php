@@ -17,7 +17,9 @@ use CodeIgniter\Config\DotEnv;
 use CodeIgniter\Superglobals;
 use InvalidArgumentException;
 use PHPStan\Analyser\Scope;
+use PHPStan\DependencyInjection\AutowiredService;
 
+#[AutowiredService(name: 'superglobalsHelper')]
 final class SuperglobalsHelper
 {
     public const HANDLED_SUPERGLOBALS = [

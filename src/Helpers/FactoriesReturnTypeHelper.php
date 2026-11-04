@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Helpers;
 
+use PHPStan\DependencyInjection\AutowiredParameter;
+use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\NullType;
@@ -21,6 +23,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
 
+#[AutowiredService(name: 'factoriesReturnTypeHelper')]
 final class FactoriesReturnTypeHelper
 {
     /**
@@ -42,7 +45,11 @@ final class FactoriesReturnTypeHelper
      */
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
+
+        #[AutowiredParameter(ref: '%codeigniter.additionalConfigNamespaces%')]
         array $additionalConfigNamespaces,
+
+        #[AutowiredParameter(ref: '%codeigniter.additionalModelNamespaces%')]
         array $additionalModelNamespaces,
     ) {
         $cb = static fn (string $item): string => rtrim($item, '\\') . '\\';
