@@ -72,10 +72,25 @@ final class SuperglobalsOffsetAccessRuleTest extends RuleTestCase
                 26,
                 'Use single_service(\'superglobals\')->server($key) instead.',
             ],
-            ['Direct access to $_GET[\'a\'] is not allowed.', 28],
-            ['Direct access to $_GET[\'a\'] is not allowed.', 29],
-            ['Direct access to $_GET[\'c\'] is not allowed.', 30],
-            ['Direct access to $_GET[\'d\'] is not allowed.', 31],
+            [
+                'Direct access to $_GET[\'a\'] is not allowed.',
+                28,
+                'Use single_service(\'superglobals\')->get(\'a\') !== null instead.',
+            ],
+            [
+                'Direct access to $_GET[\'a\'] is not allowed.',
+                29,
+                'Use single_service(\'superglobals\')->get(\'a\') instead.',
+            ],
+            [
+                'Direct access to $_GET[\'h\'] is not allowed.',
+                30,
+                'Use single_service(\'superglobals\')->get(\'h\') !== null instead.',
+            ],
+            ['Direct access to $_GET[\'i\'] is not allowed.', 31],
+            ['Direct access to $_POST[\'j\'] is not allowed.', 31],
+            ['Direct access to $_GET[\'c\'] is not allowed.', 32],
+            ['Direct access to $_GET[\'d\'] is not allowed.', 33],
         ]);
     }
 

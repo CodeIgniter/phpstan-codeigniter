@@ -91,7 +91,30 @@ final class SuperglobalsOffsetAccessRule implements Rule
         $builder = RuleErrorBuilder::message(sprintf('Direct access to $%s[%s] is not allowed.', $varName, $value))
             ->identifier('codeigniter.superglobalsOffsetAccess');
 
-        if ($node->getAttribute(VariableContextOnSuperglobalsDimFetchVisitor::VISITOR_KEY) === true) {
+        $context = $node->getAttribute(VariableContextOnSuperglobalsDimFetchVisitor::VISITOR_KEY);
+
+        $isset = $node->getAttribute(VariableContextOnSuperglobalsDimFetchVisitor::ISSET_KEY);
+
+        if ($isset instanceof Node\Expr\Isset_) {
+            return [
+                $builder
+                    ->tip(sprintf('Use single_service(\'superglobals\')->%s(%s) !== null instead.', $methodGetter, $value))
+                    ->fixNode($isset, static fn (): Node\Expr\BinaryOp\NotIdentical => new Node\Expr\BinaryOp\NotIdentical(
+                        new Node\Expr\MethodCall(
+                            new Node\Expr\FuncCall(
+                                new Node\Name('single_service'),
+                                [new Node\Arg(new Node\Scalar\String_('superglobals'))],
+                            ),
+                            new Node\Identifier($methodGetter),
+                            [new Node\Arg($dim)],
+                        ),
+                        new Node\Expr\ConstFetch(new Node\Name('null')),
+                    ))
+                    ->build(),
+            ];
+        }
+
+        if ($context !== null) {
             return [$builder->build()];
         }
 

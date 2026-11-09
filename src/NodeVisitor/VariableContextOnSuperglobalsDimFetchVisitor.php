@@ -24,7 +24,11 @@ use PHPStan\DependencyInjection\AutowiredService;
 #[AutowiredService]
 final class VariableContextOnSuperglobalsDimFetchVisitor extends NodeVisitorAbstract
 {
-    public const VISITOR_KEY = 'variable_context_on_superglobals_dim_fetch';
+    public const VISITOR_KEY    = 'variable_context_on_superglobals_dim_fetch';
+    public const CONTEXT_ISSET  = 'isset';
+    public const CONTEXT_WRITE  = 'write';
+    public const CONTEXT_NESTED = 'nested';
+    public const ISSET_KEY      = 'isset_of_superglobals_dim_fetch';
 
     /**
      * @return null
@@ -33,13 +37,21 @@ final class VariableContextOnSuperglobalsDimFetchVisitor extends NodeVisitorAbst
     {
         if ($node instanceof Node\Expr\Isset_) {
             foreach ($node->vars as $var) {
-                $this->mark($var);
+                if (! $this->isSuperglobalFetch($var)) {
+                    continue;
+                }
+
+                $var->setAttribute(self::VISITOR_KEY, self::CONTEXT_ISSET);
+
+                if (count($node->vars) === 1) {
+                    $var->setAttribute(self::ISSET_KEY, $node);
+                }
             }
         } elseif ($node instanceof Node\Expr\AssignOp || $node instanceof Node\Expr\AssignRef) {
-            $this->mark($node->var);
+            $this->mark($node->var, self::CONTEXT_WRITE);
 
             if ($node instanceof Node\Expr\AssignRef) {
-                $this->mark($node->expr);
+                $this->mark($node->expr, self::CONTEXT_WRITE);
             }
         } elseif (
             $node instanceof Node\Expr\PreInc
@@ -47,40 +59,45 @@ final class VariableContextOnSuperglobalsDimFetchVisitor extends NodeVisitorAbst
             || $node instanceof Node\Expr\PostInc
             || $node instanceof Node\Expr\PostDec
         ) {
-            $this->mark($node->var);
+            $this->mark($node->var, self::CONTEXT_WRITE);
         } elseif ($node instanceof Node\Stmt\Foreach_) {
-            $this->mark($node->valueVar);
+            $this->mark($node->valueVar, self::CONTEXT_WRITE);
 
             if ($node->keyVar !== null) {
-                $this->mark($node->keyVar);
+                $this->mark($node->keyVar, self::CONTEXT_WRITE);
             }
         } elseif ($node instanceof Node\Expr\Assign && $node->var instanceof Node\Expr\Array_) {
-            $this->mark($node->var);
+            $this->mark($node->var, self::CONTEXT_WRITE);
         }
 
         return null;
     }
 
-    private function mark(Node\Expr $expr): void
+    private function mark(Node\Expr $expr, string $context): void
     {
         if ($expr instanceof Node\Expr\Array_) {
             foreach ($expr->items as $item) {
-                $this->mark($item->value);
+                $this->mark($item->value, $context);
             }
 
             return;
         }
 
         while ($expr instanceof Node\Expr\ArrayDimFetch) {
-            if (
-                $expr->var instanceof Node\Expr\Variable
-                && is_string($expr->var->name)
-                && array_key_exists($expr->var->name, SuperglobalsHelper::HANDLED_SUPERGLOBALS)
-            ) {
-                $expr->setAttribute(self::VISITOR_KEY, true);
+            if ($this->isSuperglobalFetch($expr)) {
+                $expr->setAttribute(self::VISITOR_KEY, $context);
             }
 
-            $expr = $expr->var;
+            $expr    = $expr->var;
+            $context = self::CONTEXT_NESTED;
         }
+    }
+
+    private function isSuperglobalFetch(Node\Expr $expr): bool
+    {
+        return $expr instanceof Node\Expr\ArrayDimFetch
+            && $expr->var instanceof Node\Expr\Variable
+            && is_string($expr->var->name)
+            && array_key_exists($expr->var->name, SuperglobalsHelper::HANDLED_SUPERGLOBALS);
     }
 }

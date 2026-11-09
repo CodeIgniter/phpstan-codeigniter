@@ -27,6 +27,8 @@ function test_superglobals_offset_access(string $name): void
 
     isset($_GET['a']);
     isset($_GET['a']['b']);
+    ! isset($_GET['h']);
+    isset($_GET['i'], $_POST['j']);
     $_GET['c'] .= 'x';
     $_GET['d']++;
 

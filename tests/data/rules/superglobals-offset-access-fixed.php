@@ -25,8 +25,10 @@ function test_superglobals_offset_access(string $name): void
     $key = (static fn (): string => mt_rand(0, 1) ? 'key1' : 'key2')();
     single_service('superglobals')->server($key);
 
-    isset($_GET['a']);
-    isset($_GET['a']['b']);
+    single_service('superglobals')->get('a') !== null;
+    isset(single_service('superglobals')->get('a')['b']);
+    ! (single_service('superglobals')->get('h') !== null);
+    isset($_GET['i'], $_POST['j']);
     $_GET['c'] .= 'x';
     $_GET['d']++;
 
