@@ -30,7 +30,7 @@ final class ReflectionHelperMethodInvokerTest extends CIUnitTestCase
     public function testOnFirstClassCallable(): void
     {
         assertType(
-            'Closure(object|string, string): (Closure(mixed ...$args=): mixed)',
+            'static-Closure(object|string, string): (Closure(mixed ...$args=): mixed)',
             $this->getPrivateMethodInvoker(...),
         );
     }
