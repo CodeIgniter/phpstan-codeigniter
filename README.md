@@ -39,13 +39,13 @@ includes:
 ## Bootstrapping CodeIgniter
 
 This extension boots CodeIgniter during analysis so it can read your configuration, services, and database
-schema. Point PHPStan at a bootstrap file that loads the framework. CodeIgniter's own test bootstrap works
-out of the box:
+schema. Point PHPStan at a bootstrap file that loads the framework. CodeIgniter's own `util_bootstrap.php`
+works out of the box:
 
 ```yml
 parameters:
     bootstrapFiles:
-        - vendor/codeigniter4/framework/system/Test/bootstrap.php
+        - vendor/codeigniter4/framework/system/util_bootstrap.php
 ```
 
 The Model and Entity type inference additionally materializes your schema by running your migrations against
