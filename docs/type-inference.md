@@ -63,6 +63,16 @@ using the translation found in your language files (`en`, the default locale and
 it has literal text outside its `{...}` placeholders. A line without a matching file, a non-constant
 line, or a value that is neither a string nor a list keeps the declared type.
 
+### DotArraySearchFunctionReturnTypeExtension
+
+**Class:** `CodeIgniter\PHPStan\Type\DotArraySearchFunctionReturnTypeExtension`
+
+This extension provides the precise return type for the `dot_array_search()` function when the index is a
+constant string and the array has a constant shape. It walks the shape segment by segment and returns the leaf
+type, or `null` where the key is missing. For example, `'a.b'` over `array{a: array{b: int}}` gives `int`.
+A wildcard in the middle of the index, a non-constant index or array, and an intermediate value that is not
+a constant array keep the declared `mixed`.
+
 ## Dynamic Method Return Type Extensions
 
 ### LanguageGetLineReturnTypeExtension

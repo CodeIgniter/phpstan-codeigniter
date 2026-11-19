@@ -30,8 +30,6 @@ Entity properties fall back to their framework types).
 - Entity virtual properties are typed from the entity's `$casts` and `$dates` (including custom
   `$castHandlers`) layered over the backing column.
 - `fake()` returns a single fabricated record of the model's return type.
-- `lang()` and `Language::getLine()` return `string` or `list<string>` (non-empty where known) for a constant
-  line found in your language files.
 
 See [type-inference.md](type-inference.md) for the full list.
 
