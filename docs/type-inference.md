@@ -52,7 +52,24 @@ This extension provides the precise return type for the `fake()` function, typin
 record of the given model's return type (an entity, a shaped array, or a `stdClass`). The model may be passed
 as a class string, a model name, or a model instance.
 
+### LangFunctionReturnTypeExtension
+
+**Class:** `CodeIgniter\PHPStan\Type\LangFunctionReturnTypeExtension`
+
+This extension narrows the `list<string>|string` return type of the `lang()` function for a constant line,
+using the translation found in your language files (`en`, the default locale and the supported locales of
+`Config\App`). The result is `string` or `list<string>`, refined to `non-empty-string` or
+`list<non-empty-string>` when the message is non-empty. With arguments, a message is still refined as long as
+it has literal text outside its `{...}` placeholders. A line without a matching file, a non-constant
+line, or a value that is neither a string nor a list keeps the declared type.
+
 ## Dynamic Method Return Type Extensions
+
+### LanguageGetLineReturnTypeExtension
+
+**Class:** `CodeIgniter\PHPStan\Type\LanguageGetLineReturnTypeExtension`
+
+This extension applies the same narrowing as `lang()` to `CodeIgniter\Language\Language::getLine()`.
 
 ### ReflectionHelperMethodInvokerStaticReturnTypeExtension
 

@@ -43,6 +43,31 @@ This rule validates the service method name passed to either `service()` or `sin
 if coming from a valid Services class. It also validates the return if a valid object instance. The rule is
 registered only when `codeigniter.checkArgumentTypeOfServices` is `true`.
 
+## Language
+
+### LanguageLineExistenceRule
+
+**Class:** `CodeIgniter\PHPStan\Rules\Language\LanguageLineExistenceRule`<br/>
+Fixable: No
+
+This rule validates the constant line passed to `lang()` or `Language::getLine()` against your language
+files. A variable typed as string literals, such as `@param 'App.title'|'App.footer' $line`, is checked for
+each literal, and each unresolved literal is reported on its own. Lines are looked up for `en`, the default
+locale and the supported locales of `Config\App`. The rule has two identifiers:
+
+- `codeigniter.languageLineNotFound` reports a line whose language file exists but defines the key in none of
+  the locales. CI would return the raw line as the message. A line whose file is not found at all is not
+  reported, since the file may come from a namespace that the analyzer cannot see.
+- `codeigniter.languageLineUntranslated` reports a line that `en` defines but a supported locale lacks.
+  CI falls back to `en` at runtime, so this is opt-in through `codeigniter.reportUntranslatedLanguageLines`
+  (default `false`).
+
+```yml
+parameters:
+  codeigniter:
+    reportUntranslatedLanguageLines: true
+```
+
 ## Superglobals
 
 ### SuperglobalsGlobalAssignRule
@@ -57,7 +82,7 @@ in `Superglobals` class.
 ### SuperglobalsOffsetAccessRule
 
 **Class:** `CodeIgniter\PHPStan\Rules\Superglobals\SuperglobalsOffsetAccessRule`<br/>
-Fixable: Yes (except where PHP requires a variable, such as inside `isset()`)
+Fixable: Yes (except multi-variable `isset()`, compound assignment, and increment or decrement)
 
 This rule forbids direct offset access on all superglobals (except `$_FILES`, `$_ENV`, and `$_SESSION`).
 Instead, it recommends using the equivalent method getter in the `Superglobals` class.

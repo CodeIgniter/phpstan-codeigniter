@@ -15,6 +15,7 @@ parameters:
     checkArgumentTypeOfModel: true
     checkArgumentTypeOfFactories: true
     checkArgumentTypeOfServices: true
+    reportUntranslatedLanguageLines: false
     schemaCacheDirectory: %currentWorkingDirectory%/tmp
     schemaNamespace: null
 
@@ -31,6 +32,7 @@ parametersSchema:
     checkArgumentTypeOfModel: bool()
     checkArgumentTypeOfFactories: bool()
     checkArgumentTypeOfServices: bool()
+    reportUntranslatedLanguageLines: bool()
     schemaCacheDirectory: string()
     schemaNamespace: schema(string(), nullable())
   ])

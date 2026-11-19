@@ -30,6 +30,8 @@ Entity properties fall back to their framework types).
 - Entity virtual properties are typed from the entity's `$casts` and `$dates` (including custom
   `$castHandlers`) layered over the backing column.
 - `fake()` returns a single fabricated record of the model's return type.
+- `lang()` and `Language::getLine()` return `string` or `list<string>` (non-empty where known) for a constant
+  line found in your language files.
 
 See [type-inference.md](type-inference.md) for the full list.
 
@@ -60,8 +62,8 @@ Most of these errors are auto-fixable, so you can fix them in place instead of b
 fixer (`vendor/bin/phpstan analyse --fix`) rewrites the direct access into the equivalent
 `Superglobals` call. Reads use `single_service('superglobals')` so they see the live global, for example
 `$_SERVER['argv']` becomes `single_service('superglobals')->server('argv')`. Writes use the shared
-`service('superglobals')`. Reads that PHP only accepts as a variable (`isset()`, compound assignment,
-increment, `foreach` targets and list destructuring) are reported but left unfixed.
+`service('superglobals')`. A single-variable `isset()` is rewritten to `!== null`. Multi-variable `isset()`, compound
+assignment and increment or decrement are reported but left unfixed, since PHP only accepts a variable there.
 
 ### `model()`/`config()` with a class string is no longer discouraged
 
