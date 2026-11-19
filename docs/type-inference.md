@@ -73,6 +73,15 @@ type, or `null` where the key is missing. For example, `'a.b'` over `array{a: ar
 A wildcard in the middle of the index, a non-constant index or array, and an intermediate value that is not
 a constant array keep the declared `mixed`.
 
+### EnvFunctionReturnTypeExtension
+
+**Class:** `CodeIgniter\PHPStan\Type\EnvFunctionReturnTypeExtension`
+
+This extension provides the return type for the `env()` function when the key is a constant string. A found
+value is `bool|string|null`, since `env()` converts the strings `true`, `false`, `empty` and `null`. A key
+such as `argc` or `argv` that `$_SERVER` holds as a non-string adds that type. The result is joined with the
+type of the `$default` argument, or `null` when there is none. A non-constant key keeps the declared `mixed`.
+
 ## Dynamic Method Return Type Extensions
 
 ### LanguageGetLineReturnTypeExtension
