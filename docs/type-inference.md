@@ -177,6 +177,12 @@ This extension sharpens the `CodeIgniter\HTTP\IncomingRequest` input accessors b
   when the key is absent). `getRawInputVar` defers here, as its dotted-path leaf does not narrow usefully.
 
 A filter argument (the second parameter) or a non-constant index leaves the declared union in place.
+
+It also narrows `getJsonVar()` for a null, absent or array index. An array of keys returns
+`array<mixed>|null`, and a null index returns the decoded body as `array<mixed>|null` when `$assoc` is `true`,
+or `array<mixed>|stdClass|null` otherwise. A string index keeps the declared leaf union, and a filter or flags
+argument leaves the declared type in place.
+
 `getVar()` is not handled: it falls back to the JSON input stream, so its result cannot be narrowed
 soundly.
 

@@ -19,7 +19,9 @@ use PHPStan\Analyser\Scope;
 use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\PhpDoc\TypeStringResolver;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
+use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 
 /**
@@ -36,6 +38,7 @@ final class IncomingRequestMethodReturnTypeExtension implements DynamicMethodRet
         'getPostGet',
         'getGetPost',
         'getRawInputVar',
+        'getJsonVar',
     ];
 
     public function __construct(
@@ -55,6 +58,10 @@ final class IncomingRequestMethodReturnTypeExtension implements DynamicMethodRet
     public function getTypeFromMethodCall(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): ?Type
     {
         $args = $methodCall->getArgs();
+
+        if ($methodReflection->getName() === 'getJsonVar') {
+            return $this->resolveJsonVar($methodCall, $scope);
+        }
 
         // A filter argument re-types the value through filter_var, so defer to the declared type.
         if (isset($args[1]) && ! $scope->getType($args[1]->value)->isNull()->yes()) {
@@ -84,5 +91,36 @@ final class IncomingRequestMethodReturnTypeExtension implements DynamicMethodRet
         }
 
         return null;
+    }
+
+    /**
+     * A null or array index returns the decoded body as an array, or `null` when the body is not a JSON object.
+     * Without `$assoc`, a null index can also return a `stdClass`.
+     */
+    private function resolveJsonVar(MethodCall $methodCall, Scope $scope): ?Type
+    {
+        $args = $methodCall->getArgs();
+
+        foreach ([2, 3] as $position) {
+            if (isset($args[$position]) && ! $scope->getType($args[$position]->value)->isNull()->yes()) {
+                return null;
+            }
+        }
+
+        $indexType = isset($args[0]) ? $scope->getType($args[0]->value) : new NullType();
+
+        if ($indexType->isArray()->yes()) {
+            return $this->typeStringResolver->resolve('array<array-key, mixed>|null');
+        }
+
+        if (! $indexType->isNull()->yes()) {
+            return null;
+        }
+
+        $assocType = isset($args[1]) ? $scope->getType($args[1]->value) : new ConstantBooleanType(false);
+
+        return $this->typeStringResolver->resolve(
+            $assocType->isTrue()->yes() ? 'array<array-key, mixed>|null' : 'array<array-key, mixed>|stdClass|null',
+        );
     }
 }

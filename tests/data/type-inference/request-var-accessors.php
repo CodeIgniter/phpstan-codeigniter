@@ -51,3 +51,26 @@ function test_incoming_request(IncomingRequest $request, string $key, array $key
     // An ambiguous index (string or null) cannot be resolved.
     assertType('mixed', $request->getGet($maybe));
 }
+
+/**
+ * @param list<string> $keys
+ */
+function test_incoming_request_json_var(IncomingRequest $request, string $key, array $keys, bool $assoc, ?string $maybe): void
+{
+    assertType('array<mixed>|stdClass|null', $request->getJsonVar());
+    assertType('array<mixed>|stdClass|null', $request->getJsonVar(null));
+    assertType('array<mixed>|null', $request->getJsonVar(null, true));
+    assertType('array<mixed>|stdClass|null', $request->getJsonVar(null, false));
+    assertType('array<mixed>|stdClass|null', $request->getJsonVar(null, $assoc));
+
+    assertType('array<mixed>|null', $request->getJsonVar(['a', 'b']));
+    assertType('array<mixed>|null', $request->getJsonVar($keys, true));
+
+    // A string index returns a leaf of the decoded body, which stays the declared union.
+    assertType('array<mixed>|bool|float|int|stdClass|string|null', $request->getJsonVar('a.b'));
+    assertType('array<mixed>|bool|float|int|string|null', $request->getJsonVar($key, true));
+
+    // A filter or flags argument re-types the value, and an ambiguous index cannot be resolved.
+    assertType('array<mixed>|bool|float|int|stdClass|string|null', $request->getJsonVar(null, false, FILTER_VALIDATE_INT));
+    assertType('array<mixed>|bool|float|int|stdClass|string|null', $request->getJsonVar($maybe));
+}
