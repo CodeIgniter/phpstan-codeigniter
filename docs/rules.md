@@ -21,6 +21,20 @@ Fixable: No
 This rule forbids creating the `CodeIgniter\Exceptions\FrameworkException` and its child classes
 using the `new` keyword. Instead, it directs users to use one of their named constructor methods.
 
+## Database
+
+### ModelWriteAllowedFieldsRule
+
+**Class:** `CodeIgniter\PHPStan\Rules\Database\ModelWriteAllowedFieldsRule`<br/>
+Fixable: No
+
+This rule reports a constant string key passed to `insert()`, `update()` or `save()` of a model, when the
+key is not in the model's `$allowedFields`. With `$protectFields` on, the model silently drops such a key, so a
+typo like `titel` writes nothing. The data can be an array literal or any array of a known shape. The rule is
+skipped for a model that has `$protectFields = false` or an empty `$allowedFields`, since the allowed fields may
+be set at runtime. Only the property defaults are read, so `setAllowedFields()` and `protect()` calls are not
+seen.
+
 ## Functions
 
 ### FactoriesFunctionArgumentTypeRule
