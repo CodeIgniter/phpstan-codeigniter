@@ -13,6 +13,19 @@ Simply instantiating cache handlers using `new` is incomplete. The public `initi
 needs to be called on the instance so that the required initializations are done. This is usually
 achieved by using `CacheFactory::getHandler()` or using the `cache()` function.
 
+### FactoriesStaticMethodArgumentTypeRule
+
+**Class:** `CodeIgniter\PHPStan\Rules\Classes\FactoriesStaticMethodArgumentTypeRule`<br/>
+Fixable: No
+
+This rule is the static counterpart of `FactoriesFunctionArgumentTypeRule`. It validates the constant alias
+passed to `Factories::config()`, `Factories::models()` and `Factories::get('config'|'models', ...)`. It
+reports an alias that does not resolve to a known class, and, when enabled, a resolved class that does not
+extend `CodeIgniter\Config\BaseConfig` or `CodeIgniter\Model` respectively. A non-constant alias, another
+component or another method is not checked. It uses the same identifiers and toggles as the function rule: it
+is registered only when `codeigniter.checkArgumentTypeOfFactories` is `true`, and the instance checks follow
+`codeigniter.checkArgumentTypeOfConfig` and `codeigniter.checkArgumentTypeOfModel`.
+
 ### FrameworkExceptionInstantiationRule
 
 **Class:** `CodeIgniter\PHPStan\Rules\Classes\FrameworkExceptionInstantiationRule`<br/>
