@@ -157,7 +157,7 @@ final class ModelFetchedReturnTypeHelper
         $fields = $this->resolveRowFieldTypes($classReflection, $methodCall, $scope);
 
         if ($fields === null) {
-            return new ArrayType(new StringType(), new MixedType());
+            return new ArrayType(new StringType(), new MixedType(true));
         }
 
         $builder = ConstantArrayTypeBuilder::createEmpty();
@@ -341,7 +341,7 @@ final class ModelFetchedReturnTypeHelper
             return $this->castFieldTypeResolver->resolve($casts[$name], $castHandlers, $column !== null && ! $column->nullable);
         }
 
-        return $column !== null ? $this->columnTypeResolver->resolve($column) : new MixedType();
+        return $column !== null ? $this->columnTypeResolver->resolve($column) : new MixedType(true);
     }
 
     /**

@@ -24,7 +24,7 @@ $account = new Account();
 assertType('stdClass|null', $account->payload);
 
 // `body` is cast only by the model, so the model cast applies (was the raw column type before the fix).
-assertType('array|null', $account->body);
+assertType('array<mixed, mixed>|null', $account->body);
 
 // `votes` is cast by the model through a custom handler, reflected from the handler's get() return type.
 assertType('CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money', $account->votes);

@@ -61,7 +61,7 @@ final class EntityPropertyReflection implements PropertyReflection
 
     public function getWritableType(): Type
     {
-        return new MixedType();
+        return new MixedType(true);
     }
 
     public function canChangeTypeAfterAssignment(): bool

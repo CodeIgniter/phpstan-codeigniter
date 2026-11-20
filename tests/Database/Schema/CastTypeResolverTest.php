@@ -55,15 +55,15 @@ final class CastTypeResolverTest extends TestCase
 
         yield 'object' => ['object', 'stdClass'];
 
-        yield 'array' => ['array', 'array'];
+        yield 'array' => ['array', 'array<mixed, mixed>'];
 
         yield 'csv' => ['csv', 'list<string>'];
 
         yield 'json (object)' => ['json', 'stdClass'];
 
-        yield 'json[array]' => ['json[array]', 'array'];
+        yield 'json[array]' => ['json[array]', 'array<mixed, mixed>'];
 
-        yield 'json-array' => ['json-array', 'array'];
+        yield 'json-array' => ['json-array', 'array<mixed, mixed>'];
 
         yield 'datetime' => ['datetime', 'CodeIgniter\I18n\Time'];
 

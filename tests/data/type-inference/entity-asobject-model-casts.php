@@ -28,7 +28,7 @@ $one = $legacy->asObject(BlogComment::class)->find(1);
 
 if ($one !== null) {
     // `body` is a raw string column, retyped by the producing model's json-array cast.
-    assertType('array|null', $one->body);
+    assertType('array<mixed, mixed>|null', $one->body);
 
     // `votes` is retyped by the producing model's custom money handler.
     assertType('CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money', $one->votes);
@@ -42,4 +42,4 @@ if ($one !== null) {
 }
 
 // first() keeps the nullable element type.
-assertType('array|null', $legacy->asObject(BlogComment::class)->first()?->body);
+assertType('array<mixed, mixed>|null', $legacy->asObject(BlogComment::class)->first()?->body);

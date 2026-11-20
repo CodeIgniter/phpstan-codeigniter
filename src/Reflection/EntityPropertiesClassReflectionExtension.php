@@ -59,7 +59,7 @@ final class EntityPropertiesClassReflectionExtension implements PropertiesClassR
     {
         return new EntityPropertyReflection(
             $classReflection,
-            $this->resolveType($classReflection, $propertyName) ?? new MixedType(),
+            $this->resolveType($classReflection, $propertyName) ?? new MixedType(true),
         );
     }
 

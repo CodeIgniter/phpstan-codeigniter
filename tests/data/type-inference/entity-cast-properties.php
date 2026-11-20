@@ -25,7 +25,7 @@ assertType('bool', $entity->is_active);
 assertType('float|null', $entity->rating);
 assertType('string', $entity->name);
 assertType('stdClass|null', $entity->options);
-assertType('array|null', $entity->tags);
+assertType('array<mixed, mixed>|null', $entity->tags);
 assertType('list<string>', $entity->roles);
 assertType('CodeIgniter\I18n\Time|null', $entity->published);
 assertType('CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money', $entity->balance);

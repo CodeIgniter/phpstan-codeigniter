@@ -67,7 +67,7 @@ final class RequestMethodReturnTypeExtension implements DynamicMethodReturnTypeE
         }
 
         if (! isset($args[0]) || $scope->getType($args[0]->value)->isNull()->yes()) {
-            return new ArrayType(new StringType(), new MixedType());
+            return new ArrayType(new StringType(), new MixedType(true));
         }
 
         $strings = $scope->getType($args[0]->value)->getConstantStrings();

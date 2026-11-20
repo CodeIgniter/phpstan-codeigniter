@@ -69,6 +69,6 @@ function fetchFromUnionReceiver(BlogCommentModel $comments, BlogPostModel $posts
     assertType('list<array{id: int, user_id: CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money, title: CodeIgniter\I18n\Time}|CodeIgniter\PHPStan\Tests\Fixtures\Entity\BlogComment>', $either->find([1, 2]));
     assertType('list<array{id: int, user_id: CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money, title: CodeIgniter\I18n\Time}|CodeIgniter\PHPStan\Tests\Fixtures\Entity\BlogComment>', $either->findAll());
     assertType('array{id: int, user_id: CodeIgniter\PHPStan\Tests\Fixtures\Entity\Money, title: CodeIgniter\I18n\Time}|CodeIgniter\PHPStan\Tests\Fixtures\Entity\BlogComment|null', $either->first());
-    assertType('list<array|string|null>|null', ($flag ? $comments : $legacy)->findColumn('body'));
+    assertType('list<array<mixed>|string|null>|null', ($flag ? $comments : $legacy)->findColumn('body'));
     assertType('list<bool|float|int|list<mixed>|object|string|null>|null', ($flag ? $comments : $bar)->findColumn('id'));
 }
