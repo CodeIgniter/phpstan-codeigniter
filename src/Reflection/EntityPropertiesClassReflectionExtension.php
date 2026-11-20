@@ -45,7 +45,14 @@ final class EntityPropertiesClassReflectionExtension implements PropertiesClassR
 
     public function hasProperty(ClassReflection $classReflection, string $propertyName): bool
     {
-        return $classReflection->is(Entity::class);
+        if (! $classReflection->is(Entity::class)) {
+            return false;
+        }
+
+        $type = $this->resolveType($classReflection, $propertyName);
+
+        return ($type !== null && ! $type instanceof MixedType)
+            || ! array_key_exists($propertyName, $classReflection->getPropertyTags());
     }
 
     public function getProperty(ClassReflection $classReflection, string $propertyName): PropertyReflection
