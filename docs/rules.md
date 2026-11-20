@@ -13,6 +13,23 @@ Simply instantiating cache handlers using `new` is incomplete. The public `initi
 needs to be called on the instance so that the required initializations are done. This is usually
 achieved by using `CacheFactory::getHandler()` or using the `cache()` function.
 
+### CastHandlerRule
+
+**Class:** `CodeIgniter\PHPStan\Rules\Classes\CastHandlerRule`<br/>
+Fixable: No
+
+This rule validates the `$casts` of an `Entity` or a model against its `$castHandlers`. A cast that is not a
+framework built-in needs a handler, and CodeIgniter throws at runtime when it is missing or invalid. The rule
+is reported on the offending entry, the `$casts` entry for an unregistered cast and the `$castHandlers` entry
+for a missing or invalid handler, with one identifier per problem:
+
+- `codeigniter.castHandlerNotRegistered` is a cast name with no entry in `$castHandlers`.
+- `codeigniter.castHandlerNotFound` is a handler class that does not exist.
+- `codeigniter.castHandlerInvalid` is a handler that implements neither `CodeIgniter\DataCaster\Cast\CastInterface`
+  nor `CodeIgniter\Entity\Cast\CastInterface`.
+
+Only the property defaults are read, so casts or handlers set in a constructor are not seen.
+
 ### FactoriesStaticMethodArgumentTypeRule
 
 **Class:** `CodeIgniter\PHPStan\Rules\Classes\FactoriesStaticMethodArgumentTypeRule`<br/>

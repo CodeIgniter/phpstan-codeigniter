@@ -66,13 +66,13 @@ final class CastFieldTypeResolver
         $handler = $castHandlers[$this->castName($cast)] ?? null;
 
         if ($handler === null || ! $this->reflectionProvider->hasClass($handler)) {
-            return new MixedType();
+            return new MixedType(true);
         }
 
         $handlerReflection = $this->reflectionProvider->getClass($handler);
 
         if (! $handlerReflection->hasNativeMethod('get')) {
-            return new MixedType();
+            return new MixedType(true);
         }
 
         $type = ParametersAcceptorSelector::combineAcceptors($handlerReflection->getNativeMethod('get')->getVariants())->getReturnType();
