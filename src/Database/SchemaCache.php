@@ -84,8 +84,8 @@ final class SchemaCache
                 return $cached;
             }
 
-            $this->migrator->migrate($db, $migrations);
-            $schema = $this->introspector->introspect($db, $fingerprint);
+            $failures = $this->migrator->migrate($db, $migrations);
+            $schema   = $this->introspector->introspect($db, $fingerprint)->withFailedMigrations($failures);
             $this->store($cacheFile, $schema);
 
             return $schema;

@@ -30,6 +30,8 @@ use Throwable;
 #[AutowiredService(name: 'schemaMigrator')]
 final class SchemaMigrator
 {
+    private const CACHE_FORMAT = 2;
+
     /**
      * Discovers the project's migrations without running them, so the caller can fingerprint and apply
      * the same set without scanning twice.
@@ -71,15 +73,18 @@ final class SchemaMigrator
             $fingerprint .= $uid . ':' . ($fileHash === false ? '' : $fileHash) . "\n";
         }
 
-        return hash('sha256', $fingerprint);
+        return hash('sha256', self::CACHE_FORMAT . "\n" . $fingerprint);
     }
 
     /**
      * @param list<stdClass> $migrations
+     *
+     * @return array<class-string, string> the error message of each migration that failed to run
      */
-    public function migrate(Connection $db, array $migrations): void
+    public function migrate(Connection $db, array $migrations): array
     {
-        $forge = Database::forge($db);
+        $forge    = Database::forge($db);
+        $failures = [];
 
         foreach ($migrations as $migration) {
             $path  = $migration->path;
@@ -103,10 +108,13 @@ final class SchemaMigrator
 
             try {
                 $instance->up();
-            } catch (Throwable) {
-                // Degrade: the failed migration's tables are simply absent from the schema.
+            } catch (Throwable $e) {
+                $firstLine        = strtok($e->getMessage(), "\n");
+                $failures[$class] = $firstLine === false ? $e::class : $firstLine;
             }
         }
+
+        return $failures;
     }
 
     /**

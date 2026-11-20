@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CodeIgniter\PHPStan\Tests\Database\Schema;
 
+use CodeIgniter\Database\Migration;
 use CodeIgniter\PHPStan\Database\Schema\Column;
 use CodeIgniter\PHPStan\Database\Schema\Schema;
 use CodeIgniter\PHPStan\Database\Schema\Table;
@@ -32,7 +33,7 @@ final class SchemaSetStateTest extends TestCase
                 'id'   => new Column(name: 'id', type: 'INTEGER', nullable: false, primaryKey: true, default: null),
                 'name' => new Column(name: 'name', type: 'VARCHAR', nullable: false, primaryKey: false, default: 'guest'),
             ]),
-        ]);
+        ], failedMigrations: [Migration::class => 'near "MODIFY": syntax error']);
 
         $file = dirname(__DIR__, 3) . '/tmp/' . uniqid('schema-cache-', true) . '.php';
         file_put_contents($file, '<?php return ' . var_export($schema, true) . ';');

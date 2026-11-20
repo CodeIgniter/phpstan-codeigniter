@@ -53,6 +53,19 @@ using the `new` keyword. Instead, it directs users to use one of their named con
 
 ## Database
 
+### MigrationNotAppliedRule
+
+**Class:** `CodeIgniter\PHPStan\Rules\Database\MigrationNotAppliedRule`<br/>
+Fixable: No
+
+The schema is built by running your migrations against a temporary SQLite database, and a migration that
+throws there is skipped. Its tables are then missing from the inferred schema, so the models and entities
+that use them fall back to `mixed`. This rule reports such a migration on its class, with the first line of
+the error, under the identifier `codeigniter.migrationNotApplied`. It is common for a migration that uses SQL
+that SQLite does not support, in which case you can ignore the error. A migration pinned to another database
+group through `$DBGroup` is skipped on purpose and is not reported. The migration class must be in the
+analysed paths to be reported.
+
 ### ModelWriteAllowedFieldsRule
 
 **Class:** `CodeIgniter\PHPStan\Rules\Database\ModelWriteAllowedFieldsRule`<br/>

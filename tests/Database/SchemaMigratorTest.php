@@ -61,7 +61,13 @@ final class SchemaMigratorTest extends TestCase
 
         self::assertMatchesRegularExpression('/^[0-9a-f]{64}$/', $fingerprint);
 
-        $migrator->migrate($this->db, $migrations);
+        $failures = $migrator->migrate($this->db, $migrations);
+
+        // Only the migration that threw is reported, the pinned one is skipped silently.
+        self::assertSame(
+            ['CodeIgniter\PHPStan\Tests\Fixtures\Database\Migrations\FailBlogTable' => 'Simulated non-portable migration.'],
+            $failures,
+        );
 
         $schema = (new SchemaIntrospector())->introspect($this->db, $fingerprint);
 
