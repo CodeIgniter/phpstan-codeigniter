@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Type;
 
 use CodeIgniter\PHPStan\Helpers\LanguageLineTypeHelper;
+use CodeIgniter\PHPStan\Helpers\ResultCacheDependencyTracker;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\DependencyInjection\AutowiredService;
@@ -29,6 +30,7 @@ final class LangFunctionReturnTypeExtension implements DynamicFunctionReturnType
 {
     public function __construct(
         private readonly LanguageLineTypeHelper $languageLineTypeHelper,
+        private readonly ResultCacheDependencyTracker $resultCacheDependencyTracker,
     ) {}
 
     public function isFunctionSupported(FunctionReflection $functionReflection): bool
@@ -43,6 +45,8 @@ final class LangFunctionReturnTypeExtension implements DynamicFunctionReturnType
         if (! isset($args[0])) {
             return null;
         }
+
+        $this->resultCacheDependencyTracker->trackLanguage($scope);
 
         return $this->languageLineTypeHelper->resolve(
             $scope->getType($args[0]->value),

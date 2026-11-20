@@ -18,6 +18,7 @@ use CodeIgniter\PHPStan\Database\Schema\Column;
 use CodeIgniter\PHPStan\Database\Schema\ColumnTypeResolver;
 use CodeIgniter\PHPStan\Database\Schema\Table;
 use CodeIgniter\PHPStan\Database\SchemaProvider;
+use CodeIgniter\PHPStan\Helpers\ResultCacheDependencyTracker;
 use CodeIgniter\PHPStan\NodeVisitor\ModelReturnTypeTransformVisitor;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
@@ -48,10 +49,13 @@ final class ModelFetchedReturnTypeHelper
         private readonly SchemaProvider $schemaProvider,
         private readonly ColumnTypeResolver $columnTypeResolver,
         private readonly CastFieldTypeResolver $castFieldTypeResolver,
+        private readonly ResultCacheDependencyTracker $resultCacheDependencyTracker,
     ) {}
 
     public function getFetchedReturnType(ClassReflection $classReflection, ?MethodCall $methodCall, Scope $scope): Type
     {
+        $this->resultCacheDependencyTracker->trackSchema($scope);
+
         $returnType = $this->resolveReturnType($classReflection, $methodCall, $scope);
 
         if ($returnType === 'object') {

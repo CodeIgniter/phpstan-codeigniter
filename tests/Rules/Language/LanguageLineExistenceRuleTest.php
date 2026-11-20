@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Tests\Rules\Language;
 
 use CodeIgniter\PHPStan\Helpers\LanguageLineTypeHelper;
+use CodeIgniter\PHPStan\Helpers\ResultCacheDependencyTracker;
 use CodeIgniter\PHPStan\Rules\Language\LanguageLineExistenceRule;
 use CodeIgniter\PHPStan\Tests\AdditionalConfigFilesProvider;
 use Config\App;
@@ -60,6 +61,7 @@ final class LanguageLineExistenceRuleTest extends RuleTestCase
         return new LanguageLineExistenceRule(
             self::createReflectionProvider(),
             self::getContainer()->getByType(LanguageLineTypeHelper::class),
+            self::getContainer()->getByType(ResultCacheDependencyTracker::class),
             $this->reportUntranslatedLines,
         );
     }

@@ -20,6 +20,7 @@ use CodeIgniter\PHPStan\Database\Schema\CastFieldTypeResolver;
 use CodeIgniter\PHPStan\Database\Schema\Column;
 use CodeIgniter\PHPStan\Database\Schema\ColumnTypeResolver;
 use CodeIgniter\PHPStan\Database\SchemaProvider;
+use CodeIgniter\PHPStan\Helpers\ResultCacheDependencyTracker;
 use PHPStan\DependencyInjection\AutowiredService;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\PropertiesClassReflectionExtension;
@@ -41,6 +42,7 @@ final class EntityPropertiesClassReflectionExtension implements PropertiesClassR
         private readonly SchemaProvider $schemaProvider,
         private readonly ModelTableMapProvider $modelTableMapProvider,
         private readonly ColumnTypeResolver $columnTypeResolver,
+        private readonly ResultCacheDependencyTracker $resultCacheDependencyTracker,
     ) {}
 
     public function hasProperty(ClassReflection $classReflection, string $propertyName): bool
@@ -48,6 +50,8 @@ final class EntityPropertiesClassReflectionExtension implements PropertiesClassR
         if (! $classReflection->is(Entity::class)) {
             return false;
         }
+
+        $this->resultCacheDependencyTracker->declareEntity($classReflection);
 
         $type = $this->resolveType($classReflection, $propertyName);
 

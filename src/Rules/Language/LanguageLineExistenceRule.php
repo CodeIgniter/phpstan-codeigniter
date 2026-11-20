@@ -15,6 +15,7 @@ namespace CodeIgniter\PHPStan\Rules\Language;
 
 use CodeIgniter\Language\Language;
 use CodeIgniter\PHPStan\Helpers\LanguageLineTypeHelper;
+use CodeIgniter\PHPStan\Helpers\ResultCacheDependencyTracker;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use PHPStan\DependencyInjection\AutowiredParameter;
@@ -34,6 +35,8 @@ final class LanguageLineExistenceRule implements Rule
         private readonly ReflectionProvider $reflectionProvider,
 
         private readonly LanguageLineTypeHelper $languageLineTypeHelper,
+
+        private readonly ResultCacheDependencyTracker $resultCacheDependencyTracker,
 
         #[AutowiredParameter(ref: '%codeigniter.reportUntranslatedLanguageLines%')]
         private readonly bool $reportUntranslatedLines,
@@ -55,6 +58,8 @@ final class LanguageLineExistenceRule implements Rule
         if (! isset($args[0])) {
             return [];
         }
+
+        $this->resultCacheDependencyTracker->trackLanguage($scope);
 
         $errors = [];
 

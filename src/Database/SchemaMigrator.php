@@ -30,7 +30,7 @@ use Throwable;
 #[AutowiredService(name: 'schemaMigrator')]
 final class SchemaMigrator
 {
-    private const CACHE_FORMAT = 2;
+    private const CACHE_FORMAT = 3;
 
     /**
      * Discovers the project's migrations without running them, so the caller can fingerprint and apply
@@ -50,6 +50,24 @@ final class SchemaMigrator
             $runner->findMigrations(),
             static fn (mixed $migration): bool => $migration instanceof stdClass,
         ));
+    }
+
+    /**
+     * @param list<stdClass> $migrations
+     *
+     * @return list<string>
+     */
+    public function directories(array $migrations): array
+    {
+        $directories = [];
+
+        foreach ($migrations as $migration) {
+            if (is_string($migration->path)) {
+                $directories[dirname($migration->path)] = true;
+            }
+        }
+
+        return array_keys($directories);
     }
 
     /**

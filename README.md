@@ -53,6 +53,10 @@ a temporary SQLite database, so the `sqlite3` PHP extension is required (it is d
 `composer.json`). The schema is cached under the working directory's `tmp` folder by default. See the
 [type inference docs](docs/type-inference.md) for how to point it at a specific namespace.
 
+The schema, the language files and the models that return an entity are read from outside the analysed code.
+The extension declares them to PHPStan's result cache (PHPStan 2.3 or later), so changing a migration, a
+language file or a model re-analyses only the files that depend on it.
+
 ## Contributing
 
 Any contributions are welcome.

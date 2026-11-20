@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace CodeIgniter\PHPStan\Tests\Rules\Database;
 
 use CodeIgniter\PHPStan\Database\SchemaProvider;
+use CodeIgniter\PHPStan\Helpers\ResultCacheDependencyTracker;
 use CodeIgniter\PHPStan\Rules\Database\MigrationNotAppliedRule;
 use CodeIgniter\PHPStan\Tests\AdditionalConfigFilesProvider;
 use PHPStan\Rules\Rule;
@@ -32,7 +33,10 @@ final class MigrationNotAppliedRuleTest extends RuleTestCase
 
     protected function getRule(): Rule
     {
-        return new MigrationNotAppliedRule(self::getContainer()->getByType(SchemaProvider::class));
+        return new MigrationNotAppliedRule(
+            self::getContainer()->getByType(SchemaProvider::class),
+            self::getContainer()->getByType(ResultCacheDependencyTracker::class),
+        );
     }
 
     public function testReportsOnlyTheMigrationThatFailed(): void

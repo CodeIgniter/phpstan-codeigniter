@@ -15,6 +15,7 @@ namespace CodeIgniter\PHPStan\Type;
 
 use CodeIgniter\Language\Language;
 use CodeIgniter\PHPStan\Helpers\LanguageLineTypeHelper;
+use CodeIgniter\PHPStan\Helpers\ResultCacheDependencyTracker;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\DependencyInjection\AutowiredService;
@@ -30,6 +31,7 @@ final class LanguageGetLineReturnTypeExtension implements DynamicMethodReturnTyp
 {
     public function __construct(
         private readonly LanguageLineTypeHelper $languageLineTypeHelper,
+        private readonly ResultCacheDependencyTracker $resultCacheDependencyTracker,
     ) {}
 
     public function getClass(): string
@@ -49,6 +51,8 @@ final class LanguageGetLineReturnTypeExtension implements DynamicMethodReturnTyp
         if (! isset($args[0])) {
             return null;
         }
+
+        $this->resultCacheDependencyTracker->trackLanguage($scope);
 
         return $this->languageLineTypeHelper->resolve(
             $scope->getType($args[0]->value),

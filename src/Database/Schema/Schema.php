@@ -19,18 +19,20 @@ namespace CodeIgniter\PHPStan\Database\Schema;
 final readonly class Schema
 {
     /**
-     * @param string                      $hash             Fingerprint of the migration set that produced this schema
-     * @param array<string, Table>        $tables           Keyed by table name
-     * @param array<class-string, string> $failedMigrations The error message of each migration that failed to run, keyed by class
+     * @param string                      $hash                 Fingerprint of the migration set that produced this schema
+     * @param array<string, Table>        $tables               Keyed by table name
+     * @param array<class-string, string> $failedMigrations     The error message of each migration that failed to run, keyed by class
+     * @param list<string>                $migrationDirectories The directories that the migrations were discovered in
      */
     public function __construct(
         public string $hash,
         public array $tables,
         public array $failedMigrations = [],
+        public array $migrationDirectories = [],
     ) {}
 
     /**
-     * @param array{hash: string, tables: array<string, Table>, failedMigrations?: array<class-string, string>} $state
+     * @param array{hash: string, tables: array<string, Table>, failedMigrations?: array<class-string, string>, migrationDirectories?: list<string>} $state
      */
     public static function __set_state(array $state): self
     {
@@ -38,15 +40,17 @@ final readonly class Schema
             hash: $state['hash'],
             tables: $state['tables'],
             failedMigrations: $state['failedMigrations'] ?? [],
+            migrationDirectories: $state['migrationDirectories'] ?? [],
         );
     }
 
     /**
      * @param array<class-string, string> $failedMigrations
+     * @param list<string>                $migrationDirectories
      */
-    public function withFailedMigrations(array $failedMigrations): self
+    public function withBuildDetails(array $failedMigrations, array $migrationDirectories): self
     {
-        return new self($this->hash, $this->tables, $failedMigrations);
+        return new self($this->hash, $this->tables, $failedMigrations, $migrationDirectories);
     }
 
     public function getTable(string $name): ?Table

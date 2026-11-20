@@ -15,6 +15,7 @@ namespace CodeIgniter\PHPStan\Rules\Database;
 
 use CodeIgniter\Database\Migration;
 use CodeIgniter\PHPStan\Database\SchemaProvider;
+use CodeIgniter\PHPStan\Helpers\ResultCacheDependencyTracker;
 use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use PHPStan\DependencyInjection\RegisteredRule;
@@ -30,6 +31,7 @@ final class MigrationNotAppliedRule implements Rule
 {
     public function __construct(
         private readonly SchemaProvider $schemaProvider,
+        private readonly ResultCacheDependencyTracker $resultCacheDependencyTracker,
     ) {}
 
     public function getNodeType(): string
@@ -44,6 +46,8 @@ final class MigrationNotAppliedRule implements Rule
         if (! $classReflection->is(Migration::class) || $classReflection->isAbstract()) {
             return [];
         }
+
+        $this->resultCacheDependencyTracker->trackSchema($scope);
 
         $message = $this->schemaProvider->get()->failedMigrations[$classReflection->getName()] ?? null;
 
