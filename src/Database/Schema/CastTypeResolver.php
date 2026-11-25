@@ -44,9 +44,11 @@ final class CastTypeResolver
             $cast = substr($cast, 1);
         }
 
-        if ($cast === 'json-array') {
-            $cast = 'json[array]';
-        }
+        $cast = match ($cast) {
+            'json-array'           => 'json[array]',
+            'encrypted-json-array' => 'encrypted-json[array]',
+            default                => $cast,
+        };
 
         $params = [];
 
@@ -70,7 +72,7 @@ final class CastTypeResolver
      */
     public function preservesNull(string $cast): bool
     {
-        if (str_starts_with($cast, '?') || $cast === 'json-array') {
+        if (str_starts_with($cast, '?') || in_array($cast, ['json-array', 'encrypted-json-array'], true)) {
             return true;
         }
 
@@ -78,7 +80,7 @@ final class CastTypeResolver
             $cast = $matches[1];
         }
 
-        return in_array($cast, ['datetime', 'json'], true);
+        return in_array($cast, ['datetime', 'json', 'encrypted', 'encrypted-json'], true);
     }
 
     /**
@@ -94,7 +96,8 @@ final class CastTypeResolver
             'object'                      => new ObjectType(stdClass::class),
             'array'                       => new ArrayType(new MixedType(true), new MixedType(true)),
             'csv'                         => TypeCombinator::intersect(new ArrayType(new IntegerType(), new StringType()), new AccessoryArrayListType()),
-            'json'                        => in_array('array', $params, true) ? new ArrayType(new MixedType(true), new MixedType(true)) : new ObjectType(stdClass::class),
+            'json', 'encrypted-json'      => in_array('array', $params, true) ? new ArrayType(new MixedType(true), new MixedType(true)) : new ObjectType(stdClass::class),
+            'encrypted'                   => new StringType(),
             'datetime', 'timestamp'       => new ObjectType(Time::class),
             'uri'                         => new ObjectType(URI::class),
             'enum'                        => $this->enumType($params),

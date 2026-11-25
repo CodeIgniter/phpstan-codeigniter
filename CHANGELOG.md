@@ -9,6 +9,10 @@ The changelog of the releases before v2.0.0 is [published in the Releases sectio
 
 ## Unreleased
 
+### Added
+
+- Type the `encrypted`, `encrypted-json` and `encrypted-json-array` casts of CodeIgniter 4.8.
+
 ## [2.4.0](https://github.com/CodeIgniter/phpstan-codeigniter/compare/v2.3.0...v2.4.0) - 2026-11-20
 
 ### Added

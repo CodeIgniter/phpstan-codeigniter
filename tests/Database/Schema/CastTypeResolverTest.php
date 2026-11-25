@@ -65,6 +65,14 @@ final class CastTypeResolverTest extends TestCase
 
         yield 'json-array' => ['json-array', 'array<mixed, mixed>'];
 
+        yield 'encrypted' => ['encrypted', 'string'];
+
+        yield 'encrypted-json (object)' => ['encrypted-json', 'stdClass'];
+
+        yield 'encrypted-json[array]' => ['encrypted-json[array]', 'array<mixed, mixed>'];
+
+        yield 'encrypted-json-array' => ['encrypted-json-array', 'array<mixed, mixed>'];
+
         yield 'datetime' => ['datetime', 'CodeIgniter\I18n\Time'];
 
         yield 'timestamp' => ['timestamp', 'CodeIgniter\I18n\Time'];
@@ -103,6 +111,14 @@ final class CastTypeResolverTest extends TestCase
         yield 'json[array]' => ['json[array]', true];
 
         yield 'json-array' => ['json-array', true];
+
+        yield 'encrypted' => ['encrypted', true];
+
+        yield 'encrypted-json' => ['encrypted-json', true];
+
+        yield 'encrypted-json[array]' => ['encrypted-json[array]', true];
+
+        yield 'encrypted-json-array' => ['encrypted-json-array', true];
 
         yield 'nullable int' => ['?int', true];
 
