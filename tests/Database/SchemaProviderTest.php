@@ -18,6 +18,7 @@ use CodeIgniter\PHPStan\Database\SchemaConnectionFactory;
 use CodeIgniter\PHPStan\Database\SchemaIntrospector;
 use CodeIgniter\PHPStan\Database\SchemaMigrator;
 use CodeIgniter\PHPStan\Database\SchemaProvider;
+use CodeIgniter\PHPStan\Helpers\ConfigResolver;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
@@ -61,7 +62,7 @@ final class SchemaProviderTest extends TestCase
         $cache = new SchemaCache(
             $this->cacheDirectory,
             new SchemaConnectionFactory(),
-            new SchemaMigrator(),
+            new SchemaMigrator(new ConfigResolver()),
             new SchemaIntrospector(),
         );
         $provider = new SchemaProvider($cache, self::FIXTURE_NAMESPACE);

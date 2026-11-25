@@ -17,6 +17,7 @@ use CodeIgniter\Database\SQLite3\Connection;
 use CodeIgniter\PHPStan\Database\SchemaConnectionFactory;
 use CodeIgniter\PHPStan\Database\SchemaIntrospector;
 use CodeIgniter\PHPStan\Database\SchemaMigrator;
+use CodeIgniter\PHPStan\Helpers\ConfigResolver;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
@@ -55,7 +56,7 @@ final class SchemaMigratorTest extends TestCase
 
     public function testRunsMigrationsResilientlyAndReturnsFingerprint(): void
     {
-        $migrator    = new SchemaMigrator();
+        $migrator    = new SchemaMigrator(new ConfigResolver());
         $migrations  = $migrator->discover($this->db, self::FIXTURE_NAMESPACE);
         $fingerprint = $migrator->fingerprint($migrations);
 
@@ -81,7 +82,7 @@ final class SchemaMigratorTest extends TestCase
 
     public function testNullNamespaceScansEveryRegisteredNamespace(): void
     {
-        $migrator    = new SchemaMigrator();
+        $migrator    = new SchemaMigrator(new ConfigResolver());
         $migrations  = $migrator->discover($this->db, null);
         $fingerprint = $migrator->fingerprint($migrations);
         $migrator->migrate($this->db, $migrations);

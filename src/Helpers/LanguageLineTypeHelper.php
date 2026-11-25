@@ -35,6 +35,10 @@ final class LanguageLineTypeHelper
      */
     private array $files = [];
 
+    public function __construct(
+        private readonly ConfigResolver $resolver,
+    ) {}
+
     /**
      * @return list<string> the lines when the type consists only of constant strings
      */
@@ -189,7 +193,7 @@ final class LanguageLineTypeHelper
      */
     private function locales(): array
     {
-        $config = config(App::class);
+        $config = $this->resolver->resolve(App::class);
 
         return array_values(array_unique(['en', $config->defaultLocale, ...$config->supportedLocales]));
     }

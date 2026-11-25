@@ -16,6 +16,7 @@ namespace CodeIgniter\PHPStan\Database;
 use CodeIgniter\Database\Migration;
 use CodeIgniter\Database\MigrationRunner;
 use CodeIgniter\Database\SQLite3\Connection;
+use CodeIgniter\PHPStan\Helpers\ConfigResolver;
 use Config\Database;
 use Config\Migrations;
 use PHPStan\DependencyInjection\AutowiredService;
@@ -32,6 +33,10 @@ final class SchemaMigrator
 {
     private const CACHE_FORMAT = 3;
 
+    public function __construct(
+        private readonly ConfigResolver $resolver,
+    ) {}
+
     /**
      * Discovers the project's migrations without running them, so the caller can fingerprint and apply
      * the same set without scanning twice.
@@ -40,7 +45,7 @@ final class SchemaMigrator
      */
     public function discover(Connection $db, ?string $namespace = null): array
     {
-        $runner = new MigrationRunner(config(Migrations::class), $db);
+        $runner = new MigrationRunner($this->resolver->resolve(Migrations::class), $db);
 
         // A null namespace makes the runner scan every registered namespace (the app plus installed
         // packages), so a library analyzed on its own and an app's vendor migrations are both found.

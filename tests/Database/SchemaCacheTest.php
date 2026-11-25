@@ -19,6 +19,7 @@ use CodeIgniter\PHPStan\Database\SchemaCache;
 use CodeIgniter\PHPStan\Database\SchemaConnectionFactory;
 use CodeIgniter\PHPStan\Database\SchemaIntrospector;
 use CodeIgniter\PHPStan\Database\SchemaMigrator;
+use CodeIgniter\PHPStan\Helpers\ConfigResolver;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
@@ -105,7 +106,7 @@ final class SchemaCacheTest extends TestCase
         return new SchemaCache(
             $this->cacheDirectory,
             new SchemaConnectionFactory(),
-            new SchemaMigrator(),
+            new SchemaMigrator(new ConfigResolver()),
             new SchemaIntrospector(),
         );
     }
